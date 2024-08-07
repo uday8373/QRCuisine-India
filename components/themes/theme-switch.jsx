@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
+
 import { Classic } from "@theme-toggles/react";
 import "@theme-toggles/react/css/Classic.css";
+import { useTheme } from "next-themes";
 
 const ThemeToggle = ({ color }) => {
   const { resolvedTheme, setTheme } = useTheme();
