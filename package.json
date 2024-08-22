@@ -9,11 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextui-org/input": "^2.2.4",
     "@nextui-org/react": "^2.4.6",
+    "@nextui-org/select": "^2.2.5",
+    "@nextui-org/system": "^2.2.5",
+    "@nextui-org/theme": "^2.2.9",
+    "@react-google-maps/api": "^2.19.3",
     "@supabase/supabase-js": "^2.45.0",
     "@theme-toggles/react": "^4.1.0",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
+    "formik": "^2.4.6",
     "framer-motion": "^11.3.19",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.424.0",
@@ -24,7 +30,8 @@
     "react-dom": "^18",
     "react-lottie": "^1.2.4",
     "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "eslint": "^8",
