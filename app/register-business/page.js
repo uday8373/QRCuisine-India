@@ -144,18 +144,20 @@ export default function RegisterBusiness() {
   };
 
   return (
-    <main className="flex items-center justify-center w-full">
+    <main className="flex items-center justify-center w-full bg-red">
       <div
         className="w-full relative rounded-lg px-5 mt-10  mb-10
        lg:mb-20  flex items-center justify-center lg:items-start  gap-10  max-w-screen-xl"
       >
-        <div className="w-full  h-full max-w-xl ">
+        <div className="bg-white rounded-2xl  shadow-xl  p-10 w-full  h-full max-w-xl ">
           <form onSubmit={formik.handleSubmit} className=" ">
-            <h1 className="text-2xl font-bold mb-5 font-Rethink">
-              Restaurant Registration
+            <h1 className="text-2xl text-justify font-bold mb-5 font-Rethink">
+              Submit this form & Book your free demo today! 
+              Get 6 months free trial for first 50 restaurants. Hurry ! 
             </h1>
-
+            
             {/* Name */}
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
             <div className="mb-4">
               <Input
                 type="text"
@@ -189,8 +191,10 @@ export default function RegisterBusiness() {
                 ref={inputRef} // Attach inputRef to address input
               />
             </div>
+            </div>
 
             {/* City */}
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
             <div className="mb-4">
               <Input
                 type="text"
@@ -223,7 +227,9 @@ export default function RegisterBusiness() {
                 fullWidth
               />
             </div>
+            </div>
 
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
             {/* Country */}
             <div className="mb-4">
               <Input
@@ -259,7 +265,9 @@ export default function RegisterBusiness() {
                 fullWidth
               />
             </div>
-
+            </div>
+    
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
             {/* Tables */}
             <div className="mb-4">
               <Input
@@ -295,9 +303,11 @@ export default function RegisterBusiness() {
                 fullWidth
               />
             </div>
+            </div>
 
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
             {/* Contact */}
-            <div className="mb-4">
+            <div className="mb-4 lg:w-1/2">
               <Input
                 type="text"
                 label="Contact"
@@ -317,7 +327,7 @@ export default function RegisterBusiness() {
             </div>
 
             {/* How heard */}
-            <div className="mb-4">
+            <div className="mb-4 lg:w-1/2">
               <Select
                 items={WhereYouHeard}
                 label="Where you heard of Table QR?"
@@ -340,6 +350,9 @@ export default function RegisterBusiness() {
                 )}
               </Select>
             </div>
+            </div>
+       
+
             <div className="w-full pt-5">
               <Button
                 size="lg"
@@ -347,9 +360,9 @@ export default function RegisterBusiness() {
                 type="submit"
                 radius="full"
                 disabled={formik.isSubmitting}
-                className="w-full text-lg font-medium"
+                className=" w-full text-lg text-white font-medium"
               >
-                {formik.isSubmitting ? "Submitting..." : "Register"}
+                {formik.isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
             {submissionMessage && (
@@ -361,7 +374,7 @@ export default function RegisterBusiness() {
             )}
           </form>
         </div>
-        <div className=" hidden lg:block bg-warning w-full rounded-xl  sticky top-20 h-screen overflow-hidden  ">
+        <div className=" hidden lg:block w-full rounded-xl  sticky top-20 overflow-hidden  ">
           <div className="  flex  flex-col gap-12 justify-between w-full h-full">
             <div className="flex items-center  justify-center gap-5 pt-16 flex-col w-full">
               <p className="md:text-xl text-md text-white font-semibold">
@@ -374,8 +387,8 @@ export default function RegisterBusiness() {
             </div>
             <div className="w-full  flex justify-center items-center   ">
               <Image
-                width={600}
-                height={600}
+                width={400}
+                height={400}
                 className="w-96 h-96 object-cover   "
                 src="/assets/QRScan.png"
                 alt="QRScan"

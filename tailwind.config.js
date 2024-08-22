@@ -78,6 +78,7 @@ module.exports = {
           colors: {
             background: "#F8F8FF",
             foreground: "#1a1a1a",
+            white: "#ffffff",
             primary: {
               50: "#FFF7CD",
               100: "#FFF7CD",
@@ -108,6 +109,7 @@ module.exports = {
           colors: {
             background: "#1a1a1a",
             foreground: "#F8F8FF",
+            white: "#ffffff",
             primary: {
               50: "#7A4F01",
               100: "#936402",
