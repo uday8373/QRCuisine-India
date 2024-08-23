@@ -151,207 +151,208 @@ export default function RegisterBusiness() {
       >
         <div className="bg-white rounded-2xl  shadow-xl  p-10 w-full  h-full max-w-xl ">
           <form onSubmit={formik.handleSubmit} className=" ">
-            <h1 className="text-2xl text-justify font-bold mb-5 font-Rethink">
-              Submit this form & Book your free demo today! 
-              Get 6 months free trial for first 50 restaurants. Hurry ! 
-            </h1>
-            
+            <h2 className="text-2xl text-justify leading-tight font-bold mb-5 font-Rethink">
+              Submit this form & Book your free demo today! Get 6 months free
+              trial for first 50 restaurants. Hurry !
+            </h2>
+
             {/* Name */}
             <div className="mb-4 flex flex-col lg:flex-row gap-4">
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="Name"
-                name="name"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.name && !!formik.errors.name}
-                errorMessage={formik.errors.name}
-                variant="faded"
-                value={formik.values.name}
-                placeholder="Enter restaurant name"
-                fullWidth
-              />
-            </div>
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="Name"
+                  name="name"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.name && !!formik.errors.name}
+                  errorMessage={formik.errors.name}
+                  variant="faded"
+                  value={formik.values.name}
+                  placeholder="Enter restaurant name"
+                  fullWidth
+                />
+              </div>
 
-            {/* Address */}
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="Address"
-                name="address"
-                variant="faded"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.address && !!formik.errors.address}
-                errorMessage={formik.errors.address}
-                value={formik.values.address}
-                placeholder="Enter address"
-                fullWidth
-                ref={inputRef} // Attach inputRef to address input
-              />
-            </div>
+              {/* Address */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="Address"
+                  name="address"
+                  variant="faded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.address && !!formik.errors.address}
+                  errorMessage={formik.errors.address}
+                  value={formik.values.address}
+                  placeholder="Enter address"
+                  fullWidth
+                  ref={inputRef} // Attach inputRef to address input
+                />
+              </div>
             </div>
 
             {/* City */}
             <div className="mb-4 flex flex-col lg:flex-row gap-4">
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="City"
-                name="city"
-                variant="faded"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.city && !!formik.errors.city}
-                errorMessage={formik.errors.city}
-                value={formik.values.city}
-                placeholder="Enter city"
-                fullWidth
-              />
-            </div>
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="City"
+                  name="city"
+                  variant="faded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.city && !!formik.errors.city}
+                  errorMessage={formik.errors.city}
+                  value={formik.values.city}
+                  placeholder="Enter city"
+                  fullWidth
+                />
+              </div>
 
-            {/* State */}
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="State"
-                variant="faded"
-                name="state"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.state && !!formik.errors.state}
-                errorMessage={formik.errors.state}
-                value={formik.values.state}
-                placeholder="Enter state"
-                fullWidth
-              />
-            </div>
-            </div>
-
-            <div className="mb-4 flex flex-col lg:flex-row gap-4">
-            {/* Country */}
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="Country"
-                name="country"
-                variant="faded"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.country && !!formik.errors.country}
-                errorMessage={formik.errors.country}
-                value={formik.values.country}
-                placeholder="Enter country"
-                fullWidth
-              />
-            </div>
-
-            {/* Specialty */}
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="Specialty"
-                variant="faded"
-                name="specialty"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={
-                  formik.touched.specialty && !!formik.errors.specialty
-                }
-                errorMessage={formik.errors.specialty}
-                value={formik.values.specialty}
-                placeholder="Enter specialty"
-                fullWidth
-              />
-            </div>
-            </div>
-    
-            <div className="mb-4 flex flex-col lg:flex-row gap-4">
-            {/* Tables */}
-            <div className="mb-4">
-              <Input
-                type="number"
-                label="Tables"
-                variant="faded"
-                name="tables"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.tables && !!formik.errors.tables}
-                errorMessage={formik.errors.tables}
-                value={formik.values.tables}
-                placeholder="Enter number of tables"
-                fullWidth
-              />
-            </div>
-
-            {/* Owner Name */}
-            <div className="mb-4">
-              <Input
-                type="text"
-                label="Owner Name"
-                name="ownerName"
-                variant="faded"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={
-                  formik.touched.ownerName && !!formik.errors.ownerName
-                }
-                errorMessage={formik.errors.ownerName}
-                value={formik.values.ownerName}
-                placeholder="Enter owner name"
-                fullWidth
-              />
-            </div>
+              {/* State */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="State"
+                  variant="faded"
+                  name="state"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.state && !!formik.errors.state}
+                  errorMessage={formik.errors.state}
+                  value={formik.values.state}
+                  placeholder="Enter state"
+                  fullWidth
+                />
+              </div>
             </div>
 
             <div className="mb-4 flex flex-col lg:flex-row gap-4">
-            {/* Contact */}
-            <div className="mb-4 lg:w-1/2">
-              <Input
-                type="text"
-                label="Contact"
-                name="contact"
-                variant={"faded"}
-                maxLength={10}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.contact}
-                isInvalid={
-                  formik.touched.contact && formik.errors.contact ? true : false
-                }
-                placeholder="Enter owner contact"
-                fullWidth
-                errorMessage={formik.errors.contact}
-              />
+              {/* Country */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="Country"
+                  name="country"
+                  variant="faded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.country && !!formik.errors.country}
+                  errorMessage={formik.errors.country}
+                  value={formik.values.country}
+                  placeholder="Enter country"
+                  fullWidth
+                />
+              </div>
+
+              {/* Specialty */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="Specialty"
+                  variant="faded"
+                  name="specialty"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    formik.touched.specialty && !!formik.errors.specialty
+                  }
+                  errorMessage={formik.errors.specialty}
+                  value={formik.values.specialty}
+                  placeholder="Enter specialty"
+                  fullWidth
+                />
+              </div>
             </div>
 
-            {/* How heard */}
-            <div className="mb-4 lg:w-1/2">
-              <Select
-                items={WhereYouHeard}
-                label="Where you heard of Table QR?"
-                name="heardFrom"
-                variant="faded"
-                onChange={formik?.handleChange}
-                onBlur={formik?.handleBlur}
-                value={formik?.values.heardFrom}
-                errorMessage={formik.errors.heardFrom}
-                isInvalid={
-                  formik.touched.heardFrom && formik.errors.heardFrom
-                    ? true
-                    : false
-                }
-                placeholder="Select an option"
-                className="w-full"
-              >
-                {(WhereYouHeard) => (
-                  <SelectItem>{WhereYouHeard.label}</SelectItem>
-                )}
-              </Select>
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
+              {/* Tables */}
+              <div className="mb-4">
+                <Input
+                  type="number"
+                  label="Tables"
+                  variant="faded"
+                  name="tables"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.tables && !!formik.errors.tables}
+                  errorMessage={formik.errors.tables}
+                  value={formik.values.tables}
+                  placeholder="Enter number of tables"
+                  fullWidth
+                />
+              </div>
+
+              {/* Owner Name */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  label="Owner Name"
+                  name="ownerName"
+                  variant="faded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    formik.touched.ownerName && !!formik.errors.ownerName
+                  }
+                  errorMessage={formik.errors.ownerName}
+                  value={formik.values.ownerName}
+                  placeholder="Enter owner name"
+                  fullWidth
+                />
+              </div>
             </div>
+
+            <div className="mb-4 flex flex-col lg:flex-row gap-4">
+              {/* Contact */}
+              <div className="mb-4 lg:w-1/2">
+                <Input
+                  type="text"
+                  label="Contact"
+                  name="contact"
+                  variant={"faded"}
+                  maxLength={10}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.contact}
+                  isInvalid={
+                    formik.touched.contact && formik.errors.contact
+                      ? true
+                      : false
+                  }
+                  placeholder="Enter owner contact"
+                  fullWidth
+                  errorMessage={formik.errors.contact}
+                />
+              </div>
+
+              {/* How heard */}
+              <div className="mb-4 lg:w-1/2">
+                <Select
+                  items={WhereYouHeard}
+                  label="Where you heard of Table QR?"
+                  name="heardFrom"
+                  variant="faded"
+                  onChange={formik?.handleChange}
+                  onBlur={formik?.handleBlur}
+                  value={formik?.values.heardFrom}
+                  errorMessage={formik.errors.heardFrom}
+                  isInvalid={
+                    formik.touched.heardFrom && formik.errors.heardFrom
+                      ? true
+                      : false
+                  }
+                  placeholder="Select an option"
+                  className="w-full"
+                >
+                  {(WhereYouHeard) => (
+                    <SelectItem>{WhereYouHeard.label}</SelectItem>
+                  )}
+                </Select>
+              </div>
             </div>
-       
 
             <div className="w-full pt-5">
               <Button
@@ -374,7 +375,7 @@ export default function RegisterBusiness() {
             )}
           </form>
         </div>
-        <div className=" hidden lg:block w-full rounded-xl  sticky top-20 overflow-hidden  ">
+        <div className=" hidden lg:block w-full rounded-xl   ">
           <div className="  flex  flex-col gap-12 justify-between w-full h-full">
             <div className="flex items-center  justify-center gap-5 pt-16 flex-col w-full">
               <p className="md:text-xl text-md text-white font-semibold">
