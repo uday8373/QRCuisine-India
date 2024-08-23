@@ -18,7 +18,11 @@ export const Navbar = () => {
   const pathName = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  if (pathName !== "/" && pathName !== "/register-business") {
+  if (
+    pathName !== "/" &&
+    pathName !== "/register-business" &&
+    pathName !== "/book-free-demo"
+  ) {
     return null;
   }
   return (

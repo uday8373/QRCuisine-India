@@ -1,17 +1,9 @@
-"use client";
-import { useState } from "react";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const Hero = () => {
-  const [imgSrc, setImgSrc] = useState("/assets/hero.png");
-
-  const handleImageError = () => {
-    setImgSrc("https://via.placeholder.com/300x200");
-  };
-
   return (
     <section
       id="homepage_hero_section"
@@ -28,25 +20,14 @@ const Hero = () => {
             </p>
             <div className="flex gap-2 md:gap-5 items-center">
               <Button
+                as={Link}
                 size="lg"
+                href="/book-free-demo"
                 color="danger"
                 radius="full"
                 className="md:mt-5 w-40 font-medium"
               >
                 Schedule Demo
-              </Button>
-              <Button
-                size="lg"
-                className="md:mt-5 w-44"
-                color="default"
-                radius="full"
-              >
-                <Link
-                  className="w-full h-full flex items-center justify-center font-medium"
-                  href="/register-business"
-                >
-                  Add business
-                </Link>
               </Button>
             </div>
           </div>
@@ -54,9 +35,8 @@ const Hero = () => {
             <Image
               width={1080}
               height={1080}
-              src={imgSrc}
+              src="/assets/hero.png"
               alt="hero"
-              onError={handleImageError}
             />
           </div>
         </div>
