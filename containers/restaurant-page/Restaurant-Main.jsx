@@ -6,13 +6,14 @@ import {
   fetchRestaurantMenuData,
   fetchSpecialMenuData,
   fetchTableData,
+  updateVisitors,
 } from "@/apis/restaurantApi";
 import ScreenError from "@/components/pages/Screen-Error";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
-import { Button, Spinner, table, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
 import SpecialMenu from "./Special-Menu";
@@ -53,12 +54,12 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const customerStatus =
     typeof window !== "undefined" ? localStorage.getItem("status") : null;
 
-  if (customerStatus) {
-    navigateBasedOnStatus();
-  }
-
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
+
+  if (customerStatus && tableId === localTableId) {
+    navigateBasedOnStatus();
+  }
 
   useEffect(() => {
     if (isBooked && tableId !== localTableId) {
@@ -97,6 +98,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
               pageSize
             ),
           ]);
+        if (!isBooked) {
+          await updateVisitors(restaurantData.id);
+        }
         setCategoryData(categoryResponse);
         setSpecialMenuData(specialMenuResponse.data);
         setMenuItems((prevItems) =>
@@ -112,6 +116,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         setDataLoading(false);
       }
     };
+
     fetchData();
   }, [
     tableId,
@@ -121,6 +126,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     pageSize,
     localTableId,
     isBooked,
+    restaurantData,
   ]);
 
   const handleCartChange = (menuItem, quantity) => {
@@ -267,6 +273,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           onOpenChange={onOpenChange}
           setIsBooked={setIsBooked}
           tableId={tableId}
+          restaurantId={restaurantData.id}
         />
       )}
       {cartItems.length !== 0 && (

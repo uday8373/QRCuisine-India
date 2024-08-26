@@ -106,7 +106,6 @@ const BookDemoMain = () => {
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (!place.geometry) {
-        console.log("No details available for input: " + place.name);
         return;
       }
 

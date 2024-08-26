@@ -9,7 +9,7 @@ const Hero = () => {
       id="homepage_hero_section"
       className="flex items-center justify-center w-full bg-primary min-h-[80vh]"
     >
-      <div className="w-full h-full flex-col max-w-screen-xl px-6">
+      <div className="w-full h-full flex-col max-w-screen-xl px-6 z-10">
         <div className="w-full h-full flex md:flex-row flex-col-reverse justify-between items-center py-5 gap-3">
           <div className="w-full flex flex-col justify-center md:gap-5 gap-3">
             <h1 className="xl:text-7xl lg:text-6xl md:text-5xl text-4xl font-bold text-white leading-tight md:leading-tight lg:leading-tight xl:leading-[85px]">

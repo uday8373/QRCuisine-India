@@ -1,4 +1,5 @@
 import supabase from "@/config/supabase";
+import moment from "moment/moment";
 
 export const fetchTableData = async (tableNo) => {
   try {
@@ -100,5 +101,97 @@ export const fetchRestaurantMenuData = async (
   } catch (error) {
     console.error("Error fetching restaurant menu data:", error);
     return { data: [], count: 0 };
+  }
+};
+
+export const updateVisitors = async (restaurantId) => {
+  try {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const todayString = today.toISOString().split("T")[0];
+    const tomorrowString = tomorrow.toISOString().split("T")[0];
+
+    const { data: existingRecord, error: fetchError } = await supabase
+      .from("visitors")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .gte("created_at", todayString)
+      .lt("created_at", tomorrowString)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
+
+    let websiteVisitCount = 1;
+    let upsertData;
+
+    if (existingRecord) {
+      websiteVisitCount = parseInt(existingRecord.website_visit, 10) + 1;
+      upsertData = { id: existingRecord.id, website_visit: websiteVisitCount };
+    } else {
+      upsertData = {
+        restaurant_id: restaurantId,
+        website_visit: websiteVisitCount,
+      };
+    }
+
+    const { data, error: upsertError } = await supabase
+      .from("visitors")
+      .upsert(upsertData, { onConflict: ["id"] })
+      .select();
+
+    if (upsertError) throw upsertError;
+
+    return data;
+  } catch (error) {
+    console.error("Error updating visitors:", error);
+    return null;
+  }
+};
+
+export const updateVisitorBooked = async (restaurantId) => {
+  try {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const todayString = today.toISOString().split("T")[0];
+    const tomorrowString = tomorrow.toISOString().split("T")[0];
+
+    const { data: existingRecord, error: fetchError } = await supabase
+      .from("visitors")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .gte("created_at", todayString)
+      .lt("created_at", tomorrowString)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
+
+    let count = 1;
+    let upsertData;
+
+    if (existingRecord) {
+      count = parseInt(existingRecord.booked_count, 10) + 1;
+      upsertData = { id: existingRecord.id, booked_count: count };
+    } else {
+      upsertData = {
+        restaurant_id: restaurantId,
+        booked_count: count,
+      };
+    }
+
+    const { data, error: upsertError } = await supabase
+      .from("visitors")
+      .upsert(upsertData, { onConflict: ["id"] })
+      .select();
+
+    if (upsertError) throw upsertError;
+
+    return data;
+  } catch (error) {
+    console.error("Error updating visitors:", error);
+    return null;
   }
 };

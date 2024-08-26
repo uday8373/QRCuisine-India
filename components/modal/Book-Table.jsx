@@ -1,3 +1,4 @@
+import { updateVisitorBooked } from "@/apis/restaurantApi";
 import supabase from "@/config/supabase";
 import {
   Button,
@@ -11,7 +12,13 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 
-const BookTable = ({ isOpen, onOpenChange, tableId, setIsBooked }) => {
+const BookTable = ({
+  isOpen,
+  onOpenChange,
+  tableId,
+  setIsBooked,
+  restaurantId,
+}) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const persons = [
     { key: 1, label: "01" },
@@ -23,17 +30,25 @@ const BookTable = ({ isOpen, onOpenChange, tableId, setIsBooked }) => {
   ];
 
   const handleBookTable = async () => {
-    const { data, error } = await supabase
-      .from("tables")
-      .update({ is_booked: true, persons: selectedPerson })
-      .eq("id", tableId)
-      .select();
-    if (error) {
-      throw error;
-    } else {
-      setIsBooked(true);
-      localStorage.setItem("isBooked", true);
-      localStorage.setItem("tableId", tableId);
+    try {
+      const [{ data, error }, result] = await Promise.all([
+        supabase
+          .from("tables")
+          .update({ is_booked: true, persons: selectedPerson })
+          .eq("id", tableId)
+          .select(),
+        updateVisitorBooked(restaurantId),
+      ]);
+
+      if (error) {
+        throw error;
+      } else {
+        setIsBooked(true);
+        localStorage.setItem("isBooked", true);
+        localStorage.setItem("tableId", tableId);
+      }
+    } catch (error) {
+      console.error("Error booking table or updating visitor:", error);
     }
   };
 

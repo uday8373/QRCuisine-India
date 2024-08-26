@@ -57,7 +57,7 @@ const DeliveredMain = () => {
     const { data, error } = await supabase
       .from("tables")
       .update({ is_booked: false, persons: null })
-      .eq("id", orderData?.table_id?.id)
+      .eq("id", orderData?.tables?.id)
       .select();
     if (error) {
       throw error;
@@ -72,12 +72,12 @@ const DeliveredMain = () => {
 
   const handleCallWaiter = async () => {
     setButtonLoading(true);
-    const message = `Please call the waiter to prepare the bill for table no: ${orderData?.table_id?.table_no}`;
+    const message = `Please call the waiter to prepare the bill for table no: ${orderData?.tables?.table_no}`;
 
     const { data, error } = await supabase
       .from("messages")
       .insert({
-        table_id: orderData?.table_id?.id,
+        table_id: orderData?.tables?.id,
         waiter_id: orderData?.waiters?.id,
         restaurant_id: orderData?.restaurant_id?.id,
         user_id: orderData?.user_id,

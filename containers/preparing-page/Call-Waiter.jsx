@@ -38,7 +38,7 @@ const CallWaiterButton = ({ orderData }) => {
       })
       .select();
     if (error) {
-      return console.log(error);
+      return console.error(error);
     } else {
       onWaiterOpen();
       setIsCalling(true);

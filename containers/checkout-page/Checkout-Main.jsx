@@ -125,6 +125,19 @@ const CheckoutMain = () => {
   };
   const handleOrderCreate = async (id) => {
     try {
+      const { data: maxOrderData, error: maxOrderError } = await supabase
+        .from("orders")
+        .select("order_id")
+        .eq("restaurant_id", restaurantData.id)
+        .order("order_id", { ascending: false })
+        .limit(1);
+      if (maxOrderError) throw maxOrderError;
+
+      let newOrderId = "00001";
+      if (maxOrderData && maxOrderData.length > 0) {
+        const maxOrderId = maxOrderData[0].order_id;
+        newOrderId = String(parseInt(maxOrderId) + 1).padStart(5, "0");
+      }
       const { data, error } = await supabase
         .from("orders")
         .insert([
@@ -137,6 +150,7 @@ const CheckoutMain = () => {
             total_amount: totalPrice,
             tax_amount: gstAmount,
             grand_amount: grandTotal,
+            order_id: newOrderId,
           },
         ])
         .select();
