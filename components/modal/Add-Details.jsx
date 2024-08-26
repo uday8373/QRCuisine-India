@@ -21,7 +21,7 @@ const AddDetails = ({
   mobileError,
 }) => {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {(onClose) => (
           <>
@@ -30,6 +30,7 @@ const AddDetails = ({
             </ModalHeader>
             <ModalBody>
               <Input
+                autoFocus
                 isRequired
                 type="text"
                 label="Name"
