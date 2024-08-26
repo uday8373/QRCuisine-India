@@ -112,7 +112,7 @@ const DeliveredMain = () => {
       <CustomRating
         restaurant_id={orderData?.restaurant_id?.id}
         order_id={orderData?.id}
-        table_id={orderData?.table_id?.id}
+        table_id={orderData?.tables?.id}
         user_id={orderData?.user_id}
       />
       <BillButton

@@ -108,7 +108,11 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
         setCategoryData(categoryResponse);
         setSpecialMenuData(specialMenuResponse.data);
-        setMenuItems(menuResponse.data);
+        setMenuItems((prevItems) =>
+          currentPage === 1
+            ? menuResponse.data
+            : [...prevItems, ...menuResponse.data]
+        );
         setMaxItems(menuResponse.count);
       } catch (error) {
         console.error("Error fetching data:", error);
