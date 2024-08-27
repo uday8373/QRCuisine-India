@@ -21,7 +21,12 @@ const AddDetails = ({
   mobileError,
 }) => {
   return (
-    <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      backdrop="blur"
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      placement="top-center"
+    >
       <ModalContent>
         {(onClose) => (
           <>

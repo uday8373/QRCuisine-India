@@ -1,5 +1,9 @@
-import { updateVisitorBooked } from "@/apis/restaurantApi";
-import supabase from "@/config/supabase";
+import {
+  insertMessage,
+  insertUser,
+  updateTable,
+  updateVisitorBooked,
+} from "@/apis/restaurantApi";
 import {
   Button,
   Modal,
@@ -18,6 +22,7 @@ const BookTable = ({
   tableId,
   setIsBooked,
   restaurantId,
+  tableNo,
 }) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const persons = [
@@ -31,21 +36,27 @@ const BookTable = ({
 
   const handleBookTable = async () => {
     try {
-      const [{ data, error }, result] = await Promise.all([
-        supabase
-          .from("tables")
-          .update({ is_booked: true, persons: selectedPerson })
-          .eq("id", tableId)
-          .select(),
-        updateVisitorBooked(restaurantId),
-      ]);
+      const insertUserResponse = await insertUser(tableId, restaurantId);
+      if (!insertUserResponse || insertUserResponse.length === 0) {
+        throw new Error("User insertion failed");
+      }
 
-      if (error) {
-        throw error;
-      } else {
+      const userId = insertUserResponse[0].id;
+      const deviceToken = insertUserResponse[0].deviceToken;
+
+      const [updateTableResponse, updateVisitorResponse, messageResponse] =
+        await Promise.all([
+          updateTable(tableId, selectedPerson),
+          updateVisitorBooked(restaurantId),
+          insertMessage(tableId, restaurantId, userId, tableNo),
+        ]);
+
+      if (updateTableResponse && updateVisitorResponse && messageResponse) {
         setIsBooked(true);
         localStorage.setItem("isBooked", true);
         localStorage.setItem("tableId", tableId);
+        localStorage.setItem("deviceToken", deviceToken);
+        localStorage.setItem("userId", userId);
       }
     } catch (error) {
       console.error("Error booking table or updating visitor:", error);

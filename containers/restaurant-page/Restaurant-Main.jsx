@@ -6,6 +6,7 @@ import {
   fetchRestaurantMenuData,
   fetchSpecialMenuData,
   fetchTableData,
+  updateVisitorCheckout,
   updateVisitors,
 } from "@/apis/restaurantApi";
 import ScreenError from "@/components/pages/Screen-Error";
@@ -62,6 +63,10 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   }
 
   useEffect(() => {
+    if (isBooked && tableId !== localTableId) {
+      setSelfBooked(true);
+      return;
+    }
     const fetchData = async () => {
       try {
         setDataLoading(true);
@@ -163,12 +168,15 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     0
   );
 
-  const handleCheckout = () => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    localStorage.setItem("tableData", JSON.stringify(tableData));
-    localStorage.setItem("restaurantData", JSON.stringify(restaurantData));
-    localStorage.setItem("status", "checkout");
-    router.push("/checkout");
+  const handleCheckout = async () => {
+    const result = await updateVisitorCheckout(restaurantData.id);
+    if (result) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      localStorage.setItem("tableData", JSON.stringify(tableData));
+      localStorage.setItem("restaurantData", JSON.stringify(restaurantData));
+      localStorage.setItem("status", "checkout");
+      router.push("/checkout");
+    }
   };
 
   const handleCategoryChange = (category) => {
@@ -279,6 +287,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             setIsBooked={setIsBooked}
             tableId={tableId}
             restaurantId={restaurantData.id}
+            tableNo={tableData.table_no}
           />
         )}
         {cartItems.length !== 0 && (
