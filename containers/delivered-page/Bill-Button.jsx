@@ -1,5 +1,5 @@
-import { Button, Spinner } from "@nextui-org/react";
-import { ChevronsRight } from "lucide-react";
+import { Button } from "@nextui-org/react";
+import { ChevronsRight, Loader } from "lucide-react";
 import React from "react";
 
 const BillButton = ({ grandAmount, handleCallWaiter, isLoading }) => {
@@ -21,8 +21,8 @@ const BillButton = ({ grandAmount, handleCallWaiter, isLoading }) => {
         </div>
         <div className="border-[0.5px] w-full border-dashed border-default-300" />
         <Button
-          spinner={<Spinner size="sm" />}
           size="lg"
+          spinner={<Loader size={20} className="animate-spin" />}
           isLoading={isLoading}
           isDisabled={isLoading}
           fullWidth

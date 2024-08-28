@@ -123,8 +123,9 @@ const CheckoutMain = () => {
       }));
     }
   };
-  const handleOrderCreate = async (id) => {
+  const insertOrder = async () => {
     try {
+      const userId = localStorage.getItem("userId");
       const { data: maxOrderData, error: maxOrderError } = await supabase
         .from("orders")
         .select("order_id")
@@ -144,7 +145,7 @@ const CheckoutMain = () => {
           {
             restaurant_id: restaurantData.id,
             table_id: tableData.id,
-            user_id: id,
+            user_id: userId,
             fooditem_ids: cartItems,
             instructions: mainInstructions,
             total_amount: totalPrice,
@@ -153,15 +154,17 @@ const CheckoutMain = () => {
             order_id: newOrderId,
           },
         ])
-        .select();
+        .select("id");
       if (error) throw error;
-      return data;
+      if (data) {
+        return data;
+      }
     } catch (error) {
       console.error("Error creating order:", error);
     }
   };
 
-  const handleSubmit = async () => {
+  const updateUser = async () => {
     if (!personalDetails.name) {
       setNameError("Name is required");
       return;
@@ -173,24 +176,118 @@ const CheckoutMain = () => {
     if (nameError || mobileError) return;
 
     try {
-      setLoading(true);
+      const userId = localStorage.getItem("userId");
       const { data, error } = await supabase
         .from("users")
-        .insert([
-          {
-            name: personalDetails.name,
-            mobile: personalDetails.mobile,
-            restaurant_id: restaurantData.id,
-            table_id: tableData.id,
-          },
-        ])
-        .select();
+        .update({
+          name: personalDetails.name,
+          mobile: personalDetails.mobile,
+        })
+        .eq("id", userId)
+        .select("id");
 
       if (error) {
         throw error;
+      }
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.error("Error creating user or order:", error);
+    }
+  };
+
+  const updateVisitor = async () => {
+    try {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const todayString = today.toISOString().split("T")[0];
+      const tomorrowString = tomorrow.toISOString().split("T")[0];
+
+      const { data: existingRecord, error: fetchError } = await supabase
+        .from("visitors")
+        .select("id, place_order_count")
+        .eq("restaurant_id", restaurantData.id)
+        .gte("created_at", todayString)
+        .lt("created_at", tomorrowString)
+        .single();
+
+      if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
+
+      let count = 1;
+      let upsertData;
+
+      if (existingRecord) {
+        count = parseInt(existingRecord.place_order_count) + 1;
+        upsertData = { id: existingRecord.id, place_order_count: count };
       } else {
-        const orderCreate = await handleOrderCreate(data[0].id);
-        localStorage.setItem("orderId", orderCreate[0].id);
+        upsertData = {
+          restaurant_id: restaurantData.id,
+          place_order_count: count,
+        };
+      }
+
+      const { data, error: upsertError } = await supabase
+        .from("visitors")
+        .upsert(upsertData, { onConflict: ["id"] })
+        .select("id");
+
+      if (upsertError) throw upsertError;
+
+      if (data) return data;
+    } catch (error) {
+      console.error("Error updating visitors:", error);
+    }
+  };
+
+  const insertMessage = async () => {
+    const message = `A new order has been placed at Table No. ${tableData?.table_no}`;
+    const sub_message = "For more details, please visit the order list page.";
+    const userId = localStorage.getItem("userId");
+
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        table_id: tableData?.id,
+        restaurant_id: restaurantData?.id,
+        user_id: userId,
+        order_id: null,
+        waiter_id: null,
+        message: message,
+        sub_message: sub_message,
+        is_read: false,
+      })
+      .select("id");
+    if (error) {
+      return console.error(error);
+    }
+    if (data) {
+      return data;
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const [userResponse, orderResponse, visitorsResponse, messageResponse] =
+        await Promise.all([
+          updateUser(),
+          insertOrder(),
+          updateVisitor(),
+          insertMessage(),
+        ]);
+
+      if (
+        !userResponse ||
+        !orderResponse ||
+        !visitorsResponse ||
+        !messageResponse
+      ) {
+        throw new Error("Failed to create order");
+      } else {
+        localStorage.setItem("orderId", orderResponse[0].id);
         localStorage.setItem("status", "preparing");
         router.replace("/preparing");
         localStorage.removeItem("cartItems");
@@ -198,7 +295,7 @@ const CheckoutMain = () => {
         localStorage.removeItem("instructions");
       }
     } catch (error) {
-      console.error("Error creating user or order:", error);
+      console.error("Error updating:", error);
     } finally {
       onDetailsOpenChange(false);
       setLoading(false);
@@ -246,6 +343,7 @@ const CheckoutMain = () => {
         handleSubmit={handleSubmit}
         nameError={nameError}
         mobileError={mobileError}
+        loading={loading}
       />
     </>
   );

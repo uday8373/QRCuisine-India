@@ -1,6 +1,7 @@
 import { SquareDot } from "lucide-react";
 import React from "react";
 import CartButton from "../button/Cart-Button";
+import { Button } from "@nextui-org/react";
 
 const MenuList = ({ menuItem, onCartChange, cartItems }) => {
   const getQuantityForItem = (menuItemId) => {
@@ -27,11 +28,24 @@ const MenuList = ({ menuItem, onCartChange, cartItems }) => {
           </div>
         </div>
       </div>
-      <CartButton
-        menuItem={menuItem}
-        onCartChange={onCartChange}
-        quantity={getQuantityForItem(menuItem.id)}
-      />
+      {menuItem?.is_available ? (
+        <CartButton
+          menuItem={menuItem}
+          onCartChange={onCartChange}
+          quantity={getQuantityForItem(menuItem.id)}
+        />
+      ) : (
+        <Button
+          size="sm"
+          variant="light"
+          color="danger"
+          radius="sm"
+          isDisabled
+          className={`text-small font-semibold shadow-sm w-32`}
+        >
+          Not Available
+        </Button>
+      )}
     </div>
   );
 };

@@ -14,6 +14,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import { Loader } from "lucide-react";
 import React, { useState } from "react";
 
 const BookTable = ({
@@ -25,6 +26,8 @@ const BookTable = ({
   tableNo,
 }) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const persons = [
     { key: 1, label: "01" },
     { key: 2, label: "02" },
@@ -35,6 +38,7 @@ const BookTable = ({
   ];
 
   const handleBookTable = async () => {
+    setIsLoading(true);
     try {
       const insertUserResponse = await insertUser(tableId, restaurantId);
       if (!insertUserResponse || insertUserResponse.length === 0) {
@@ -60,6 +64,8 @@ const BookTable = ({
       }
     } catch (error) {
       console.error("Error booking table or updating visitor:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,6 +101,8 @@ const BookTable = ({
             </ModalBody>
             <ModalFooter>
               <Button
+                spinner={<Loader size={20} className="animate-spin" />}
+                isLoading={isLoading}
                 isDisabled={!selectedPerson}
                 onClick={handleBookTable}
                 size="lg"

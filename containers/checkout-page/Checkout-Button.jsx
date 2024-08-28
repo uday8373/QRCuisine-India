@@ -27,16 +27,23 @@ const CheckoutButton = ({ onOpen, tableData, restaurantData, loading }) => {
   }, [isCalling, countdown]);
 
   const handleCallWaiter = async () => {
-    const message = `Please call the waiter for table number: ${tableData?.table_no}`;
+    const message = `A customer at Table No. ${tableData?.table_no} has requested a waiter.`;
+    const sub_message = "Please attend to the table quickly.";
+    const userId = localStorage.getItem("userId");
 
     const { data, error } = await supabase
       .from("messages")
       .insert({
         table_id: tableData?.id,
         restaurant_id: restaurantData?.id,
+        user_id: userId,
+        order_id: null,
+        waiter_id: null,
         message: message,
+        sub_message: sub_message,
+        is_read: false,
       })
-      .select();
+      .select("id");
     if (error) {
       return console.error(error);
     } else {

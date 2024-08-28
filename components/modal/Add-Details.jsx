@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
-import { ChevronsRight } from "lucide-react";
+import { ChevronsRight, Loader } from "lucide-react";
 import React from "react";
 
 const AddDetails = ({
@@ -19,6 +19,7 @@ const AddDetails = ({
   handleSubmit,
   nameError,
   mobileError,
+  loading,
 }) => {
   return (
     <Modal
@@ -60,6 +61,8 @@ const AddDetails = ({
             </ModalBody>
             <ModalFooter>
               <Button
+                spinner={<Loader size={20} className="animate-spin" />}
+                isLoading={loading}
                 endContent={<ChevronsRight size={18} />}
                 fullWidth
                 size="lg"

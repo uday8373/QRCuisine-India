@@ -11,9 +11,9 @@ const Hero = ({ restaurantData, tableData }) => {
   return (
     <section
       id="restaurant_hero_section"
-      className="flex items-center justify-center w-full bg-primary h-40 relative"
+      className="flex items-center justify-center w-full bg-primary h-60 relative"
     >
-      {/* <div className="w-full h-full flex-col max-w-screen-xl relative">
+      <div className="w-full h-full flex-col max-w-screen-xl relative">
         <Image
           priority
           width={1080}
@@ -65,23 +65,23 @@ const Hero = ({ restaurantData, tableData }) => {
         onOpenChange={onOpenChange}
         tableId={tableData?.id}
         restaturantId={restaurantData?.id}
-      /> */}
+      />
 
-      <div className="w-full h-full grid grid-cols-3 relative overflow-hidden">
-        <div className="w-full relative flex col-span-2 h-full">
+      {/* <div className="w-full h-full flex relative">
+        <div className="w-full relative flex h-full">
           <Image
             priority
             width={1080}
             height={1080}
             radius="none"
             removeWrapper
-            className="w-full object-cover h-40 flex"
+            className="w-full object-cover h-32 flex"
             src={restaurantData?.background_image}
             alt={restaurantData?.restaurant_name}
             title={restaurantData?.restaurant_name}
           />
           <div className="w-full h-full bg-black/60 absolute top-0 z-10" />
-          <div className="w-full h-40 absolute flex justify-center items-center flex-col top-0 z-30 gap-3 px-5">
+          <div className="w-full h-32 absolute flex justify-center items-center flex-col top-0 z-30 gap-3 px-5">
             <div className="w-full flex gap-2 items-center">
               <Avatar
                 src={restaurantData?.logo}
@@ -101,13 +101,13 @@ const Hero = ({ restaurantData, tableData }) => {
               size="sm"
               radius="none"
               variant="solid"
-              color="default"
+              color="danger"
             >
               Exit
             </Button>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-center items-center h-full">
+        <div className="w-48 flex flex-col justify-center items-center h-32 ">
           <h2 className="text-xl font-bold line-clamp-1 text-white/90">
             TABLE
           </h2>
@@ -115,7 +115,7 @@ const Hero = ({ restaurantData, tableData }) => {
             {tableData?.table_no}
           </h2>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };

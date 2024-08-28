@@ -27,16 +27,22 @@ const WaiterStatus = ({ orderData }) => {
   }, [isCalling, countdown]);
 
   const handleCallWaiter = async () => {
-    const message = `Please call the waiter ${orderData?.waiters?.name} for table no: ${orderData?.table_id?.table_no}`;
+    const message = `Please call the waiter ${orderData?.waiters?.name} for table no: ${orderData?.tables?.table_no}`;
+    const sub_message = "Please attend to the table quickly.";
 
     const { data, error } = await supabase
       .from("messages")
       .insert({
-        table_id: orderData?.table_id?.id,
-        restaurant_id: orderData?.restaurant_id?.id,
+        table_id: orderData.tables.id,
+        restaurant_id: orderData.restaurant_id.id,
+        user_id: orderData.user_id,
+        order_id: orderData.id,
+        waiter_id: orderData.waiters?.id,
         message: message,
+        sub_message: sub_message,
+        is_read: false,
       })
-      .select();
+      .select("id");
     if (error) {
       return console.error(error);
     } else {

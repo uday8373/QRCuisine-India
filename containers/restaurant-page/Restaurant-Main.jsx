@@ -49,6 +49,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [dataLoading, setDataLoading] = useState(true);
   const [alreadyBooked, setAlreadyBooked] = useState(false);
   const [selfBooked, setSelfBooked] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   const pageSize = 10;
 
@@ -169,6 +170,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   );
 
   const handleCheckout = async () => {
+    setIsCheckoutLoading(true);
     const result = await updateVisitorCheckout(restaurantData.id);
     if (result) {
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -177,6 +179,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       localStorage.setItem("status", "checkout");
       router.push("/checkout");
     }
+    setIsCheckoutLoading(false);
   };
 
   const handleCategoryChange = (category) => {
@@ -295,6 +298,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             totalPrice={totalPrice}
             totalQuantity={totalQuantity}
             handleCheckout={handleCheckout}
+            isLoading={isCheckoutLoading}
           />
         )}
       </>

@@ -129,16 +129,16 @@ export const updateVisitors = async (restaurantId) => {
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
-    let websiteVisitCount = 1;
+    let count = 1;
     let upsertData;
 
     if (existingRecord) {
-      websiteVisitCount = parseInt(existingRecord.website_visit) + 1;
-      upsertData = { id: existingRecord.id, website_visit: websiteVisitCount };
+      count = parseInt(existingRecord.website_visit) + 1;
+      upsertData = { id: existingRecord.id, website_visit: count };
     } else {
       upsertData = {
         restaurant_id: restaurantId,
-        website_visit: websiteVisitCount,
+        website_visit: count,
       };
     }
 

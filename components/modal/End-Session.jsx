@@ -20,11 +20,21 @@ const EndSession = ({ isOpen, onOpenChange, tableId }) => {
       .from("tables")
       .update({ is_booked: false, persons: null })
       .eq("id", tableId)
-      .select();
+      .select("id");
     if (error) {
       throw error;
     } else {
-      localStorage.clear();
+      const keysToRemove = [
+        "isBooked",
+        "tableId",
+        "userId",
+        "cartItems",
+        "tableData",
+        "restaurantData",
+        "status",
+      ];
+
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
       router.replace("/");
     }
   };
