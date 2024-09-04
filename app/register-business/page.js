@@ -151,10 +151,10 @@ export default function RegisterBusiness() {
       >
         <div className="bg-white rounded-2xl  shadow-xl  p-10 w-full  h-full max-w-xl ">
           <form onSubmit={formik.handleSubmit} className=" ">
-            <h2 className="text-2xl text-justify leading-tight font-bold mb-5 font-Rethink">
+            <h1 className="text-2xl text-justify font-bold mb-5 font-Rethink">
               Submit this form & Book your free demo today! Get 6 months free
               trial for first 50 restaurants. Hurry !
-            </h2>
+            </h1>
 
             {/* Name */}
             <div className="mb-4 flex flex-col lg:flex-row gap-4">
@@ -375,7 +375,7 @@ export default function RegisterBusiness() {
             )}
           </form>
         </div>
-        <div className=" hidden lg:block w-full rounded-xl   ">
+        <div className=" hidden lg:block w-full rounded-xl  sticky top-20 overflow-hidden  ">
           <div className="  flex  flex-col gap-12 justify-between w-full h-full">
             <div className="flex items-center  justify-center gap-5 pt-16 flex-col w-full">
               <p className="md:text-xl text-md text-white font-semibold">

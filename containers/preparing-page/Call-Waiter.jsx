@@ -27,18 +27,24 @@ const CallWaiterButton = ({ orderData }) => {
   }, [isCalling, countdown]);
 
   const handleCallWaiter = async () => {
-    const message = `Please call the waiter for table number: ${orderData?.table_id?.table_no}`;
+    const message = `A customer at Table No. ${orderData?.tables?.table_no} has requested a waiter.`;
+    const sub_message = "Please attend to the table quickly.";
 
     const { data, error } = await supabase
       .from("messages")
       .insert({
-        table_id: orderData?.table_id?.id,
-        restaurant_id: orderData?.restaurant_id?.id,
+        table_id: orderData.tables.id,
+        restaurant_id: orderData.restaurant_id.id,
+        user_id: orderData.user_id,
+        order_id: orderData.id,
+        waiter_id: orderData.waiters?.id,
         message: message,
+        sub_message: sub_message,
+        is_read: false,
       })
-      .select();
+      .select("id");
     if (error) {
-      return console.log(error);
+      return console.error(error);
     } else {
       onWaiterOpen();
       setIsCalling(true);
@@ -49,7 +55,7 @@ const CallWaiterButton = ({ orderData }) => {
     <section id="call_waiter_section">
       <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl shadow-small rounded-t-large">
         <Button
-          onPress={handleCallWaiter}
+          onClick={handleCallWaiter}
           isDisabled={isCalling}
           startContent={<ConciergeBell size={20} className="mb-1" />}
           size="lg"

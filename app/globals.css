@@ -18,3 +18,9 @@
   display: flex;
   padding-left: 6px !important;
 }
+
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}

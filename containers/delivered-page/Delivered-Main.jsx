@@ -53,42 +53,85 @@ const DeliveredMain = () => {
     fetchData();
   }, [orderId]);
 
-  const updataTable = async () => {
+  const updateTable = async () => {
     const { data, error } = await supabase
       .from("tables")
       .update({ is_booked: false, persons: null })
-      .eq("id", orderData?.table_id?.id)
-      .select();
+      .eq("id", orderData?.tables?.id)
+      .select("id");
     if (error) {
       throw error;
-    } else {
-      setTimeout(() => {
-        localStorage.clear();
-      }, 2000);
-      router.replace("/complete");
-      setButtonLoading(false);
     }
+    if (data) {
+      return data;
+    }
+  };
+
+  const insertWaiterMessage = async () => {
+    const message = `Please call the waiter to prepare the bill for table no: ${orderData?.tables?.table_no}`;
+    const sub_message = "Please prepare the bill quickly.";
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        table_id: orderData.tables.id,
+        restaurant_id: orderData.restaurant_id.id,
+        user_id: orderData.user_id,
+        order_id: orderData.id,
+        waiter_id: orderData.waiters?.id,
+        message: message,
+        sub_message: sub_message,
+        is_read: false,
+      })
+      .select("id");
+    if (error) {
+      throw new error();
+    }
+    if (data) return data;
+  };
+
+  const updateUser = async () => {
+    const { data, error } = await supabase
+      .from("users")
+      .update({ is_active: false })
+      .eq("id", orderData?.user_id)
+      .select("id");
+    if (error) {
+      throw new error();
+    }
+    if (data) return data;
   };
 
   const handleCallWaiter = async () => {
     setButtonLoading(true);
-    const message = `Please call the waiter to prepare the bill for table no: ${orderData?.table_id?.table_no}`;
+    try {
+      const [tableResponse, waiterResponse, userResponse] = await Promise.all([
+        updateTable(),
+        insertWaiterMessage(),
+        updateUser(),
+      ]);
 
-    const { data, error } = await supabase
-      .from("messages")
-      .insert({
-        table_id: orderData?.table_id?.id,
-        waiter_id: orderData?.waiters?.id,
-        restaurant_id: orderData?.restaurant_id?.id,
-        user_id: orderData?.user_id,
-        order_id: orderData?.id,
-        message: message,
-      })
-      .select("*");
-    if (error) {
-      throw new error();
-    } else {
-      updataTable();
+      if (!tableResponse || !waiterResponse || !userResponse) {
+        console.error("Error updating table, waiter message, or user");
+        return;
+      } else {
+        setTimeout(() => {
+          const keysToRemove = [
+            "isBooked",
+            "tableId",
+            "userId",
+            "tableData",
+            "status",
+            "orderId",
+            "isRated",
+          ];
+          keysToRemove.forEach((key) => localStorage.removeItem(key));
+        }, 2000);
+        router.replace("/complete");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setButtonLoading(false);
     }
   };
 
@@ -104,6 +147,8 @@ const DeliveredMain = () => {
     );
   }
 
+  console.log("object", orderData);
+
   return (
     <div>
       <Header orderData={orderData} />
@@ -112,11 +157,11 @@ const DeliveredMain = () => {
       <CustomRating
         restaurant_id={orderData?.restaurant_id?.id}
         order_id={orderData?.id}
-        table_id={orderData?.table_id?.id}
+        table_id={orderData?.tables?.id}
         user_id={orderData?.user_id}
       />
       <BillButton
-        grandAmount={orderData?.grand_amount}
+        orderData={orderData}
         handleCallWaiter={handleCallWaiter}
         isLoading={buttonLoading}
       />

@@ -6,13 +6,15 @@ import {
   fetchRestaurantMenuData,
   fetchSpecialMenuData,
   fetchTableData,
+  updateVisitorCheckout,
+  updateVisitors,
 } from "@/apis/restaurantApi";
 import ScreenError from "@/components/pages/Screen-Error";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
-import { Button, Spinner, table, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
 import SpecialMenu from "./Special-Menu";
@@ -47,22 +49,24 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [dataLoading, setDataLoading] = useState(true);
   const [alreadyBooked, setAlreadyBooked] = useState(false);
   const [selfBooked, setSelfBooked] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   const pageSize = 10;
 
   const customerStatus =
     typeof window !== "undefined" ? localStorage.getItem("status") : null;
 
-  if (customerStatus) {
-    navigateBasedOnStatus();
-  }
-
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
+
+  if (customerStatus && tableId === localTableId) {
+    navigateBasedOnStatus();
+  }
 
   useEffect(() => {
     if (isBooked && tableId !== localTableId) {
       setSelfBooked(true);
+      return;
     }
     const fetchData = async () => {
       try {
@@ -73,18 +77,28 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             fetchRestaurantData(restaurantName),
             fetchIsBooked(),
           ]);
+
         if (!tableResponse || !restaurantResponse) {
           setNotFoundError(true);
+          return;
         }
+
+        setTableData(tableResponse);
+        setRestaurantData(restaurantResponse);
+        setIsBooked(isBookedResponse);
+
+        // Check if the table is already booked by someone else
         if (
           tableResponse.is_booked === true &&
           localTableId !== tableResponse.id
         ) {
           setAlreadyBooked(true);
+          return;
         }
-        setTableData(tableResponse);
-        setRestaurantData(restaurantResponse);
-        setIsBooked(isBookedResponse);
+
+        if (!isBooked) {
+          await updateVisitors(restaurantResponse.id);
+        }
 
         const [categoryResponse, specialMenuResponse, menuResponse] =
           await Promise.all([
@@ -97,6 +111,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
               pageSize
             ),
           ]);
+
         setCategoryData(categoryResponse);
         setSpecialMenuData(specialMenuResponse.data);
         setMenuItems((prevItems) =>
@@ -108,19 +123,20 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setIsLoading(false);
         setDataLoading(false);
+        setIsLoading(false);
       }
     };
+
     fetchData();
   }, [
     tableId,
     restaurantName,
+    localTableId,
+    isBooked,
     currentPage,
     selectedCategory,
     pageSize,
-    localTableId,
-    isBooked,
   ]);
 
   const handleCartChange = (menuItem, quantity) => {
@@ -153,12 +169,17 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     0
   );
 
-  const handleCheckout = () => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    localStorage.setItem("tableData", JSON.stringify(tableData));
-    localStorage.setItem("restaurantData", JSON.stringify(restaurantData));
-    localStorage.setItem("status", "checkout");
-    router.push("/checkout");
+  const handleCheckout = async () => {
+    setIsCheckoutLoading(true);
+    const result = await updateVisitorCheckout(restaurantData.id);
+    if (result) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      localStorage.setItem("tableData", JSON.stringify(tableData));
+      localStorage.setItem("restaurantData", JSON.stringify(restaurantData));
+      localStorage.setItem("status", "checkout");
+      router.push("/checkout");
+    }
+    setIsCheckoutLoading(false);
   };
 
   const handleCategoryChange = (category) => {
@@ -190,13 +211,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   if (notFoundError) {
     return notFound();
   }
-  if (isLoading) {
-    return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
-      </div>
-    );
-  }
 
   if (alreadyBooked) {
     return (
@@ -204,7 +218,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         <SadIcon size={150} />
         <h2 className="text-center text-default-700">
           This table is already booked.
-          <br /> Please try booking a different table.
+          <br /> Please try to book a different table.
         </h2>
         <Button
           onClick={() => router.replace("/")}
@@ -242,42 +256,53 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       </div>
     );
   }
-  return (
-    <>
-      <Hero tableData={tableData} restaurantData={restaurantData} />
-      <SpecialMenu
-        specialMenuData={specialMenuData}
-        onCartChange={handleCartChange}
-        cartItems={cartItems}
-      />
-      <FoodMenu
-        categoryData={categoryData}
-        selectedCategory={selectedCategory}
-        onCategoryChange={handleCategoryChange}
-        menuItems={menuItems}
-        onCartChange={handleCartChange}
-        cartItems={cartItems}
-        maxItems={maxItems}
-        onLoadMore={handleLoadMore}
-        dataLoading={dataLoading}
-      />
-      {!isBooked && (
-        <BookTable
-          isOpen={!isBooked}
-          onOpenChange={onOpenChange}
-          setIsBooked={setIsBooked}
-          tableId={tableId}
-        />
-      )}
-      {cartItems.length !== 0 && (
-        <CartPopup
-          totalPrice={totalPrice}
-          totalQuantity={totalQuantity}
-          handleCheckout={handleCheckout}
-        />
-      )}
-    </>
-  );
-};
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-svh flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <Hero tableData={tableData} restaurantData={restaurantData} />
+        <SpecialMenu
+          specialMenuData={specialMenuData}
+          onCartChange={handleCartChange}
+          cartItems={cartItems}
+        />
+        <FoodMenu
+          categoryData={categoryData}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+          menuItems={menuItems}
+          onCartChange={handleCartChange}
+          cartItems={cartItems}
+          maxItems={maxItems}
+          onLoadMore={handleLoadMore}
+          dataLoading={dataLoading}
+        />
+        {!isBooked && (
+          <BookTable
+            isOpen={!isBooked}
+            onOpenChange={onOpenChange}
+            setIsBooked={setIsBooked}
+            tableId={tableId}
+            restaurantId={restaurantData.id}
+            tableNo={tableData.table_no}
+          />
+        )}
+        {cartItems.length !== 0 && (
+          <CartPopup
+            totalPrice={totalPrice}
+            totalQuantity={totalQuantity}
+            handleCheckout={handleCheckout}
+            isLoading={isCheckoutLoading}
+          />
+        )}
+      </>
+    );
+  }
+};
 export default RestuarantMainPage;

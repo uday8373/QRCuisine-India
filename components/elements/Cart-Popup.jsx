@@ -1,11 +1,16 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
-import { ChevronsRight } from "lucide-react";
+import { ChevronsRight, Loader } from "lucide-react";
 
-const CartPopup = ({ totalPrice, totalQuantity, handleCheckout }) => {
+const CartPopup = ({
+  totalPrice,
+  totalQuantity,
+  handleCheckout,
+  isLoading,
+}) => {
   return (
     <section className="w-full relative overflow-hidden ">
-      <div className="fixed bottom-0 backdrop-blur-xl z-50 w-full left-0 py-3 rounded-t-3xl shadow-container">
+      <div className="fixed bottom-0 backdrop-blur-xl z-50 w-full left-0 pt-3 pb-5 rounded-t-3xl shadow-container">
         <div className="flex items-center justify-center w-full">
           <div className="w-full h-full flex-col max-w-screen-xl relative px-5">
             <div className="w-full h-full flex flex-col gap-3">
@@ -26,6 +31,8 @@ const CartPopup = ({ totalPrice, totalQuantity, handleCheckout }) => {
                 </div>
               </div>
               <Button
+                spinner={<Loader size={20} className="animate-spin" />}
+                isLoading={isLoading}
                 onClick={handleCheckout}
                 size="lg"
                 color="primary"

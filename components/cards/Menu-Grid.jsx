@@ -6,7 +6,7 @@ import CartButton from "../button/Cart-Button";
 
 const MenuGrid = ({ menuItem, onCartChange, cartItems }) => {
   const getQuantityForItem = (menuItemId) => {
-    const item = cartItems.find((item) => item.id === menuItemId);
+    const item = cartItems?.find((item) => item.id === menuItemId);
     return item ? item.quantity : 0;
   };
   return (

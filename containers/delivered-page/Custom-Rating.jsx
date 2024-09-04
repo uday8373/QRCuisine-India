@@ -89,7 +89,7 @@ function CustomRating({ order_id, user_id, restaurant_id, table_id }) {
                 <span
                   key={value}
                   className={`text-3xl cursor-pointer transition-transform transform mx-1 ${
-                    value <= (hover || rating)
+                    value == (hover || rating)
                       ? "text-yellow-500"
                       : "text-gray-400 grayscale"
                   } ${hover === value ? "scale-150" : ""}`}
@@ -110,7 +110,7 @@ function CustomRating({ order_id, user_id, restaurant_id, table_id }) {
                 <span
                   key={value}
                   className={`text-3xl cursor-pointer transition-transform transform mx-1 ${
-                    value <= (hover || rating)
+                    value == (hover || rating)
                       ? "text-yellow-500"
                       : "text-gray-400 grayscale"
                   } ${hover === value ? "scale-150" : ""}`}

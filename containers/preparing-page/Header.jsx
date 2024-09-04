@@ -21,7 +21,7 @@ const Header = ({ orderData }) => {
           </h1>
         </div>
         <h2 className="text-medium font-bold text-primary">
-          Table No - {orderData?.table_id?.table_no}
+          Table No - {orderData?.tables?.table_no}
         </h2>
       </div>
     </section>

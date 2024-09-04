@@ -1,5 +1,11 @@
 "use client";
-import { fetchOrderData, fetchStatusData } from "@/apis/preparingApi";
+import {
+  fetchOrderData,
+  fetchStatusData,
+  updateVisitorConfirm,
+  updateVisitorDelivered,
+  updateVisitorPreparing,
+} from "@/apis/preparingApi";
 import supabase from "@/config/supabase";
 import { Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
@@ -66,6 +72,15 @@ const PreparingMain = () => {
         async (payload) => {
           const myData = await fetchOrderData(orderId);
           setOrderData(myData);
+          if (myData.status_id.sorting === 2) {
+            await updateVisitorConfirm(myData.restaurant_id.id);
+          }
+          if (myData.status_id.sorting === 3) {
+            await updateVisitorPreparing(myData.restaurant_id.id);
+          }
+          if (myData.status_id.sorting === 4) {
+            await updateVisitorDelivered(myData.restaurant_id.id);
+          }
         }
       )
       .subscribe();

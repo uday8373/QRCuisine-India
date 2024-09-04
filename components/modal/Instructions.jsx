@@ -42,7 +42,12 @@ const Instructions = ({
     onOpenChange(false);
   };
   return (
-    <Modal backdrop="blur" isOpen={isOpen} onOpenChange={handleClose}>
+    <Modal
+      backdrop="blur"
+      isOpen={isOpen}
+      onOpenChange={handleClose}
+      placement="top-center"
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -51,6 +56,7 @@ const Instructions = ({
             </ModalHeader>
             <ModalBody>
               <Textarea
+                autoFocus
                 placeholder="Do you want to add cooking instructions?"
                 isInvalid={error && true}
                 errorMessage={error}

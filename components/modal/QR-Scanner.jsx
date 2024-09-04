@@ -21,7 +21,6 @@ const QRCodeScanner = ({ isOpen, onOpenChange }) => {
 
     if (isOpen && videoRef.current) {
       qrScanner = new QrScanner(videoRef.current, (result) => {
-        console.log("decoded qr code:", result);
         router.replace(result);
         onOpenChange(false);
       });

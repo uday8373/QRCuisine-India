@@ -134,8 +134,12 @@ export default function RootLayout({ children }) {
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
         <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
       </Head>
-      <body className={`${fontRethink.variable} bg-[url('https://res.cloudinary.com/dhflg7es7/image/upload/v1724330179/Untitled_design_klhylr.png')] bg-primary-500 font-Rethink`}>
+      <body className={`${fontRethink.variable} font-Rethink`}>
         <Providers>
           <Navbar />
           {children}

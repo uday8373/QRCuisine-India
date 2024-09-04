@@ -19,14 +19,14 @@ const SpecialMenu = ({ specialMenuData, onCartChange, cartItems }) => {
         breakpoint: 1200,
         settings: {
           slidesToShow: 4,
-          slidesToScroll: 2,
+          slidesToScroll: 4,
         },
       },
       {
         breakpoint: 992,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 2,
+          slidesToScroll: 3,
         },
       },
       {

@@ -1,28 +1,27 @@
-import { Button, Spinner } from "@nextui-org/react";
-import { ChevronsRight } from "lucide-react";
+import { Button } from "@nextui-org/react";
+import { ChevronsRight, Loader } from "lucide-react";
 import React from "react";
+import Invoice from "./Invoice";
 
-const BillButton = ({ grandAmount, handleCallWaiter, isLoading }) => {
+const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
   return (
     <section id="bill_button_section" className="mb-44">
       <div className="w-full py-5 flex flex-col gap-3 fixed bottom-0 px-5 backdrop-blur-xl shadow-small rounded-t-large">
         <div className="flex w-full justify-between items-center">
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <h4 className="text-tiny font-medium text-default-700">
               Grand Total
             </h4>
             <h4 className="text-xl font-bold text-default-900">
-              ₹ {grandAmount}
+              ₹ {orderData.grand_amount}
             </h4>
-          </div>
-          <Button variant="flat" color="success">
-            Download Invoice
-          </Button>
+          </div> */}
+          <Invoice orderData={orderData} />
         </div>
         <div className="border-[0.5px] w-full border-dashed border-default-300" />
         <Button
-          spinner={<Spinner size="sm" />}
           size="lg"
+          spinner={<Loader size={20} className="animate-spin" />}
           isLoading={isLoading}
           isDisabled={isLoading}
           fullWidth

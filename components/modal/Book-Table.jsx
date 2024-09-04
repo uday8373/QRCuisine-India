@@ -1,4 +1,9 @@
-import supabase from "@/config/supabase";
+import {
+  insertMessage,
+  insertUser,
+  updateTable,
+  updateVisitorBooked,
+} from "@/apis/restaurantApi";
 import {
   Button,
   Modal,
@@ -9,10 +14,20 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import { Loader } from "lucide-react";
 import React, { useState } from "react";
 
-const BookTable = ({ isOpen, onOpenChange, tableId, setIsBooked }) => {
+const BookTable = ({
+  isOpen,
+  onOpenChange,
+  tableId,
+  setIsBooked,
+  restaurantId,
+  tableNo,
+}) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const persons = [
     { key: 1, label: "01" },
     { key: 2, label: "02" },
@@ -23,17 +38,34 @@ const BookTable = ({ isOpen, onOpenChange, tableId, setIsBooked }) => {
   ];
 
   const handleBookTable = async () => {
-    const { data, error } = await supabase
-      .from("tables")
-      .update({ is_booked: true, persons: selectedPerson })
-      .eq("id", tableId)
-      .select();
-    if (error) {
-      throw error;
-    } else {
-      setIsBooked(true);
-      localStorage.setItem("isBooked", true);
-      localStorage.setItem("tableId", tableId);
+    setIsLoading(true);
+    try {
+      const insertUserResponse = await insertUser(tableId, restaurantId);
+      if (!insertUserResponse || insertUserResponse.length === 0) {
+        throw new Error("User insertion failed");
+      }
+
+      const userId = insertUserResponse[0].id;
+      const deviceToken = insertUserResponse[0].deviceToken;
+
+      const [updateTableResponse, updateVisitorResponse, messageResponse] =
+        await Promise.all([
+          updateTable(tableId, selectedPerson),
+          updateVisitorBooked(restaurantId),
+          insertMessage(tableId, restaurantId, userId, tableNo),
+        ]);
+
+      if (updateTableResponse && updateVisitorResponse && messageResponse) {
+        setIsBooked(true);
+        localStorage.setItem("isBooked", true);
+        localStorage.setItem("tableId", tableId);
+        localStorage.setItem("deviceToken", deviceToken);
+        localStorage.setItem("userId", userId);
+      }
+    } catch (error) {
+      console.error("Error booking table or updating visitor:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +101,8 @@ const BookTable = ({ isOpen, onOpenChange, tableId, setIsBooked }) => {
             </ModalBody>
             <ModalFooter>
               <Button
+                spinner={<Loader size={20} className="animate-spin" />}
+                isLoading={isLoading}
                 isDisabled={!selectedPerson}
                 onClick={handleBookTable}
                 size="lg"
