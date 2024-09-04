@@ -5,7 +5,7 @@ export const fetchOrderData = async (orderId) => {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        `*,tables: table_id(id, table_no), waiters: waiter_id(id, name), restaurant_id: restaurants(id, restaurant_name, logo), status_id: status_table(id, title, description, sorting)`
+        `*,tables: table_id(id, table_no), waiters: waiter_id(id, name), restaurant_id: restaurants(id, restaurant_name, logo), status_id: status_table(id, title, description, sorting) , users: users(name,mobile)`
       )
       .eq("id", orderId)
       .single();

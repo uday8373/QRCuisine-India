@@ -147,6 +147,8 @@ const DeliveredMain = () => {
     );
   }
 
+  console.log("object", orderData);
+
   return (
     <div>
       <Header orderData={orderData} />
@@ -159,7 +161,7 @@ const DeliveredMain = () => {
         user_id={orderData?.user_id}
       />
       <BillButton
-        grandAmount={orderData?.grand_amount}
+        orderData={orderData}
         handleCallWaiter={handleCallWaiter}
         isLoading={buttonLoading}
       />
