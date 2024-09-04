@@ -42,9 +42,9 @@ const Invoice = ({ orderData }) => {
       <div
         ref={invoiceRef}
         style={{
-          // position: "absolute",
-          // top: "-1000px",
-          // left: "-1000px",
+          position: "absolute",
+          top: "-1000px",
+          left: "-1000px",
           width: "210mm", // Set the width to A4 size
           padding: "20px",
           backgroundColor: "#fff",

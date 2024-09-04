@@ -8,14 +8,14 @@ const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
     <section id="bill_button_section" className="mb-44">
       <div className="w-full py-5 flex flex-col gap-3 fixed bottom-0 px-5 backdrop-blur-xl shadow-small rounded-t-large">
         <div className="flex w-full justify-between items-center">
-          {/* <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1">
             <h4 className="text-tiny font-medium text-default-700">
               Grand Total
             </h4>
             <h4 className="text-xl font-bold text-default-900">
               ₹ {orderData.grand_amount}
             </h4>
-          </div> */}
+          </div>
           <Invoice orderData={orderData} />
         </div>
         <div className="border-[0.5px] w-full border-dashed border-default-300" />
