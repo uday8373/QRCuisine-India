@@ -1,10 +1,12 @@
 import CallWaiter from "@/components/modal/Call-Waiter";
+import OrderPreview from "@/components/modal/Order-Preview";
 import supabase from "@/config/supabase";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { ConciergeBell } from "lucide-react";
+import { ConciergeBell, ReceiptText } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 const CallWaiterButton = ({ orderData }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isWaiterOpen,
     onOpen: onWaiterOpen,
@@ -51,9 +53,23 @@ const CallWaiterButton = ({ orderData }) => {
       setCountdown(120);
     }
   };
+
+  const hendleOrderPreview = () => {
+    onOpen();
+  };
+
   return (
     <section id="call_waiter_section">
-      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl shadow-small rounded-t-large">
+      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl flex gap-2 shadow-small rounded-t-large">
+        <Button
+          onPress={hendleOrderPreview}
+          fullWidth
+          size="lg"
+          startContent={<ReceiptText size={20} />}
+          color="default"
+        >
+          Order Details
+        </Button>
         <Button
           onClick={handleCallWaiter}
           isDisabled={isCalling}
@@ -69,6 +85,11 @@ const CallWaiterButton = ({ orderData }) => {
             : "Call Waiter"}
         </Button>
       </div>
+      <OrderPreview
+        orderData={orderData}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
       <CallWaiter isOpen={isWaiterOpen} onOpenChange={onWaiterOpenChange} />
     </section>
   );
