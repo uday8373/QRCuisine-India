@@ -337,3 +337,17 @@ export const updateVisitorCheckout = async (restaurantId) => {
     return null;
   }
 };
+
+export const getNotification = async () => {
+  try {
+    const { data, error } = supabase.from("messages").select("*");
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};

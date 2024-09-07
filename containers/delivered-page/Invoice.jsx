@@ -48,6 +48,7 @@ const Invoice = ({ orderData }) => {
           width: "210mm", // Set the width to A4 size
           padding: "20px",
           backgroundColor: "#fff",
+          // backgroundImage: "/assets/Invoice_page-0001.jpg",
         }}
       >
         <div className="p-20">
@@ -96,26 +97,26 @@ const Invoice = ({ orderData }) => {
           </div>
 
           <div className="min-w-full pt-5">
-            <div class="flex flex-col">
-              <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                  <div class="overflow-hidden">
-                    <table class="min-w-full text-center text-sm font-light text-surface ">
-                      <thead class="border-b border-t  whitespace-nowrap border-gray-600  text-black font-medium ">
+            <div className="flex flex-col">
+              <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                  <div className="overflow-hidden">
+                    <table className="min-w-full text-center text-sm font-light text-surface ">
+                      <thead className="border-b border-t  whitespace-nowrap border-gray-600  text-black font-medium ">
                         <tr>
-                          <th scope="col" class=" px-6 py-4">
+                          <th scope="col" className=" px-6 py-4">
                             #
                           </th>
-                          <th scope="col" class=" px-6 py-4">
+                          <th scope="col" className=" px-6 py-4">
                             DESCRIPTION
                           </th>
-                          <th scope="col" class=" px-6 py-4">
+                          <th scope="col" className=" px-6 py-4">
                             UNIT PRICE
                           </th>
-                          <th scope="col" class=" px-6 py-4">
+                          <th scope="col" className=" px-6 py-4">
                             QTY
                           </th>
-                          <th scope="col" class=" px-6 py-4">
+                          <th scope="col" className=" px-6 py-4">
                             TOTAL
                           </th>
                         </tr>
@@ -180,7 +181,7 @@ const Invoice = ({ orderData }) => {
             </div>
           </div>
           <div className="pt-10 flex justify-center  items-center w-full">
-            <p className="text-center">
+            <p className="text-center text-black">
               This is a auto generated bill need to signature.
               <br />
               <span className="text-primary-500 text-2xl font-bold font-Rethink">
