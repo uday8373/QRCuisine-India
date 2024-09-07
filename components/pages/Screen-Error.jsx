@@ -8,16 +8,18 @@ const ScreenError = () => {
       className="flex items-center justify-center w-full h-svh"
     >
       <section className="w-full h-full flex-col max-w-screen-xl px-6">
-        <div className="w-full h-full flex flex-col justify-center items-center gap-2 -mt-20">
+        <div className="w-full h-full flex flex-col justify-center items-center gap-24 ">
           <Logo size={250} />
-          <h4 className="text-xl -mt-20 text-center">
-            To use{" "}
-            <label className="font-semibold tracking-wide">
-              TABLE<span className="text-primary">QR</span>
-            </label>{" "}
-            web application, please visit this url using a tablet or mobile
-            device.
-          </h4>
+          <div>
+            <h4 className="text-xl -mt-20 text-center">
+              To use{" "}
+              <label className="font-semibold tracking-wide">
+                <span className="text-primary">QRCuisine</span>
+              </label>{" "}
+              web application,
+              <br /> please visit this url using a tablet or mobile device.
+            </h4>
+          </div>
         </div>
       </section>
     </main>
