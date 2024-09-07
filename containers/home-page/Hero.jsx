@@ -29,6 +29,17 @@ const Hero = () => {
               >
                 Schedule Demo
               </Button>
+              <Button
+                as={Link}
+                size="lg"
+                href="/restaurant-registration"
+                color="secondary"
+                variant="solid"
+                radius="full"
+                className="md:mt-5 w-40 font-medium"
+              >
+                Register Now
+              </Button>
             </div>
           </div>
           <div className="w-full h-full flex items-center justify-end">
