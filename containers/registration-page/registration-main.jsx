@@ -16,6 +16,55 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import supabase from "@/config/supabase";
+import { uploadImageToCloudinary } from "@/utils/uplaodCloudinary";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import slugify from "slugify";
+
+const OPENING_TIME = [
+  {
+    day: "Sunday",
+    is_open: true,
+    closing_time: "2024-08-20T17:33:38.211Z",
+    opening_time: "2024-08-20T15:33:38.211Z",
+  },
+  {
+    day: "Monday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+  {
+    day: "Tuesday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+  {
+    day: "Wednesday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+  {
+    day: "Thursday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+  {
+    day: "Friday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+  {
+    day: "Saturday",
+    is_open: true,
+    closing_time: "2024-08-20 12:33:38.211889+00",
+    opening_time: "2024-08-20 12:33:38.211889+00",
+  },
+];
 
 const DATA = [
   {
@@ -42,6 +91,7 @@ const RegistrationMain = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState("");
   const [bannerPreview, setBannerPreview] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const STEPS = [
     { name: "Owner", completed: currentStep > 1 },
@@ -206,8 +256,9 @@ const RegistrationMain = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true);
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -221,10 +272,84 @@ const RegistrationMain = () => {
       });
 
       const result = await response.json();
+      if (response.ok) {
+        const resultFinal = await insertRestaurant(values, result.id);
+        if (resultFinal) {
+          toast.success("Restaurant register successfully!");
+        }
+      } else {
+        if (result.error.code === "user_already_exists") {
+          toast.warning(
+            <div className="w-full pl-1">
+              <h4 className="text-warning-500 font-semibold">
+                Email already exist!
+              </h4>
+              <h4>Please use a different email.</h4>
+            </div>
+          );
+          return;
+        }
+        toast.error("Something went wrong!");
+        return;
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      throw error;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const insertRestaurant = async (values, id) => {
+    const uniqueSlugName = slugify(values.restaurantName, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
+    const logo = await uploadImageToCloudinary(values.logo);
+    const banner = await uploadImageToCloudinary(values.banner);
+    try {
+      const { data, error } = await supabase.from("restaurants").insert([
+        {
+          owner_name: values.name,
+          owner_email: values.email,
+          owner_mobile: values.phone,
+          owner_address: values.address,
+          restaurant_name: values.restaurantName,
+          admin_id: id,
+          restaurant_information: values.information,
+          restaurant_email: values.restaurantEmail,
+          restaurant_mobile: values.restaurantPhone,
+          restaurant_address: values.restaurantAddress,
+          total_tables: values.tables,
+          is_verified: false,
+          is_subcription: false,
+          licenced: values.licensed,
+          is_open: true,
+          opening_times: OPENING_TIME,
+          unique_name: uniqueSlugName,
+          logo: logo,
+          background_image: banner,
+        },
+      ]);
+      if (error) {
+        toast.error("Something went wrong!");
+        return;
+      }
+      if (data) {
+        return data;
+      }
     } catch (error) {
       throw error;
     }
-    setSubmitting(false);
+  };
+
+  const handleDemo = () => {
+    toast.warning(
+      <div className="w-full pl-1">
+        <h4 className="text-warning-500 font-semibold">Email already exist!</h4>
+        <h4>Please use a different email.</h4>
+      </div>
+    );
   };
 
   return (
@@ -232,6 +357,7 @@ const RegistrationMain = () => {
       id="bookdemo_hero_section"
       className="flex items-center justify-center w-full min-h-screen relative overflow-hidden"
     >
+      <ToastContainer draggable stacked />
       <div className="w-full h-full flex absolute top-0">
         <div className="w-1/2 h-full md:flex bg-primary-200 hidden" />
         <div className="md:w-1/2 h-full flex bg-primary/5 w-full" />
@@ -316,7 +442,7 @@ const RegistrationMain = () => {
                   {currentStep === 1 && (
                     <>
                       <h4 className="text-2xl font-medium">
-                        Provide Your Owner Information
+                        Provide Owner Information
                       </h4>
                       <Field name="name">
                         {({ field }) => (
@@ -327,6 +453,32 @@ const RegistrationMain = () => {
                             label="Name"
                             isInvalid={touched.name && errors.name}
                             errorMessage={touched.name && errors.name}
+                          />
+                        )}
+                      </Field>
+
+                      <Field name="phone">
+                        {({ field }) => (
+                          <Input
+                            {...field}
+                            variant="faded"
+                            type="tel"
+                            label="Contact Number"
+                            isInvalid={touched.phone && errors.phone}
+                            errorMessage={touched.phone && errors.phone}
+                          />
+                        )}
+                      </Field>
+
+                      <Field name="address">
+                        {({ field }) => (
+                          <Input
+                            {...field}
+                            variant="faded"
+                            type="text"
+                            label="Address"
+                            isInvalid={touched.address && errors.address}
+                            errorMessage={touched.address && errors.address}
                           />
                         )}
                       </Field>
@@ -342,18 +494,6 @@ const RegistrationMain = () => {
                           />
                         )}
                       </Field>
-                      <Field name="phone">
-                        {({ field }) => (
-                          <Input
-                            {...field}
-                            variant="faded"
-                            type="tel"
-                            label="Contact Number"
-                            isInvalid={touched.phone && errors.phone}
-                            errorMessage={touched.phone && errors.phone}
-                          />
-                        )}
-                      </Field>
                       <Field name="password">
                         {({ field }) => (
                           <Input
@@ -366,24 +506,12 @@ const RegistrationMain = () => {
                           />
                         )}
                       </Field>
-                      <Field name="address">
-                        {({ field }) => (
-                          <Input
-                            {...field}
-                            variant="faded"
-                            type="text"
-                            label="Address"
-                            isInvalid={touched.address && errors.address}
-                            errorMessage={touched.address && errors.address}
-                          />
-                        )}
-                      </Field>
                     </>
                   )}
                   {currentStep === 2 && (
                     <>
                       <h4 className="text-2xl font-medium">
-                        Provide Your Restaurant Information
+                        Provide Restaurant Information
                       </h4>
                       <Field name="restaurantName">
                         {({ field }) => (
@@ -636,7 +764,7 @@ const RegistrationMain = () => {
                       isDisabled={currentStep === 1}
                       size="lg"
                       className="w-fit self-start"
-                      color="primary"
+                      color="default"
                       onClick={handlePrevStepChange}
                       type="button"
                     >

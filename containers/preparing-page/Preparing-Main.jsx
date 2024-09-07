@@ -24,7 +24,7 @@ import useSound from "use-sound";
 
 const PreparingMain = () => {
   const [play, { sound, isPlaying }] = useSound("/sounds/water_droplet.mp3", {
-    volume: 100, // Adjust volume if needed
+    volume: 100,
     onError: (error) => {
       console.error("Error loading sound:", error);
     },
@@ -57,9 +57,11 @@ const PreparingMain = () => {
     navigateBasedOnStatus();
   }
 
-  const fetchNotification = async () => {
+  const playMusic = () => {
     play();
+  };
 
+  const fetchNotification = async () => {
     try {
       console.log("Fetching notifications for user:", userId);
       const { data, error } = await supabase
@@ -228,7 +230,7 @@ const PreparingMain = () => {
   }
   return (
     <div>
-      <button onClick={play}>Boop!</button>
+      <button onClick={playMusic}>Boop!</button>
       <Header orderData={orderData} />
       <OrderStatus orderData={orderData} />
       <Status orderData={orderData} statusData={statusData} />
