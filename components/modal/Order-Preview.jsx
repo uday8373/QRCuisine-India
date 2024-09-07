@@ -19,7 +19,7 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
-  console.log("OrderPreview", orderData);
+  // console.log("OrderPreview", orderData);
   return (
     <>
       <Modal

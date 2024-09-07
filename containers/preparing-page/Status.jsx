@@ -3,16 +3,14 @@ import React from "react";
 
 const Status = ({ orderData, statusData }) => {
   const activeId = orderData?.status_id?.sorting;
+
   return (
     <section id="status">
       <div className="w-full flex flex-col gap-3 py-5 px-5 mb-32">
         <div className="w-full flex flex-col gap-2 bg-default-100 rounded-large p-3">
-          {statusData.map((status, index) => (
-            <>
-              <div
-                key={index}
-                className="w-full grid grid-cols-6 items-center py-2"
-              >
+          {statusData.map((status) => (
+            <React.Fragment key={status.id}>
+              <div className="w-full grid grid-cols-6 items-center py-2">
                 <div
                   className={`w-8 h-8 col-span-1 flex justify-center items-center rounded-full ${
                     status?.id === orderData?.status_id?.id
@@ -58,10 +56,10 @@ const Status = ({ orderData, statusData }) => {
                   )}
                 </div>
               </div>
-              {index !== statusData.length - 1 && (
+              {status !== statusData[statusData.length - 1] && (
                 <div className="border w-full border-dashed border-default-300" />
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
 

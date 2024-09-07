@@ -16,7 +16,7 @@ const Hero = () => {
               Say goodbye to Clunky menus & wait time
             </h1>
             <p className="md:text-xl text-md text-white font-semibold">
-              Elevate your Dining Experience with TableQr!
+              Elevate your Dining Experience with QRCuisine!
             </p>
             <div className="flex gap-2 md:gap-5 items-center">
               <Button
