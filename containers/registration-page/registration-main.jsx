@@ -205,8 +205,22 @@ const RegistrationMain = () => {
     banner: null,
   };
 
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+          phone: values.phone,
+          display_name: values.name,
+        }),
+      });
+
+      const result = await response.json();
     } catch (error) {
       throw error;
     }
