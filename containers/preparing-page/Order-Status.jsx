@@ -16,15 +16,15 @@ const OrderStatus = ({ orderData }) => {
     switch (sorting) {
       case 1:
         return (
-          <LottieAnimation width={150} height={150} animationData={Received} />
+          <LottieAnimation width={80} height={80} animationData={Received} />
         );
       case 2:
         return (
-          <LottieAnimation width={150} height={150} animationData={Confirm} />
+          <LottieAnimation width={80} height={80} animationData={Confirm} />
         );
       case 3:
         return (
-          <LottieAnimation width={150} height={150} animationData={Preparing} />
+          <LottieAnimation width={80} height={80} animationData={Preparing} />
         );
       default:
         return null;
@@ -44,12 +44,12 @@ const OrderStatus = ({ orderData }) => {
       textColorClass = "text-blue-500";
       break;
     case 2:
-      bgColorClass = "bg-success";
-      textColorClass = "text-success";
-      break;
-    case 3:
       bgColorClass = "bg-primary";
       textColorClass = "text-primary";
+      break;
+    case 3:
+      bgColorClass = "bg-secondary";
+      textColorClass = "text-secondary";
       break;
     default:
       bgColorClass = "bg-default";
@@ -80,7 +80,7 @@ const OrderStatus = ({ orderData }) => {
       }
     };
 
-    const intervalId = setInterval(updateRemainingTime, 1000);
+    const intervalId = setInterval(updateRemainingTime, 800);
 
     updateRemainingTime();
 
@@ -93,14 +93,19 @@ const OrderStatus = ({ orderData }) => {
       >
         <div className="w-full flex flex-col justify-center items-center gap-1 py-5">
           <div className="w-full flex justify-center flex-col items-center gap-1">
-            <h2 className="text-default-600 font-semibold text-small">
+            <h2 className="text-default-600 font-semibold text-xs">
               Order ID : {orderData?.order_id}
             </h2>
           </div>
           <div>{renderLottieAnimation(sorting)}</div>
-          <h3 className={`text-default-600 text-semibold font-medium`}>
+          <h2 className={`font-semibold text-medium ${textColorClass}`}>
+            Order {orderData?.status_id?.title}
+          </h2>
+          <h3
+            className={`text-default-600 text-semibold font-medium text-small`}
+          >
             Waiting Time:
-            <span className={`${textColorClass} text-large font-bold px-2`}>
+            <span className={`${textColorClass} text-small font-bold px-2`}>
               {remainingTime || "Calculating..."}
             </span>
             {remainingTime && "Minutes"}

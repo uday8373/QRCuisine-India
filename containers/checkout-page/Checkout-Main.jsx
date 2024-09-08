@@ -268,6 +268,28 @@ const CheckoutMain = () => {
     }
   };
 
+  const updateTable = async (id) => {
+    console.log("id", id);
+    try {
+      const { data, error } = await supabase
+        .from("tables")
+        .update({
+          order_id: id,
+        })
+        .eq("id", tableData.id)
+        .select("id");
+
+      if (error) {
+        throw error;
+      }
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.error("Error updating table:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -287,12 +309,15 @@ const CheckoutMain = () => {
       ) {
         throw new Error("Failed to create order");
       } else {
-        localStorage.setItem("orderId", orderResponse[0].id);
-        localStorage.setItem("status", "preparing");
-        router.replace("/preparing");
-        localStorage.removeItem("cartItems");
-        localStorage.removeItem("restaurantData");
-        localStorage.removeItem("instructions");
+        const result = await updateTable(orderResponse[0].id);
+        if (result) {
+          localStorage.setItem("orderId", orderResponse[0].id);
+          localStorage.setItem("status", "preparing");
+          router.replace("/preparing");
+          localStorage.removeItem("cartItems");
+          localStorage.removeItem("restaurantData");
+          localStorage.removeItem("instructions");
+        }
       }
     } catch (error) {
       console.error("Error updating:", error);

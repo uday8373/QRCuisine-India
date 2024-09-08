@@ -56,7 +56,7 @@ const DeliveredMain = () => {
   const updateTable = async () => {
     const { data, error } = await supabase
       .from("tables")
-      .update({ is_booked: false, persons: null })
+      .update({ is_booked: false, persons: null, order_id: null })
       .eq("id", orderData?.tables?.id)
       .select("id");
     if (error) {
@@ -92,7 +92,7 @@ const DeliveredMain = () => {
   const updateUser = async () => {
     const { data, error } = await supabase
       .from("users")
-      .update({ is_active: false })
+      .update({ is_active: false, closed_at: new Date().toISOString() })
       .eq("id", orderData?.user_id)
       .select("id");
     if (error) {

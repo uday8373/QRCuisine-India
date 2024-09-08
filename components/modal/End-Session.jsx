@@ -18,7 +18,7 @@ const EndSession = ({ isOpen, onOpenChange, tableId }) => {
   const handleLogout = async () => {
     const { data, error } = await supabase
       .from("tables")
-      .update({ is_booked: false, persons: null })
+      .update({ is_booked: false, persons: null, order_id: null })
       .eq("id", tableId)
       .select("id");
     if (error) {
@@ -53,11 +53,11 @@ const EndSession = ({ isOpen, onOpenChange, tableId }) => {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onClick={handleLogout}>
-                Close Now
-              </Button>
-              <Button color="primary" onPress={onClose}>
+              <Button color="primary" variant="light" onPress={onClose}>
                 Continue Booking
+              </Button>
+              <Button color="danger" onClick={handleLogout}>
+                Close Session
               </Button>
             </ModalFooter>
           </>

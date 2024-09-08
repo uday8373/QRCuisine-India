@@ -169,3 +169,36 @@ export const updateVisitorDelivered = async (restaurantId) => {
     return null;
   }
 };
+
+export const getNotifications = async (orderId, userId) => {
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("order_id", orderId)
+      .eq("user_id", userId)
+      .eq("user_read", false)
+      .order("created_at", { ascending: false })
+      .limit(2);
+
+    if (error) throw error;
+    return data ? data : null;
+  } catch (error) {
+    console.error("Error fetching notification data:", error);
+  }
+};
+
+export const updateNofication = async (id) => {
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .update({ user_read: true })
+      .eq("id", id)
+      .select("id");
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error updating notification status:", error);
+  }
+};

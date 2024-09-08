@@ -6,7 +6,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
   Divider,
 } from "@nextui-org/react";
 import {
@@ -19,7 +18,6 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
-  // console.log("OrderPreview", orderData);
   return (
     <>
       <Modal
@@ -31,7 +29,7 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Your Order
+                Your Order Details
               </ModalHeader>
               <ModalBody className="relative !p-0">
                 <Divider />
@@ -49,7 +47,7 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                   </TableHeader>
                   <TableBody>
                     {orderData.fooditem_ids.map((item, index) => (
-                      <TableRow key={item.id}>
+                      <TableRow key={index}>
                         <TableCell className="flex items-center gap-2">
                           <Image
                             src={item.image}
@@ -70,25 +68,18 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                 </Table>
               </ModalBody>
               <ModalFooter className="w-full flex flex-col !p-0 ">
-                {/* <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button> */}
                 <Divider />
                 <div className="pr-6 pl-4 pb-4 flex flex-col items-center  w-full gap-2">
                   <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-black font-medium dark:text-white ">
-                      Subtotal
-                    </h3>
+                    <h3 className=" text-default-900 font-medium ">Subtotal</h3>
                     <h3>₹ {orderData?.total_amount.toFixed(2)}</h3>
                   </div>
                   <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-black font-medium dark:text-white">
-                      GST
-                    </h3>
+                    <h3 className=" text-default-900 font-medium">GST</h3>
                     <h3>₹ {orderData?.tax_amount.toFixed(2)}</h3>
                   </div>
                   <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-black font-medium text-lg dark:text-white">
+                    <h3 className=" text-default-900 font-medium text-lg">
                       Total
                     </h3>
                     <h3>₹ {orderData?.grand_amount.toFixed(2)}</h3>
@@ -96,7 +87,6 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                 </div>
               </ModalFooter>
             </>
-            // ,,,,?
           )}
         </ModalContent>
       </Modal>

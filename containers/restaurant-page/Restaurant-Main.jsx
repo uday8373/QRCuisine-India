@@ -28,7 +28,7 @@ import supabase from "@/config/supabase";
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
   const navigateBasedOnStatus = useStatusNavigate();
-  const restaurantName = decodeURIComponent(restaurantId);
+  const restaurantName = restaurantId;
   const storedCartItems =
     typeof window !== "undefined" ? localStorage.getItem("cartItems") : null;
   const initialCartItems = storedCartItems ? JSON.parse(storedCartItems) : [];
@@ -87,7 +87,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         setRestaurantData(restaurantResponse);
         setIsBooked(isBookedResponse);
 
-        // Check if the table is already booked by someone else
         if (
           tableResponse.is_booked === true &&
           localTableId !== tableResponse.id
@@ -194,13 +193,23 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const handleLogout = async () => {
     const { data, error } = await supabase
       .from("tables")
-      .update({ is_booked: false, persons: null })
+      .update({ is_booked: false, persons: null, order_id: null })
       .eq("id", tableId)
       .select();
     if (error) {
       throw error;
     } else {
-      localStorage.clear();
+      const keysToRemove = [
+        "isBooked",
+        "tableId",
+        "userId",
+        "cartItems",
+        "tableData",
+        "restaurantData",
+        "status",
+      ];
+
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
       router.replace("/");
     }
   };
@@ -239,18 +248,17 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           <br /> Would you like to keep this reservation?
         </h2>
         <div className="w-full flex justify-between items-center">
-          <Button onClick={handleLogout} color="danger" variant="light">
-            Close Now
-          </Button>
           <Button
+            variant="light"
             onClick={() =>
-              router.replace(
-                `/${restaurantData.restaurant_name}/${localTableId}`
-              )
+              router.replace(`/${restaurantData.unique_name}/${localTableId}`)
             }
             color="success"
           >
             Continue Reservation
+          </Button>
+          <Button onClick={handleLogout} color="danger">
+            Close Session
           </Button>
         </div>
       </div>
