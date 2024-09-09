@@ -50,10 +50,6 @@ const PreparingMain = () => {
     navigateBasedOnStatus();
   }
 
-  const playMusic = () => {
-    play();
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {

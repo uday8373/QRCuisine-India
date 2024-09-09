@@ -53,6 +53,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
   const pageSize = 10;
 
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
   const customerStatus =
     typeof window !== "undefined" ? localStorage.getItem("status") : null;
 
@@ -191,14 +194,27 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   };
 
   const handleLogout = async () => {
-    const { data, error } = await supabase
-      .from("tables")
-      .update({ is_booked: false, persons: null, order_id: null })
-      .eq("id", tableId)
-      .select();
-    if (error) {
-      throw error;
-    } else {
+    try {
+      const updateTablePromise = supabase
+        .from("tables")
+        .update({ is_booked: false, persons: null, order_id: null })
+        .eq("id", tableId)
+        .select();
+
+      const updateUserPromise = supabase
+        .from("users")
+        .update({ is_active: false, closed_at: new Date().toISOString() })
+        .eq("id", userId)
+        .select();
+
+      const [
+        { data: tableData, error: tableError },
+        { data: userData, error: userError },
+      ] = await Promise.all([updateTablePromise, updateUserPromise]);
+
+      if (tableError) throw tableError;
+      if (userError) throw userError;
+
       const keysToRemove = [
         "isBooked",
         "tableId",
@@ -207,10 +223,14 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         "tableData",
         "restaurantData",
         "status",
+        "orderId",
       ];
 
       keysToRemove.forEach((key) => localStorage.removeItem(key));
-      router.replace("/");
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
 
@@ -274,7 +294,11 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   } else {
     return (
       <>
-        <Hero tableData={tableData} restaurantData={restaurantData} />
+        <Hero
+          tableData={tableData}
+          restaurantData={restaurantData}
+          userId={userId}
+        />
         <SpecialMenu
           specialMenuData={specialMenuData}
           onCartChange={handleCartChange}

@@ -199,19 +199,18 @@ const CheckoutMain = () => {
 
   const updateVisitor = async () => {
     try {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
-      const todayString = today.toISOString().split("T")[0];
-      const tomorrowString = tomorrow.toISOString().split("T")[0];
+      const startDate = moment().startOf("day").format("YYYY-MM-DD");
+      const endDate = moment()
+        .add(1, "day")
+        .startOf("day")
+        .format("YYYY-MM-DD");
 
       const { data: existingRecord, error: fetchError } = await supabase
         .from("visitors")
         .select("id, place_order_count")
         .eq("restaurant_id", restaurantData.id)
-        .gte("created_at", todayString)
-        .lt("created_at", tomorrowString)
+        .gte("created_at", startDate)
+        .lt("created_at", endDate)
         .single();
 
       if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
@@ -258,6 +257,7 @@ const CheckoutMain = () => {
         message: message,
         sub_message: sub_message,
         is_read: false,
+        user_read: true,
       })
       .select("id");
     if (error) {
