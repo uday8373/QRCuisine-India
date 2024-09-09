@@ -42,6 +42,7 @@ const CheckoutButton = ({ onOpen, tableData, restaurantData, loading }) => {
         message: message,
         sub_message: sub_message,
         is_read: false,
+        user_read: true,
       })
       .select("id");
     if (error) {

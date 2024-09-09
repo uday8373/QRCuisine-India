@@ -199,19 +199,18 @@ const CheckoutMain = () => {
 
   const updateVisitor = async () => {
     try {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
-      const todayString = today.toISOString().split("T")[0];
-      const tomorrowString = tomorrow.toISOString().split("T")[0];
+      const startDate = moment().startOf("day").format("YYYY-MM-DD");
+      const endDate = moment()
+        .add(1, "day")
+        .startOf("day")
+        .format("YYYY-MM-DD");
 
       const { data: existingRecord, error: fetchError } = await supabase
         .from("visitors")
         .select("id, place_order_count")
         .eq("restaurant_id", restaurantData.id)
-        .gte("created_at", todayString)
-        .lt("created_at", tomorrowString)
+        .gte("created_at", startDate)
+        .lt("created_at", endDate)
         .single();
 
       if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
@@ -258,6 +257,7 @@ const CheckoutMain = () => {
         message: message,
         sub_message: sub_message,
         is_read: false,
+        user_read: true,
       })
       .select("id");
     if (error) {
@@ -265,6 +265,28 @@ const CheckoutMain = () => {
     }
     if (data) {
       return data;
+    }
+  };
+
+  const updateTable = async (id) => {
+    console.log("id", id);
+    try {
+      const { data, error } = await supabase
+        .from("tables")
+        .update({
+          order_id: id,
+        })
+        .eq("id", tableData.id)
+        .select("id");
+
+      if (error) {
+        throw error;
+      }
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.error("Error updating table:", error);
     }
   };
 
@@ -287,12 +309,15 @@ const CheckoutMain = () => {
       ) {
         throw new Error("Failed to create order");
       } else {
-        localStorage.setItem("orderId", orderResponse[0].id);
-        localStorage.setItem("status", "preparing");
-        router.replace("/preparing");
-        localStorage.removeItem("cartItems");
-        localStorage.removeItem("restaurantData");
-        localStorage.removeItem("instructions");
+        const result = await updateTable(orderResponse[0].id);
+        if (result) {
+          localStorage.setItem("orderId", orderResponse[0].id);
+          localStorage.setItem("status", "preparing");
+          router.replace("/preparing");
+          localStorage.removeItem("cartItems");
+          localStorage.removeItem("restaurantData");
+          localStorage.removeItem("instructions");
+        }
       }
     } catch (error) {
       console.error("Error updating:", error);

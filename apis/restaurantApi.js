@@ -1,4 +1,5 @@
 import supabase from "@/config/supabase";
+import moment from "moment";
 import UAParser from "ua-parser-js";
 
 export const fetchTableData = async (tableNo) => {
@@ -22,7 +23,7 @@ export const fetchRestaurantData = async (restaurantName) => {
     const { data, error } = await supabase
       .from("restaurants")
       .select("id, restaurant_name, background_image, logo, gst_percentage")
-      .eq("restaurant_name", restaurantName)
+      .eq("unique_name", restaurantName)
       .single();
 
     if (error) throw error;
@@ -113,19 +114,15 @@ export const fetchRestaurantMenuData = async (
 
 export const updateVisitors = async (restaurantId) => {
   try {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    const todayString = today.toISOString().split("T")[0];
-    const tomorrowString = tomorrow.toISOString().split("T")[0];
+    const startDate = moment().startOf("day").format("YYYY-MM-DD");
+    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
       .select("id, website_visit")
       .eq("restaurant_id", restaurantId)
-      .gte("created_at", todayString)
-      .lt("created_at", tomorrowString)
+      .gte("created_at", startDate)
+      .lt("created_at", endDate)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
@@ -158,19 +155,15 @@ export const updateVisitors = async (restaurantId) => {
 
 export const updateVisitorBooked = async (restaurantId) => {
   try {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    const todayString = today.toISOString().split("T")[0];
-    const tomorrowString = tomorrow.toISOString().split("T")[0];
+    const startDate = moment().startOf("day").format("YYYY-MM-DD");
+    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
       .select("id, booked_count")
       .eq("restaurant_id", restaurantId)
-      .gte("created_at", todayString)
-      .lt("created_at", tomorrowString)
+      .gte("created_at", startDate)
+      .lt("created_at", endDate)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
@@ -277,6 +270,7 @@ export const insertMessage = async (tableId, restaurantId, userId, tableNo) => {
           message: message,
           sub_message: subMessage,
           is_read: false,
+          user_id: true,
         },
       ])
       .select("id");
@@ -294,19 +288,15 @@ export const insertMessage = async (tableId, restaurantId, userId, tableNo) => {
 
 export const updateVisitorCheckout = async (restaurantId) => {
   try {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    const todayString = today.toISOString().split("T")[0];
-    const tomorrowString = tomorrow.toISOString().split("T")[0];
+    const startDate = moment().startOf("day").format("YYYY-MM-DD");
+    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
       .select("id, checkout_count")
       .eq("restaurant_id", restaurantId)
-      .gte("created_at", todayString)
-      .lt("created_at", tomorrowString)
+      .gte("created_at", startDate)
+      .lt("created_at", endDate)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") throw fetchError;

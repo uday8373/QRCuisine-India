@@ -1,9 +1,16 @@
 "use client";
 import { Logo } from "@/components/icons/icons";
-import { Button, Checkbox, Input, Textarea } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Textarea,
+  useDisclosure,
+} from "@nextui-org/react";
 import {
   ChartNoAxesCombined,
   Check,
+  Loader,
   Minus,
   Pencil,
   Plus,
@@ -20,6 +27,7 @@ import { uploadImageToCloudinary } from "@/utils/uplaodCloudinary";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import slugify from "slugify";
+import RegisterSuccess from "@/components/modal/Register-Success";
 
 const OPENING_TIME = [
   {
@@ -91,7 +99,7 @@ const RegistrationMain = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState("");
   const [bannerPreview, setBannerPreview] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const STEPS = [
     { name: "Owner", completed: currentStep > 1 },
@@ -255,7 +263,7 @@ const RegistrationMain = () => {
     banner: null,
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setSubmitting(true);
     try {
       const response = await fetch("/api/sign-up", {
@@ -275,7 +283,11 @@ const RegistrationMain = () => {
       if (response.ok) {
         const resultFinal = await insertRestaurant(values, result.id);
         if (resultFinal) {
-          toast.success("Restaurant register successfully!");
+          setCurrentStep(1);
+          setBannerPreview("");
+          setLogoPreview("");
+          resetForm();
+          onOpen();
         }
       } else {
         if (result.error.code === "user_already_exists") {
@@ -308,29 +320,32 @@ const RegistrationMain = () => {
     const logo = await uploadImageToCloudinary(values.logo);
     const banner = await uploadImageToCloudinary(values.banner);
     try {
-      const { data, error } = await supabase.from("restaurants").insert([
-        {
-          owner_name: values.name,
-          owner_email: values.email,
-          owner_mobile: values.phone,
-          owner_address: values.address,
-          restaurant_name: values.restaurantName,
-          admin_id: id,
-          restaurant_information: values.information,
-          restaurant_email: values.restaurantEmail,
-          restaurant_mobile: values.restaurantPhone,
-          restaurant_address: values.restaurantAddress,
-          total_tables: values.tables,
-          is_verified: false,
-          is_subcription: false,
-          licenced: values.licensed,
-          is_open: true,
-          opening_times: OPENING_TIME,
-          unique_name: uniqueSlugName,
-          logo: logo,
-          background_image: banner,
-        },
-      ]);
+      const { data, error } = await supabase
+        .from("restaurants")
+        .insert([
+          {
+            owner_name: values.name,
+            owner_email: values.email,
+            owner_mobile: values.phone,
+            owner_address: values.address,
+            restaurant_name: values.restaurantName,
+            admin_id: id,
+            restaurant_information: values.information,
+            restaurant_email: values.restaurantEmail,
+            restaurant_mobile: values.restaurantPhone,
+            restaurant_address: values.restaurantAddress,
+            total_tables: values.tables,
+            is_verified: false,
+            is_subcription: false,
+            licenced: values.licensed,
+            is_open: true,
+            opening_times: OPENING_TIME,
+            unique_name: uniqueSlugName,
+            logo: logo,
+            background_image: banner,
+          },
+        ])
+        .select("id");
       if (error) {
         toast.error("Something went wrong!");
         return;
@@ -341,15 +356,6 @@ const RegistrationMain = () => {
     } catch (error) {
       throw error;
     }
-  };
-
-  const handleDemo = () => {
-    toast.warning(
-      <div className="w-full pl-1">
-        <h4 className="text-warning-500 font-semibold">Email already exist!</h4>
-        <h4>Please use a different email.</h4>
-      </div>
-    );
   };
 
   return (
@@ -789,6 +795,7 @@ const RegistrationMain = () => {
                     )}
                     {currentStep === 3 && (
                       <Button
+                        spinner={<Loader size={20} className="animate-spin" />}
                         size="lg"
                         className="w-fit self-end"
                         color="primary"
@@ -805,6 +812,7 @@ const RegistrationMain = () => {
           </Formik>
         </div>
       </div>
+      <RegisterSuccess isOpen={isOpen} onOpenChange={onOpenChange} />
     </section>
   );
 };

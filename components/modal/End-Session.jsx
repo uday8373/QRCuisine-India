@@ -12,18 +12,32 @@ import { useRouter } from "next/navigation";
 import supabase from "@/config/supabase";
 import { LogoutLogo } from "../icons/logout";
 
-const EndSession = ({ isOpen, onOpenChange, tableId }) => {
+const EndSession = ({ isOpen, onOpenChange, tableId, userId }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const { data, error } = await supabase
-      .from("tables")
-      .update({ is_booked: false, persons: null })
-      .eq("id", tableId)
-      .select("id");
-    if (error) {
-      throw error;
-    } else {
+    try {
+      const updateTablePromise = supabase
+        .from("tables")
+        .update({ is_booked: false, persons: null, order_id: null })
+        .eq("id", tableId)
+        .select();
+      console.log("object", userId);
+
+      const updateUserPromise = supabase
+        .from("users")
+        .update({ is_active: false, closed_at: new Date().toISOString() })
+        .eq("id", userId)
+        .select();
+
+      const [
+        { data: tableData, error: tableError },
+        { data: userData, error: userError },
+      ] = await Promise.all([updateTablePromise, updateUserPromise]);
+
+      if (tableError) throw tableError;
+      if (userError) throw userError;
+
       const keysToRemove = [
         "isBooked",
         "tableId",
@@ -32,12 +46,17 @@ const EndSession = ({ isOpen, onOpenChange, tableId }) => {
         "tableData",
         "restaurantData",
         "status",
+        "orderId",
       ];
 
       keysToRemove.forEach((key) => localStorage.removeItem(key));
+
       router.replace("/");
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
+
   return (
     <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -53,11 +72,11 @@ const EndSession = ({ isOpen, onOpenChange, tableId }) => {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onClick={handleLogout}>
-                Close Now
-              </Button>
-              <Button color="primary" onPress={onClose}>
+              <Button color="primary" variant="light" onPress={onClose}>
                 Continue Booking
+              </Button>
+              <Button color="danger" onClick={handleLogout}>
+                Close Session
               </Button>
             </ModalFooter>
           </>
