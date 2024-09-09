@@ -41,3 +41,14 @@ export async function POST(request) {
     );
   }
 }
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*", // Allow all origins
+      "Access-Control-Allow-Methods": "POST, OPTIONS", // Allow POST and OPTIONS
+      "Access-Control-Allow-Headers": "Content-Type, Authorization", // Allow these headers
+    },
+  });
+}
