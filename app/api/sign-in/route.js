@@ -11,43 +11,45 @@ export async function POST(request) {
     });
 
     if (error) {
-      return new NextResponse(
-        JSON.stringify({ error: error.message, code: "AUTH_FAILED" }),
-        { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
+      return NextResponse.json(
+        { error: error.message, code: "AUTH_FAILED" },
+        { status: 401 }
       );
     }
 
     const user = data?.user;
 
     if (!user?.user_metadata?.isVerified) {
-      return new NextResponse(
-        JSON.stringify({
+      return NextResponse.json(
+        {
           error: "User is unverified",
           code: "USER_UNVERIFIED",
-        }),
-        { status: 403, headers: { "Access-Control-Allow-Origin": "*" } }
+        },
+        { status: 403 }
       );
     }
 
-    return new NextResponse(
-      JSON.stringify({ message: "User is verified", data }),
-      { status: 200, headers: { "Access-Control-Allow-Origin": "*" } }
+    return NextResponse.json(
+      { message: "User is verified", data },
+      { status: 200 }
     );
   } catch (err) {
-    return new NextResponse(
-      JSON.stringify({ error: "An error occurred", code: "INTERNAL_ERROR" }),
-      { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }
+    return NextResponse.json(
+      { error: "An error occurred", code: "INTERNAL_ERROR" },
+      { status: 500 }
     );
   }
 }
 
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
+  return NextResponse.json(
+    {},
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  );
 }
