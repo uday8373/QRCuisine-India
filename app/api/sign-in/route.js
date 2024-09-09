@@ -14,14 +14,7 @@ export async function POST(request) {
     if (error) {
       return NextResponse.json(
         { error: error.message, code: "AUTH_FAILED" },
-        {
-          status: 401,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          },
-        }
+        { status: 401 }
       );
     }
 
@@ -33,52 +26,18 @@ export async function POST(request) {
           error: "User is unverified",
           code: "USER_UNVERIFIED",
         },
-        {
-          status: 403,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          },
-        }
+        { status: 403 }
       );
     }
 
     return NextResponse.json(
       { message: "User is verified", data },
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      }
+      { status: 200 }
     );
   } catch (err) {
     return NextResponse.json(
       { error: "An error occurred", code: "INTERNAL_ERROR" },
-      {
-        status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      }
+      { status: 500 }
     );
   }
-}
-
-export async function OPTIONS() {
-  return NextResponse.json(
-    {},
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    }
-  );
 }
