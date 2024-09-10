@@ -340,7 +340,7 @@ const CheckoutMain = () => {
         mainInstructions={mainInstructions}
         onOpen={onOpen}
         tableId={tableData?.id}
-        restaurantName={restaurantData?.restaurant_name}
+        restaurantName={restaurantData?.unique_name}
       />
       <Bill
         totalPrice={totalPrice}
