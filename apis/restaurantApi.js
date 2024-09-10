@@ -270,7 +270,7 @@ export const insertMessage = async (tableId, restaurantId, userId, tableNo) => {
           message: message,
           sub_message: subMessage,
           is_read: false,
-          user_id: true,
+          user_read: true,
         },
       ])
       .select("id");
