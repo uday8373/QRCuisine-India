@@ -22,7 +22,9 @@ export const fetchRestaurantData = async (restaurantName) => {
   try {
     const { data, error } = await supabase
       .from("restaurants")
-      .select("id, restaurant_name, background_image, logo, gst_percentage")
+      .select(
+        "id, restaurant_name, background_image, logo, gst_percentage, unique_name"
+      )
       .eq("unique_name", restaurantName)
       .single();
 
