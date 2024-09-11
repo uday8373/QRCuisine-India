@@ -1,59 +1,59 @@
-import React from "react";
-import { ScanMe } from "@/public/assets/svg/Home-Page/Index";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-export default function HeroV2() {
+const HeroV2s = () => {
   return (
-    <>
-      <section
-        id="homepage"
-        className="flex items-center justify-center w-full   bg-gradient-to-t from-secondary-50  to-primary-100  "
-      >
-        <div className=" w-full h-full   grid grid-cols-1    max-w-screen-xl py-8 md:py-20 px-6 z-10">
-          <div className="flex items-center relative justify-center  flex-col gap-8  md:gap-10 text-center ">
-            <div className="w-44 h-44 blur-lg  bg-secondary-200 rounded-full absolute top-20 -z-10"></div>
-            <div className="w-40 h-40 blur-lg bg-primary-200 rounded-full absolute -translate-x-16 right-1/2 top-24 -z-20"></div>
-
-            <h3 className="underline-offset-4 underline ">{`FOR FULL SERVICE RESTAURANT’S `}</h3>
-            <div className="space-y-5">
-              <p className=" text-3xl md:text-4xl font-bold font-Rethink  text-balance text-black">
-                We ensure{` restaurant's `}
-                <br />
-                sustainability & Growth
-              </p>
-
-              <div className="flex w-full justify-center items-center z-20">
-                <div className="w-20 border-t-2 border-gray-500"></div>
-
-                <div className="min-w-fit mx-5">
-                  <h4 className="font-bold">
-                    With futuristic <br />
-                    technology
-                  </h4>
-                </div>
-                <div className="w-20 border-t-2 border-gray-500"></div>
-              </div>
-            </div>
-            <p className="text-balance max-w-lg">
-              QRCuisine helps restaurants save costs, gain real-time analytics,
-              and boost efficiency with smart technology
+    <section
+      id="homepage_hero_section"
+      className="flex items-center justify-center w-full bg-primary min-h-[80vh]"
+    >
+      <div className="w-full h-full flex-col max-w-screen-xl px-6 z-10">
+        <div className="w-full h-full flex md:flex-row flex-col-reverse justify-between items-center py-5 gap-3">
+          <div className="w-full flex flex-col justify-center md:gap-5 gap-3">
+            <h1 className="xl:text-7xl lg:text-6xl md:text-5xl text-4xl font-bold text-white leading-tight md:leading-tight lg:leading-tight xl:leading-[85px]">
+              Say goodbye to Clunky menus & wait time
+            </h1>
+            <p className="md:text-xl text-md text-white font-semibold">
+              Elevate your Dining Experience with QRCuisine!
             </p>
-            <div className="space-y-2">
+            <div className="flex gap-2 md:gap-5 items-center">
               <Button
+                as={Link}
                 size="lg"
-                variant="solid"
-                color="primary"
-                radius="sm"
-                className={`text-small px-10  font-semibold shadow-sm `}
+                href="/book-free-demo"
+                color="danger"
+                radius="full"
+                className="md:mt-5 w-40 font-medium"
               >
-                Try free for 3 months
+                Schedule Demo
               </Button>
-              <p className="text-xs font-bold font-Rethink text-black">{`Trusted by 100’s of restaurants`}</p>
+              <Button
+                as={Link}
+                size="lg"
+                href="/restaurant-registration"
+                color="secondary"
+                variant="solid"
+                radius="full"
+                className="md:mt-5 w-40 font-medium"
+              >
+                Register Now
+              </Button>
             </div>
           </div>
+          <div className="w-full h-full flex items-center justify-end">
+            <Image
+              width={1080}
+              height={1080}
+              src="/assets/hero.png"
+              alt="hero"
+            />
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
-}
+};
+
+export default HeroV2s;

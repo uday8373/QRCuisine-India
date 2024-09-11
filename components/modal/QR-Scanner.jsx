@@ -34,14 +34,19 @@ const QRCodeScanner = ({ isOpen, onOpenChange }) => {
   }, [isOpen, onOpenChange, router]);
 
   return (
-    <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      backdrop="blur"
+      placement="center"
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               Scan QR code
             </ModalHeader>
-            <ModalBody className="py-0">
+            <ModalBody className="py-0 ">
               <div className="w-full h-full flex relative overflow-hidden rounded-xl">
                 <video ref={videoRef} className="w-full h-full" />
                 <motion.div
