@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nextui-org/input": "^2.2.4",
+    "@nextui-org/navbar": "^2.0.36",
     "@nextui-org/react": "^2.4.6",
     "@nextui-org/select": "^2.2.5",
     "@nextui-org/system": "^2.2.5",
@@ -35,6 +36,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-lottie": "^1.2.4",
+    "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
     "slick-carousel": "^1.8.1",

@@ -4,23 +4,43 @@ import {
   NavbarContent,
   NavbarBrand,
   NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
 } from "@nextui-org/navbar";
 import NextLink from "next/link";
 
 import ThemeToggle from "../themes/theme-switch";
 import { Logo, LogoShort } from "../icons/icons";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { ScanLine } from "lucide-react";
-import QRCodeScanner from "../modal/QR-Scanner";
+
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import { siteConfig } from "@/config/site";
+import { Link as ScrollLink } from "react-scroll";
 
 export const Navbar = () => {
   const pathName = usePathname();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const menuItems = [
+    "Profile",
+    "Dashboard",
+    "Activity",
+    "Analytics",
+    "System",
+    "Deployments",
+    "My Settings",
+    "Team Settings",
+    "Help & Feedback",
+    "Log Out",
+  ];
 
   if (
     pathName !== "/" &&
     pathName !== "/register-business" &&
+    pathName !== "/home" &&
     pathName !== "/book-free-demo"
   ) {
     return null;
@@ -30,6 +50,11 @@ export const Navbar = () => {
       {/* <NavbarContent className="md:hidden" justify="start">
         <NavbarMenuToggle />
       </NavbarContent> */}
+
+      <NavbarMenuToggle
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        className="sm:hidden  "
+      />
       <NavbarBrand as="li" className="max-w-fit" justify="start">
         <NextLink className="flex justify-start items-center" href="/">
           <Logo className="md:flex hidden" />
@@ -54,8 +79,23 @@ export const Navbar = () => {
           ))}
         </ul>
       </NavbarContent> */}
+      <NavbarContent className="hidden sm:flex gap-10  w-full" justify="center">
+        {siteConfig.navItems.map((item, index) => (
+          <NavbarItem key={index}>
+            <ScrollLink
+              className="cursor-pointer"
+              to={item.href}
+              smooth={true}
+              duration={500}
+              offset={-40}
+            >
+              {item.label}
+            </ScrollLink>
+          </NavbarItem>
+        ))}
+      </NavbarContent>
 
-      <NavbarContent className="basis-1" justify="end">
+      {/* <NavbarContent className="basis-1" justify="end">
         <ThemeToggle />
         <NavbarItem>
           <Button
@@ -69,7 +109,7 @@ export const Navbar = () => {
             Scan Now
           </Button>
         </NavbarItem>
-      </NavbarContent>
+      </NavbarContent> */}
 
       {/* <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-3">
@@ -92,7 +132,45 @@ export const Navbar = () => {
           ))}
         </div>
       </NavbarMenu> */}
-      <QRCodeScanner isOpen={isOpen} onOpenChange={onOpenChange} />
+
+      <NavbarContent className="basis-1 hidden sm:flex" justify="end">
+        <NavbarItem>
+          <Button
+            //   onClick={onOpen}
+            color="secondary"
+            href="#"
+            variant="solid"
+            className="font-medium w-40"
+          >
+            Free Demo
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button
+            color="primary"
+            href="#"
+            variant="solid"
+            className="font-medium w-40"
+          >
+            Register
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarMenu className="z-50">
+        {siteConfig.navMenuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <ScrollLink
+              className="cursor-pointer"
+              to={item.href}
+              smooth={true}
+              duration={500}
+              offset={-40}
+            >
+              {item.label}
+            </ScrollLink>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </NextUINavbar>
   );
 };
