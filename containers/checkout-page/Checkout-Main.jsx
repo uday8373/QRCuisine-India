@@ -13,6 +13,7 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import ScreenError from "@/components/pages/Screen-Error";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
+import moment from "moment";
 
 const CheckoutMain = () => {
   const router = useRouter();
@@ -339,7 +340,7 @@ const CheckoutMain = () => {
         mainInstructions={mainInstructions}
         onOpen={onOpen}
         tableId={tableData?.id}
-        restaurantName={restaurantData?.restaurant_name}
+        restaurantName={restaurantData?.unique_name}
       />
       <Bill
         totalPrice={totalPrice}

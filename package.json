@@ -21,6 +21,7 @@
     "canvas-confetti": "^1.9.3",
     "cloudinary": "^2.4.0",
     "clsx": "^2.1.1",
+    "cors": "^2.8.5",
     "formik": "^2.4.6",
     "framer-motion": "^11.3.30",
     "html2canvas": "^1.4.1",
@@ -47,6 +48,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "file-loader": "^6.2.0",

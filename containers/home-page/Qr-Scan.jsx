@@ -4,7 +4,6 @@ import React from "react";
 import QRCodeScanner from "@/components/modal/QR-Scanner";
 import { ScanLine } from "lucide-react";
 import { Button, useDisclosure } from "@nextui-org/react";
-
 export default function QrScan() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

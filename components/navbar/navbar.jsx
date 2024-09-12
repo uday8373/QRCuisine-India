@@ -55,8 +55,6 @@ export const Navbar = () => {
         </NextLink>
       </NavbarBrand>
       <NavbarMenuToggle
-        // isOpen={isMenuOpen}
-        onChange={isMenuOpen}
         onClick={toggleMenu}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         className="sm:hidden p-5  w-fit h-fit  "
@@ -160,11 +158,7 @@ export const Navbar = () => {
           </Button>
         </NavbarItem>
       </NavbarContent>
-      <NavbarMenu
-        isOpen={isMenuOpen}
-        onClose={toggleMenu}
-        className="z-50 pt-5"
-      >
+      <NavbarMenu onClose={toggleMenu} className="z-50 pt-5">
         <Link onClick={handleMenuClose} className="cursor-pointer" href="/">
           Home
         </Link>

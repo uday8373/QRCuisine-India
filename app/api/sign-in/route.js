@@ -1,53 +1,57 @@
 import supabase from "@/config/supabase";
 import { NextResponse } from "next/server";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function POST(request) {
   try {
+    const headers = {
+      ...corsHeaders,
+    };
+
     const { email, password } = await request.json();
 
+    // Sign in using Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      return new NextResponse(
-        JSON.stringify({ error: error.message, code: "AUTH_FAILED" }),
-        { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
+      return NextResponse.json(
+        { error: error.message, code: "AUTH_FAILED" },
+        { status: 401, headers }
       );
     }
 
     const user = data?.user;
 
     if (!user?.user_metadata?.isVerified) {
-      return new NextResponse(
-        JSON.stringify({
+      return NextResponse.json(
+        {
           error: "User is unverified",
           code: "USER_UNVERIFIED",
-        }),
-        { status: 403, headers: { "Access-Control-Allow-Origin": "*" } }
+        },
+        { status: 403, headers }
       );
     }
 
-    return new NextResponse(
-      JSON.stringify({ message: "User is verified", data }),
-      { status: 200, headers: { "Access-Control-Allow-Origin": "*" } }
+    return NextResponse.json(
+      { message: "User is verified", data },
+      { status: 200, headers }
     );
   } catch (err) {
-    return new NextResponse(
-      JSON.stringify({ error: "An error occurred", code: "INTERNAL_ERROR" }),
-      { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }
+    return NextResponse.json(
+      { error: "An error occurred", code: "INTERNAL_ERROR" },
+      { status: 500, headers: corsHeaders }
     );
   }
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
 }

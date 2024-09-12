@@ -69,54 +69,68 @@ const BookTable = ({
     }
   };
 
+  const formatTableNumber = (tableNo) => {
+    return tableNo && tableNo < 10 ? `0${tableNo}` : tableNo;
+  };
+
   return (
-    <Modal
-      isKeyboardDismissDisabled
-      defaultOpen
-      hideCloseButton
-      isDismissable
-      backdrop="blur"
-      size="xs"
-      placement="center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-    >
-      <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">
-              Booked this table
-            </ModalHeader>
-            <ModalBody className="pt-0">
-              <Select
-                onSelectionChange={(key) => {
-                  setSelectedPerson(key.currentKey);
-                }}
-                label="Select number of persons"
-              >
-                {persons.map((person) => (
-                  <SelectItem key={person.key}>{person.label}</SelectItem>
-                ))}
-              </Select>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                spinner={<Loader size={20} className="animate-spin" />}
-                isLoading={isLoading}
-                isDisabled={!selectedPerson}
-                onClick={handleBookTable}
-                size="lg"
-                fullWidth
-                color="primary"
-                onPress={onClose}
-              >
-                Book Now
-              </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal
+        isKeyboardDismissDisabled
+        defaultOpen
+        hideCloseButton
+        isDismissable
+        backdrop="blur"
+        size="xs"
+        placement="center"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col  gap-1">
+                <div className="  w-full h-full flex justify-center py-3 items-center">
+                  <div className="bg-primary flex justify-center flex-col items-center gap-2  w-36 h-36 rounded-xl ">
+                    <h2 className="font-bold text-2xl text-white">TABLE</h2>
+                    <p className="font-bold text-5xl text-white">
+                      {formatTableNumber(tableNo)}
+                    </p>
+                  </div>
+                </div>
+                <p>Booked this table</p>
+              </ModalHeader>
+              <ModalBody className="pt-0 ">
+                <Select
+                  onSelectionChange={(key) => {
+                    setSelectedPerson(key.currentKey);
+                  }}
+                  label="Select number of persons"
+                >
+                  {persons.map((person) => (
+                    <SelectItem key={person.key}>{person.label}</SelectItem>
+                  ))}
+                </Select>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  spinner={<Loader size={20} className="animate-spin" />}
+                  isLoading={isLoading}
+                  isDisabled={!selectedPerson}
+                  onClick={handleBookTable}
+                  size="lg"
+                  fullWidth
+                  color="primary"
+                  onPress={onClose}
+                >
+                  Book Now
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

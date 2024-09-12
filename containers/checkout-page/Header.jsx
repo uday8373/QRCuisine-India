@@ -2,12 +2,15 @@ import { Avatar } from "@nextui-org/react";
 import React from "react";
 
 const Header = ({ restaurantData, tableData }) => {
+  const formatTableNumber = (tableNo) => {
+    return tableNo && tableNo < 10 ? `0${tableNo}` : tableNo;
+  };
   return (
     <section
       id="checkout_header"
-      className="shadow-small sticky top-0 backdrop-blur-xl z-30 px-5"
+      className="shadow-small sticky top-0 backdrop-blur-xl z-30 pl-5"
     >
-      <div className="flex w-full items-center justify-between py-5 relative">
+      <div className="flex w-full items-center justify-between  relative">
         <div className="flex gap-2 items-center">
           <Avatar
             src={restaurantData?.logo}
@@ -20,9 +23,15 @@ const Header = ({ restaurantData, tableData }) => {
               : restaurantData.restaurant_name}
           </h1>
         </div>
-        <h2 className="text-medium font-bold text-primary">
-          Table No - {tableData.table_no}
-        </h2>
+        <div
+          className=" bg-primary flex  flex-col px-4 py-2 justify-center items-center
+         h-full "
+        >
+          <h3 className="text-medium font-bold text-white">TABLE</h3>
+          <p className="text-xl font-bold -tracking-tighter text-white">
+            {formatTableNumber(tableData?.table_no)}
+          </p>
+        </div>
       </div>
     </section>
   );
