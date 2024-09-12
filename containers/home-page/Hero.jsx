@@ -5,7 +5,7 @@ export default function Hero() {
   return (
     <>
       <section
-        id="homepage"
+        id="Hero"
         className="flex items-center justify-center w-full   bg-gradient-to-t from-secondary-50  to-primary-100  "
       >
         <div className=" w-full h-full   grid grid-cols-1    max-w-screen-xl py-8 md:py-20 px-6 z-10">

@@ -10,7 +10,6 @@ import {
 } from "@nextui-org/navbar";
 import NextLink from "next/link";
 
-import ThemeToggle from "../themes/theme-switch";
 import { Logo, LogoShort } from "../icons/icons";
 import { Button, useDisclosure } from "@nextui-org/react";
 
@@ -46,13 +45,18 @@ export const Navbar = () => {
       position="sticky"
     >
       <NavbarBrand as="li" className="max-w-fit" justify="start">
-        <NextLink className="flex justify-start items-center" href="/">
+        <NextLink
+          onClick={handleMenuClose}
+          className="flex justify-start items-center"
+          href="/"
+        >
           <Logo className="md:flex hidden" />
           <LogoShort className="md:hidden flex" />
         </NextLink>
       </NavbarBrand>
       <NavbarMenuToggle
-        isOpen={isMenuOpen}
+        // isOpen={isMenuOpen}
+        onChange={isMenuOpen}
         onClick={toggleMenu}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         className="sm:hidden p-5  w-fit h-fit  "
@@ -76,6 +80,9 @@ export const Navbar = () => {
         </ul>
       </NavbarContent> */}
       <NavbarContent className="hidden sm:flex gap-10  w-full" justify="center">
+        <Link className="cursor-pointer" href="/">
+          Home
+        </Link>
         {siteConfig.navItems.map((item, index) => (
           <NavbarItem key={index}>
             <ScrollLink
@@ -158,6 +165,9 @@ export const Navbar = () => {
         onClose={toggleMenu}
         className="z-50 pt-5"
       >
+        <Link onClick={handleMenuClose} className="cursor-pointer" href="/">
+          Home
+        </Link>
         {siteConfig.navMenuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <ScrollLink
@@ -172,7 +182,7 @@ export const Navbar = () => {
             </ScrollLink>
           </NavbarMenuItem>
         ))}
-        <NavbarContent className=" flex w-full items-end py-10  " justify="end">
+        <NavbarContent className=" flex w-full items-start py-5  justify-center ">
           <Button
             color="secondary"
             href="/book-free-demo"

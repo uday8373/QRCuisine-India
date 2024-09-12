@@ -12,21 +12,11 @@ export const siteConfig = {
       href: "Pricing",
       label: "Pricing",
     },
-
-    {
-      href: "Pricing",
-      label: "Pricing",
-    },
   ],
   navMenuItems: [
     {
       label: "Home",
       href: "/home",
-    },
-
-    {
-      href: "Pricing",
-      label: "Pricing",
     },
 
     {
