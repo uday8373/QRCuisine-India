@@ -48,6 +48,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "file-loader": "^6.2.0",

@@ -271,7 +271,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           <Button
             variant="light"
             onClick={() =>
-              router.replace(`/${restaurantData.unique_name}/${localTableId}`)
+              router.replace(`/${restaurantData?.unique_name}/${localTableId}`)
             }
             color="success"
           >
