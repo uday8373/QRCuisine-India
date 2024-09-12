@@ -1,9 +1,9 @@
-import Hero from "@/containers/home-page/Hero";
+import HomePage from "@/containers/home-page/HomePage";
 
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <HomePage />
     </main>
   );
 }

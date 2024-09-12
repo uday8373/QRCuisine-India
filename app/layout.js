@@ -4,6 +4,7 @@ import Providers from "./providers";
 import { Navbar } from "@/components/navbar/navbar";
 import { siteConfig } from "@/config/site";
 import Head from "next/head";
+import QrScannerForMoblie from "@/containers/home-page/QrScanner-For-Moblie";
 
 export const metadata = {
   title: siteConfig.name,
@@ -91,6 +92,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <Navbar />
           {children}
+          <QrScannerForMoblie />
         </Providers>
       </body>
     </html>
