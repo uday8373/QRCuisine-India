@@ -13,7 +13,6 @@ export default function HomePage() {
     <>
       <main className="flex items-center flex-col justify-center w-full ">
         <Hero />
-        <QrScan />
         <HelpsRestaurants />
         <SmarterOrdering />
         <ControlOrders />

@@ -152,7 +152,7 @@ const BookDemoMain = () => {
   return (
     <section
       id="bookdemo_hero_section"
-      className="flex items-center justify-center w-full bg-primary min-h-[91vh] relative overflow-hidden"
+      className="flex items-center justify-center w-full bg-primary min-h-svh relative overflow-hidden"
     >
       <div className="w-full h-full flex-col max-w-screen-xl px-5 z-10">
         <div className="w-full grid xl:grid-cols-2 grid-cols-1 xl:gap-8 gap-5">
