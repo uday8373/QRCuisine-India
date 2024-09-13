@@ -15,10 +15,14 @@ const MenuGrid = ({ menuItem, onCartChange, cartItems }) => {
         alt={menuItem.food_name}
         title={menuItem.food_name}
         className="object-cover w-full h-48"
-        // src={menuItem.image}
+        src={
+          menuItem.image
+            ? menuItem.image
+            : "https://res.cloudinary.com/dhflg7es7/image/upload/v1719330520/KidsQuiz/674_1_qxxwlb.jpg"
+        }
         width={512}
         height={512}
-        src="https://res.cloudinary.com/dhflg7es7/image/upload/v1719330520/KidsQuiz/674_1_qxxwlb.jpg"
+        // src="https://res.cloudinary.com/dhflg7es7/image/upload/v1719330520/KidsQuiz/674_1_qxxwlb.jpg"
       />
       <CardFooter className="backdrop-blur-xl overflow-hidden py-1 absolute rounded-xl bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
         <div className="w-full flex flex-col gap-1 py-1">

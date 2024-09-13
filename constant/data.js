@@ -1,22 +1,23 @@
 import { Clock, Dinner, Mobile } from "@/public/assets/svg/Home-Page/Index";
+import { AlarmClockCheck, HandPlatter, UserCheck } from "lucide-react";
 
 export const HelpsRestaurantsData = [
   {
-    title: "Smooth ordering experience with less human need.",
+    title: "Smooth ordering experience with less human need",
     description:
       "Customers can scan a QR code to order directly from their table, making the process faster and hassle-free.",
-    icon: Mobile,
+    icon: HandPlatter,
   },
   {
-    title: "Smooth ordering experience with less human need.",
+    title: "Personalized Experience for customers",
     description:
-      "Customers can scan a QR code to order directly from their table, making the process faster and hassle-free.",
-    icon: Dinner,
+      "The system remembers customers' preferences, offering personalized recommendations for a better dining experience.",
+    icon: UserCheck,
   },
   {
-    title: "Smooth ordering experience with less human need.",
+    title: "Detailed & Real-time Analytics for Restaurants",
     description:
-      "Customers can scan a QR code to order directly from their table, making the process faster and hassle-free.",
-    icon: Clock,
+      "QRcuisine provides restaurants real-time data of operations, It will make all transactions transparent to owner and manager.",
+    icon: AlarmClockCheck,
   },
 ];

@@ -22,24 +22,25 @@ export default function QrScannerForMoblie() {
   return (
     <section
       id="QrScan"
-      className="flex items-center justify-center w-full sticky bottom-0 z-50 backdrop-blur-md   "
+      className="flex items-center justify-center w-full sticky bottom-0 z-40 backdrop-blur-xl bg-primary-100 overflow-hidden border-t border-default-300"
     >
-      <div className=" w-full h-full lg:hidden justify-between  flex  items-center py-2 px-6 z-10">
-        <h3 className="text-[#2B251A] text-base font-bold">
+      <div className="w-full md:hidden justify-between grid grid-cols-3 items-center py-3 px-6 z-10">
+        <h3 className="text-default-700 text-md font-semibold col-span-2">
           Inside a QRCuisine powered restaurant ?
         </h3>
-        <Button
-          onClick={onOpen}
-          color="primary"
-          href="#"
-          variant="solid"
-          className="font-medium "
-          size="md"
-          startContent={<ScanLine size={18} />}
-        >
-          Scan Now
-        </Button>
-
+        <div className="flex w-full justify-end">
+          <Button
+            onClick={onOpen}
+            color="primary"
+            href="#"
+            variant="solid"
+            className="font-medium w-fit"
+            size="md"
+            startContent={<ScanLine size={18} />}
+          >
+            Scan Now
+          </Button>
+        </div>
         <QRCodeScanner isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>
     </section>
