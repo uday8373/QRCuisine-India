@@ -19,7 +19,7 @@ export default function SmarterOrdering() {
             "[mask-image:linear-gradient(to_bottom,white,transparent,transparent)] fill-primary-400"
           )}
         />
-        <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 max-w-screen-xl z-10 py-10 px-6 gap-5">
+        <div className="w-full h-full flex flex-col md:flex-row max-w-screen-xl z-10 py-10 px-6 gap-5">
           <div className="w-full flex justify-center">
             <Image
               width={1080}

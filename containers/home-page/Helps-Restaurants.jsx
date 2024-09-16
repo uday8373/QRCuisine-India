@@ -11,13 +11,14 @@ export default function HelpsRestaurants() {
     <>
       <section
         id="HelpsRestaurants"
-        className="flex items-center flex-col justify-center w-full overflow-hidden"
+        className="flex items-center h-full flex-col justify-center w-full overflow-hidden"
       >
-        <div className=" w-full h-full grid grid-cols-1 lg:grid-cols-2 max-w-screen-xl py-8 md:py-16 px-6 z-10">
-          <div className="lg:col-span-2 max-w-lg py-2">
-            <h2 className="text-secondary font-bold md:leading-tight text-2xl md:text-[38px]">{`QRCuisine Helps Restaurant’s to manage efficiently`}</h2>
+        <div className=" w-full flex flex-col items-center justify-center max-w-screen-xl py-8 md:py-16 px-6 z-10">
+          <div className="lg:col-span-2  py-2 w-full flex ">
+            <h2 className="text-secondary font-bold md:leading-tight max-w-lg text-2xl md:text-[38px] text-left">{`QRCuisine Helps Restaurant’s to manage efficiently`}</h2>
           </div>
-          <div className="lg:max-w-lg">
+          <div className=" w-full h-auto flex flex-col lg:flex-row py-8 gap-10 z-10">
+          <div className="w-full">
             <div className="flex flex-col md:gap-10 gap-6 py-5 md:py-10">
               {HelpsRestaurantsData.map((item, index) => {
                 return (
@@ -53,6 +54,7 @@ export default function HelpsRestaurants() {
               size={350}
               className="fill-secondary-300 absolute -top-20 lg:flex hidden"
             />
+          </div>
           </div>
         </div>
       </section>

@@ -11,14 +11,14 @@ export default function Hero() {
     <>
       <section
         id="Hero"
-        className="flex overflow-hidden flex-col items-center justify-center w-full h-auto bg-[#E5F4EB] relative"
+        className="flex overflow-hidden h-full flex-col items-center justify-center w-full bg-[#E5F4EB] relative"
       >
         <div className="w-full h-full bg-white/25 backdrop-blur-lg absolute z-[10]" />
         <div className="absolute flex z-[5] justify-center w-full  items-center -translate-y-1/2">
           <div className="w-56 h-56 bg-secondary-200 rounded-full"></div>
           <div className="w-56 h-56 bg-primary-200 rounded-full -ml-16"></div>
         </div>
-        <div className="relative w-full h-full grid grid-cols-1 max-w-screen-xl px-6 py-24">
+        <div className="relative w-full h-full flex flex-col max-w-screen-xl px-6 py-24">
           <RectangleElement
             size={450}
             className="z-[15] absolute bottom-0 -left-24 fill-primary-400 md:flex hidden"
