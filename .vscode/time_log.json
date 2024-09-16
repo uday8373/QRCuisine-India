@@ -1567,6 +1567,390 @@
         },
         "timeSpent": 25
       }
+    ],
+    ".next/types/package.json": [
+      {
+        "date": "2024-09-16T09:11:27.043Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 171
+      },
+      {
+        "date": "2024-09-16T09:11:31.690Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 5
+      }
+    ],
+    "containers/home-page/Hero.jsx.git": [
+      {
+        "date": "2024-09-16T09:15:45.085Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2024-09-16T09:15:58.073Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 13
+      },
+      {
+        "date": "2024-09-16T09:16:13.086Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2024-09-16T09:18:07.501Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2024-09-16T09:18:35.174Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2024-09-16T09:18:46.420Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2024-09-16T09:19:46.433Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 60
+      },
+      {
+        "date": "2024-09-16T09:21:00.471Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 74
+      },
+      {
+        "date": "2024-09-16T09:21:25.007Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 25
+      },
+      {
+        "date": "2024-09-16T09:21:27.836Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2024-09-16T09:22:12.174Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 44
+      },
+      {
+        "date": "2024-09-16T09:22:47.048Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 35
+      },
+      {
+        "date": "2024-09-16T09:23:14.881Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2024-09-16T09:23:24.632Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2024-09-16T09:23:39.224Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2024-09-16T09:32:12.790Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2024-09-16T09:39:28.107Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2024-09-16T09:39:33.080Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2024-09-16T09:39:58.803Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 26
+      },
+      {
+        "date": "2024-09-16T09:40:06.011Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 7
+      }
+    ],
+    "containers/home-page/HomePage.jsx.git": [
+      {
+        "date": "2024-09-16T09:16:30.047Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2024-09-16T09:16:59.831Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 30
+      },
+      {
+        "date": "2024-09-16T09:17:14.782Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2024-09-16T09:17:33.548Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 19
+      },
+      {
+        "date": "2024-09-16T09:25:12.777Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2024-09-16T09:25:17.316Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2024-09-16T09:25:39.598Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 22
+      }
+    ],
+    "containers/home-page/Helps-Restaurants.jsx.git": [
+      {
+        "date": "2024-09-16T09:24:17.963Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2024-09-16T09:24:29.353Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2024-09-16T09:24:50.364Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2024-09-16T09:24:59.666Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2024-09-16T09:29:44.898Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 42
+      },
+      {
+        "date": "2024-09-16T09:30:11.408Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 27
+      },
+      {
+        "date": "2024-09-16T09:30:21.484Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2024-09-16T09:30:39.814Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2024-09-16T09:30:58.109Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2024-09-16T09:31:40.205Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 42
+      }
+    ],
+    "app/page.js.git": [
+      {
+        "date": "2024-09-16T09:27:38.592Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2024-09-16T09:28:33.523Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 55
+      }
+    ],
+    "containers/home-page/Pricing.jsx.git": [
+      {
+        "date": "2024-09-16T09:41:12.575Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 6
+      }
+    ],
+    "containers/home-page/Smarter-Ordering.jsx.git": [
+      {
+        "date": "2024-09-16T09:41:58.050Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 40
+      }
+    ],
+    "containers/home-page/footer.jsx.git": [
+      {
+        "date": "2024-09-16T09:43:04.907Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 36
+      },
+      {
+        "date": "2024-09-16T09:43:29.007Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 24
+      },
+      {
+        "date": "2024-09-16T09:44:15.959Z",
+        "user": {
+          "name": "Uday Kumar",
+          "email": ""
+        },
+        "timeSpent": 47
+      }
     ]
   }
 }
