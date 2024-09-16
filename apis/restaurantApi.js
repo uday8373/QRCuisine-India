@@ -343,3 +343,27 @@ export const getNotification = async () => {
     throw error;
   }
 };
+
+export const getSession = async (userId) => {
+  try {
+    const currentTime = moment().toISOString();
+    const minutesAgo = moment().subtract(60, "minutes").toISOString();
+
+    const { data, count, error } = await supabase
+      .from("messages")
+      .select("id", { count: "exact" })
+      .eq("user_id", userId)
+      .gte("created_at", minutesAgo)
+      .lte("created_at", currentTime);
+
+    if (error) {
+      throw error;
+    }
+
+    if (data) {
+      return { data, count };
+    }
+  } catch (error) {
+    throw error;
+  }
+};

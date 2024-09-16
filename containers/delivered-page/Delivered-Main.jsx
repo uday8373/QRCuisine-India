@@ -12,6 +12,7 @@ import CustomRating from "./Custom-Rating";
 import BillButton from "./Bill-Button";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
+import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 
 const DeliveredMain = () => {
   const router = useRouter();
@@ -115,18 +116,9 @@ const DeliveredMain = () => {
         console.error("Error updating table, waiter message, or user");
         return;
       } else {
-        setTimeout(() => {
-          const keysToRemove = [
-            "isBooked",
-            "tableId",
-            "userId",
-            "tableData",
-            "status",
-            "orderId",
-            "isRated",
-          ];
-          keysToRemove.forEach((key) => localStorage.removeItem(key));
-        }, 2000);
+        setTimeout(async () => {
+          await clearLocalStorage();
+        }, 3000);
         router.replace("/complete");
       }
     } catch (error) {

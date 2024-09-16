@@ -6,6 +6,7 @@ import {
   fetchRestaurantMenuData,
   fetchSpecialMenuData,
   fetchTableData,
+  getSession,
   updateVisitorCheckout,
   updateVisitors,
 } from "@/apis/restaurantApi";
@@ -24,6 +25,7 @@ import useStatusNavigate from "@/hooks/useStatusRedirect";
 import SadIcon from "@/components/icons/sad";
 import { ArrowLeftFromLine } from "lucide-react";
 import supabase from "@/config/supabase";
+import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
@@ -62,11 +64,28 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
 
-  if (customerStatus && tableId === localTableId) {
-    navigateBasedOnStatus();
-  }
+  const checkUserSessions = async () => {
+    if (tableId !== localTableId || !userId) {
+      return;
+    }
+
+    const result = await getSession(userId);
+
+    if (result.count < 1) {
+      console.log("logout");
+      await handleLogout();
+      return;
+    }
+
+    if (customerStatus) {
+      console.log("navigate");
+      navigateBasedOnStatus();
+    }
+  };
 
   useEffect(() => {
+    checkUserSessions();
+
     if (isBooked && tableId !== localTableId) {
       setSelfBooked(true);
       return;
@@ -139,6 +158,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     currentPage,
     selectedCategory,
     pageSize,
+    userId,
   ]);
 
   const handleCartChange = (menuItem, quantity) => {
@@ -215,19 +235,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       if (tableError) throw tableError;
       if (userError) throw userError;
 
-      const keysToRemove = [
-        "isBooked",
-        "tableId",
-        "userId",
-        "cartItems",
-        "tableData",
-        "restaurantData",
-        "status",
-        "orderId",
-      ];
-
-      keysToRemove.forEach((key) => localStorage.removeItem(key));
-
+      await clearLocalStorage();
       window.location.reload();
     } catch (error) {
       console.error("Logout error:", error);
