@@ -6,6 +6,7 @@ import { RectangleElement } from "@/components/icons/icons";
 import { MoveRight } from "lucide-react";
 
 export default function Hero() {
+  //
   return (
     <>
       <section
