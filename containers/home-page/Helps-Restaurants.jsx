@@ -11,11 +11,11 @@ export default function HelpsRestaurants() {
     <>
       <section
         id="HelpsRestaurants"
-        className="flex items-center flex-col justify-center w-full  overflow-hidden"
+        className="flex items-center flex-col justify-center w-full overflow-hidden"
       >
-        <div className=" w-full h-full grid grid-cols-1 lg:grid-cols-2   max-w-screen-xl py-8 md:py-16 px-6  z-10">
+        <div className=" w-full h-full grid grid-cols-1 lg:grid-cols-2 max-w-screen-xl py-8 md:py-16 px-6 z-10">
           <div className="lg:col-span-2 max-w-lg py-2">
-            <h2 className="text-secondary font-bold md:leading-tight text-2xl md:text-4xl">{`QRCuisine Helps Restaurant’s to manage efficiently`}</h2>
+            <h2 className="text-secondary font-bold md:leading-tight text-2xl md:text-[38px]">{`QRCuisine Helps Restaurant’s to manage efficiently`}</h2>
           </div>
           <div className="lg:max-w-lg">
             <div className="flex flex-col md:gap-10 gap-6 py-5 md:py-10">
