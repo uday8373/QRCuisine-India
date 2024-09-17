@@ -9,7 +9,7 @@ export default function Footer() {
         id="ControlOrders"
         className="flex items-center flex-col justify-center w-full bg-gradient-to-t from-secondary-100 to-primary-100 "
       >
-        <div className="w-full flex flex-col items-center gap-5 md:flex-row max-w-screen-xl px-6 py-10">
+        <div className="w-full flex flex-col md:items-center gap-5 md:flex-row max-w-screen-xl px-6 py-10">
           <div className="space-y-3 text-default-800">
             <Logo />
             <div className="text-default-800 flex flex-col">
@@ -41,7 +41,7 @@ export default function Footer() {
               </Link>
             </p>
           </div>
-          <div className="flex  items-end justify-center  flex-col gap-5 w-full h-full ">
+          <div className="flex items-end justify-center flex-col gap-5 w-full h-full ">
             <div className=" w-full md:justify-end items-center flex ">
               <Button
                 as={Link}

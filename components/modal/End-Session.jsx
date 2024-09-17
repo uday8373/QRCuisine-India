@@ -11,6 +11,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/config/supabase";
 import { LogoutLogo } from "../icons/logout";
+import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 
 const EndSession = ({ isOpen, onOpenChange, tableId, userId }) => {
   const router = useRouter();
@@ -38,18 +39,7 @@ const EndSession = ({ isOpen, onOpenChange, tableId, userId }) => {
       if (tableError) throw tableError;
       if (userError) throw userError;
 
-      const keysToRemove = [
-        "isBooked",
-        "tableId",
-        "userId",
-        "cartItems",
-        "tableData",
-        "restaurantData",
-        "status",
-        "orderId",
-      ];
-
-      keysToRemove.forEach((key) => localStorage.removeItem(key));
+      await clearLocalStorage();
 
       router.replace("/");
     } catch (error) {

@@ -28,8 +28,8 @@ export default function ControlOrders() {
 
           <div className="flex w-full z-20 py-5 overflow-hidden">
             <Image
-              width={1080}
-              height={1080}
+              width={2080}
+              height={2080}
               alt="Laptop"
               src="/mockup/order-mockup.png"
               className="w-full h-full"

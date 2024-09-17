@@ -16,10 +16,10 @@ export default function SmarterOrdering() {
       >
         <DotPattern
           className={cn(
-            "[mask-image:linear-gradient(to_bottom,white,transparent,transparent)] fill-primary-400"
+            "[mask-image:linear-gradient(to_bottom,white,transparent,transparent)] fill-primary-400 top-4"
           )}
         />
-        <div className="w-full h-full flex flex-col md:flex-row max-w-screen-xl z-10 py-10 px-6 gap-5">
+        <div className="w-full h-full flex flex-col md:flex-row max-w-screen-xl z-10 py-10 px-6 gap-5 md:items-center">
           <div className="w-full flex justify-center">
             <Image
               width={1080}
@@ -30,7 +30,7 @@ export default function SmarterOrdering() {
             />
           </div>
 
-          <div className="w-full h-full flex flex-col 3xl:gap-8 lg:gap-6 gap-3 justify-center">
+          <div className="w-full h-full flex flex-col 3xl:gap-8 lg:gap-6 gap-3">
             <h3 className="lg:text-5xl md:text-3xl text-2xl font-bold text-default-900 md:leading-tight leading-inherit gap-3 flex flex-col lg:leading-snug">
               Smarter Ordering,
               <br />
