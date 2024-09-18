@@ -270,7 +270,6 @@ const CheckoutMain = () => {
   };
 
   const updateTable = async (id) => {
-    console.log("id", id);
     try {
       const { data, error } = await supabase
         .from("tables")

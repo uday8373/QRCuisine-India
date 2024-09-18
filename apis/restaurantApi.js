@@ -351,8 +351,6 @@ export const getSession = async (userId) => {
       .subtract(15, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
 
-    alert("calling session");
-
     const { data, count, error } = await supabase
       .from("messages")
       .select("id", { count: "exact" })

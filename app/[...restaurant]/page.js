@@ -6,9 +6,9 @@ const page = ({ params }) => {
   const tableId = params.restaurant[1];
 
   return (
-    <>
+    <main className="font-Rethink">
       <RestuarantMainPage restaurantId={restaurantId} tableId={tableId} />
-    </>
+    </main>
   );
 };
 

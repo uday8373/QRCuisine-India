@@ -7,7 +7,7 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
+} from "@nextui-org/react";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import { Logo, LogoShort } from "../icons/icons";

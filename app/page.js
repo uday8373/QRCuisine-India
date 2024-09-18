@@ -8,14 +8,14 @@ import SmarterOrdering from "@/containers/home-page/Smarter-Ordering";
 
 export default function Home() {
   return (
-    <main>
+    <main className="font-Rethink">
       <Hero />
-        <HelpsRestaurants />
-        <SmarterOrdering />
-        <ControlOrders />
-        <Analytics />
-        <Pricing />
-        <Footer />
+      <HelpsRestaurants />
+      <SmarterOrdering />
+      <ControlOrders />
+      <Analytics />
+      <Pricing />
+      <Footer />
     </main>
   );
 }

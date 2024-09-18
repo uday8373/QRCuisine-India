@@ -67,7 +67,6 @@ function CustomRating({ order_id, user_id, restaurant_id, table_id }) {
 
     if (error) {
       console.error(error);
-      alert("Error submitting rating. Please try again.");
     } else {
       setIsRated(true);
       localStorage.setItem(

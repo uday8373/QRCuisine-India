@@ -140,8 +140,6 @@ const DeliveredMain = () => {
     );
   }
 
-  console.log("object", orderData);
-
   return (
     <div>
       <Header orderData={orderData} />

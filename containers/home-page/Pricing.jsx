@@ -16,11 +16,11 @@ export default function Pricing() {
     >
       <div className=" w-full h-full space-y-5 relative  max-w-screen-xl px-6 py-8 md:py-16 z-10">
         <div className="max-w-lg space-y-3">
-          <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[38px]">
+          <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[36px]">
             Simple Pricing for
             <br /> – Smart Dining
           </h3>
-          <p className="text-default-600 font-medium font-Rethink">
+          <p className="text-default-600 font-medium">
             QRcuisine provides restaurants real-time data of operations, It will
             make all transactions transparent to owner and manager.
           </p>

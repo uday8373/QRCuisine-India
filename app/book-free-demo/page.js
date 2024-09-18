@@ -3,7 +3,7 @@ import React from "react";
 
 const BookFreeDemoPage = () => {
   return (
-    <main>
+    <main className="font-Rethink">
       <BookDemoMain />
     </main>
   );

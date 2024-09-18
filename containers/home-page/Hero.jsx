@@ -6,7 +6,6 @@ import { RectangleElement } from "@/components/icons/icons";
 import { MoveRight } from "lucide-react";
 
 export default function Hero() {
-  //
   return (
     <>
       <section
@@ -30,7 +29,7 @@ export default function Hero() {
           <div className="flex items-center relative justify-center flex-col 3xl:gap-9 gap-7 text-center z-20">
             <h3 className="3xl:text-xl underline-offset-4 tracking-wide underline text-default-600 font-medium decoration-default-600">{`FOR FULL SERVICE RESTAURANT’S `}</h3>
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-6xl 3xl:text-7xl font-bold font-Rethink text-default-900 leading-relaxed md:leading-tight 3xl:leading-snug text-balance">
+              <h2 className="text-3xl md:text-6xl 3xl:text-7xl font-bold text-default-900 leading-relaxed md:leading-tight 3xl:leading-snug text-balance">
                 We ensure{` restaurant's `}
                 <br />
                 sustainability & Growth
@@ -65,7 +64,7 @@ export default function Hero() {
               >
                 Try free for 3 months
               </Button>
-              <p className="text-[13px] 3xl:text-md font-semibold font-Rethink text-default-700">{`Trusted by 100’s of restaurants`}</p>
+              <p className="text-[13px] 3xl:text-md font-semibold text-default-700">{`Trusted by 100’s of restaurants`}</p>
             </div>
           </div>
         </div>

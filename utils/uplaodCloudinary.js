@@ -1,5 +1,4 @@
 export const uploadImageToCloudinary = async (imageFile) => {
-  console.log("image", imageFile);
   const cloudName = "drxwyotes";
   const uploadPreset = "igv92zj3";
   const formData = new FormData();

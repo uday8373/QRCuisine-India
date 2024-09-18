@@ -16,10 +16,10 @@ export default function ControlOrders() {
             className="stroke-primary absolute top-24 xl:right-24 right-10 -z-10 md:flex hidden"
           />
           <div className="max-w-xl space-y-5 ">
-            <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[38px]">
+            <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[36px]">
               Control Orders, Manage Tables <br /> – All in One Solution
             </h3>
-            <p className="text-default-600 font-medium font-Rethink">
+            <p className="text-default-600 font-medium">
               Easily manage orders and tables from a single platform, ensuring
               smooth service, better organization, and a seamless dining
               experience for both staff and customers.

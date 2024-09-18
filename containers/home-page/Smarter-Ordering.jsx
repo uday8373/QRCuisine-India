@@ -1,5 +1,4 @@
 import DotPattern from "@/components/background/DotBackground";
-import { BannerTransparent } from "@/public/assets/svg/Home-Page/Index";
 import { cn } from "@/utils/cn";
 import { Button } from "@nextui-org/react";
 import { ArrowRight, MoveRight } from "lucide-react";

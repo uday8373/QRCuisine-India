@@ -23,10 +23,10 @@ export default function Analytics() {
       />
       <div className=" w-full h-full space-y-5 relative  max-w-screen-xl px-6 py-8 md:py-16 z-10">
         <div className="max-w-xl space-y-5">
-          <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[38px]">
+          <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[36px]">
             Real-Time Analytics, <br /> – Real-Time Succes
           </h3>
-          <p className="text-default-600 font-medium font-Rethink">
+          <p className="text-default-600 font-medium">
             Real-Time Analytics, Real-Time Success: Leverage instant insights to
             drive immediate decisions, optimize performance, and achieve
             measurable success in real time.
