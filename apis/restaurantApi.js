@@ -347,7 +347,7 @@ export const getNotification = async () => {
 export const getSession = async (userId) => {
   try {
     const currentTime = moment().toISOString();
-    const minutesAgo = moment().subtract(60, "minutes").toISOString();
+    const minutesAgo = moment().subtract(15, "minutes").toISOString();
 
     const { data, count, error } = await supabase
       .from("messages")

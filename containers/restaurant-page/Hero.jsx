@@ -1,6 +1,5 @@
 "use client";
 import EndSession from "@/components/modal/End-Session";
-import ThemeToggle from "@/components/themes/theme-switch";
 import { Avatar, Button, useDisclosure } from "@nextui-org/react";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
@@ -27,9 +26,6 @@ const Hero = ({ restaurantData, tableData, userId }) => {
         />
         <div className="w-full h-full bg-black/60 absolute top-0 z-10" />
         <div className="w-full h-60 absolute flex justify-center items-center flex-col top-0 z-30 gap-3 px-6">
-          <div className="absolute top-2 left-2">
-            <ThemeToggle color="white" />
-          </div>
           <div className="absolute top-2 right-2">
             <Button
               isIconOnly
