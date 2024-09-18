@@ -64,25 +64,26 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
 
-  // const checkUserSessions = async () => {
-  //   if (tableId !== localTableId || !userId) {
-  //     return;
-  //   }
+  const checkUserSessions = async () => {
+    if (tableId !== localTableId || !userId) {
+      return;
+    }
 
-  //   const result = await getSession(userId);
+    setTimeout(async () => {
+      const result = await getSession(userId);
 
-  //   if (result.count < 1) {
-  //     await handleLogout();
-  //     return;
-  //   }
-
-  //   if (customerStatus) {
-  //     navigateBasedOnStatus();
-  //   }
-  // };
+      if (result.count < 1) {
+        await handleLogout();
+        return;
+      }
+      if (customerStatus) {
+        navigateBasedOnStatus();
+      }
+    }, 3000);
+  };
 
   useEffect(() => {
-    // checkUserSessions();
+    checkUserSessions();
 
     if (isBooked && tableId !== localTableId) {
       setSelfBooked(true);
