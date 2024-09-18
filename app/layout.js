@@ -7,6 +7,7 @@ import Head from "next/head";
 import QrScannerForMoblie from "@/containers/home-page/QrScanner-For-Moblie";
 
 export const metadata = {
+  manifest: "/manifest.json",
   title: siteConfig.name,
   description: siteConfig.description,
   link: [
