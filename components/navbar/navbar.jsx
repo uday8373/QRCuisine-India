@@ -57,6 +57,7 @@ export const Navbar = () => {
           : "bg-transparent"
       }`}
       isBlurred={false}
+      disableAnimation
     >
       <NavbarBrand as="li" className="max-w-fit" justify="start">
         <NextLink
