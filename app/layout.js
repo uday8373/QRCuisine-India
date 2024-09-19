@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar/navbar";
 import { siteConfig } from "@/config/site";
 import Head from "next/head";
 import QrScannerForMoblie from "@/containers/home-page/QrScanner-For-Moblie";
+import Script from "next/script";
 
 export const metadata = {
   manifest: "/manifest.json",
@@ -89,6 +90,21 @@ export default function RootLayout({ children }) {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </Head>
+      <Script
+        id="one-signal"
+        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+        strategy="afterInteractive"
+      />
+      <Script id="onesignal-init" strategy="afterInteractive">
+        {`
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+              appId: "033ab008-a9bc-4ec8-acc5-2ae32d7e25d4",
+            });
+          });
+        `}
+      </Script>
       <body className={`${fontRethink.variable}`}>
         <Providers>
           <Navbar />
