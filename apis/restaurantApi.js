@@ -6,7 +6,7 @@ export const fetchTableData = async (tableNo) => {
   try {
     const { data, error } = await supabase
       .from("tables")
-      .select("id, table_no, is_booked, is_available")
+      .select("id, table_no, is_booked, is_available, restaurant_id, user_id")
       .eq("id", tableNo)
       .single();
 
@@ -197,11 +197,11 @@ export const updateVisitorBooked = async (restaurantId) => {
   }
 };
 
-export const updateTable = async (tableId, selectedPerson) => {
+export const updateTable = async (tableId, selectedPerson, userId) => {
   try {
     const { data, error } = await supabase
       .from("tables")
-      .update({ is_booked: true, persons: selectedPerson })
+      .update({ is_booked: true, persons: selectedPerson, user_id: userId })
       .eq("id", tableId)
       .select("id");
 
@@ -348,7 +348,7 @@ export const getSession = async (userId) => {
   try {
     const currentTime = moment().format("YYYY-MM-DD HH:mm:ss");
     const minutesAgo = moment()
-      .subtract(15, "minutes")
+      .subtract(5, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
 
     const { data, count, error } = await supabase

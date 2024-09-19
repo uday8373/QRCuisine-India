@@ -50,7 +50,7 @@ const BookTable = ({
 
       const [updateTableResponse, updateVisitorResponse, messageResponse] =
         await Promise.all([
-          updateTable(tableId, selectedPerson),
+          updateTable(tableId, selectedPerson, userId),
           updateVisitorBooked(restaurantId),
           insertMessage(tableId, restaurantId, userId, tableNo),
         ]);
