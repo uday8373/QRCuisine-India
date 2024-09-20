@@ -37,7 +37,7 @@ const Invoice = ({ orderData }) => {
   };
 
   return (
-    <div>
+    <>
       {/* Hidden Invoice HTML Structure */}
       <div
         ref={invoiceRef}
@@ -193,12 +193,12 @@ const Invoice = ({ orderData }) => {
       </div>
 
       {/* Download Invoice as PDF button */}
-      <div className="download-buttons pt-4">
+      <div className="download-buttons">
         <Button variant="flat" color="success" onClick={downloadInvoiceAsPDF}>
           Download Invoice
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

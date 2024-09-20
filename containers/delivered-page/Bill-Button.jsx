@@ -13,7 +13,7 @@ const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
               Grand Total
             </h4>
             <h4 className="text-xl font-bold text-default-900">
-              ₹ {orderData.grand_amount}
+              ₹ {orderData.grand_amount.toFixed(2)}
             </h4>
           </div>
           <Invoice orderData={orderData} />
