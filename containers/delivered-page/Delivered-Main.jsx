@@ -121,9 +121,6 @@ const DeliveredMain = () => {
         console.error("Error updating table, waiter message, or user");
         return;
       } else {
-        setTimeout(async () => {
-          await clearLocalStorage();
-        }, 3000);
         router.replace("/complete");
       }
     } catch (error) {

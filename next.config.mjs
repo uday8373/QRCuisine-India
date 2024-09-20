@@ -6,6 +6,7 @@ const pwaConfig = withPWA({
   register: true,
   skipWaiting: true,
   runtimeCaching,
+  reloadOnOnline: true,
 });
 
 const nextConfig = {

@@ -100,11 +100,12 @@ export default function RootLayout({ children }) {
           window.OneSignalDeferred = window.OneSignalDeferred || [];
           OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
-              appId: "033ab008-a9bc-4ec8-acc5-2ae32d7e25d4",
+              appId: "2ea278aa-e012-412f-a68f-65c4fb6214cc",
             });
           });
         `}
       </Script>
+
       <body className={`${fontRethink.variable}`}>
         <Providers>
           <Navbar />
