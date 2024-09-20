@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Link } from "@nextui-org/react";
 import QrScan from "./Qr-Scan";
-import Image from "next/image";
 import { RectangleElement } from "@/components/icons/icons";
 import { MoveRight } from "lucide-react";
 
