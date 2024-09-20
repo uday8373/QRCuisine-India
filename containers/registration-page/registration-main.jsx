@@ -149,6 +149,8 @@ const RegistrationMain = () => {
     information: Yup.string().required("Restaurant information is required"),
   });
 
+  //
+
   const handleNextStepChange = async (values, setTouched) => {
     if (currentStep === 1) {
       try {
