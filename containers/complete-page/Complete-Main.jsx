@@ -3,14 +3,13 @@ import confetti from "canvas-confetti";
 import React, { useEffect, useState } from "react";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import ScreenError from "@/components/pages/Screen-Error";
-
 import ThankYou from "./Thank-You";
 import PaymentStatus from "./Payment-Status";
-import Footer from "./footer";
 import LoyaltyPoints from "./Loyalty-Points";
 import { fetchOrderData } from "@/apis/preparingApi";
 import { useRouter, notFound } from "next/navigation";
 import Header from "./Header";
+import Footer from "./Footer";
 
 const CompleteMain = () => {
   const router = useRouter();
