@@ -20,7 +20,12 @@ const EndSession = ({ isOpen, onOpenChange, tableId, userId }) => {
     try {
       const updateTablePromise = supabase
         .from("tables")
-        .update({ is_booked: false, persons: null, order_id: null })
+        .update({
+          is_booked: false,
+          persons: null,
+          order_id: null,
+          user_id: null,
+        })
         .eq("id", tableId)
         .select();
 

@@ -40,7 +40,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [tableData, setTableData] = useState(null);
   const [restaurantData, setRestaurantData] = useState(null);
   const [notFoundError, setNotFoundError] = useState(false);
-  const [isBooked, setIsBooked] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [specialMenuData, setSpecialMenuData] = useState([]);
   const [cartItems, setCartItems] = useState(initialCartItems);
@@ -52,6 +51,10 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [alreadyBooked, setAlreadyBooked] = useState(false);
   const [selfBooked, setSelfBooked] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const storeIsBooked =
+    typeof window !== "undefined" ? localStorage.getItem("isBooked") : null;
+  const initialIsBooked = storeIsBooked ? true : false;
+  const [isBooked, setIsBooked] = useState(initialIsBooked);
 
   const pageSize = 10;
 
@@ -69,35 +72,26 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       return;
     }
 
-    setTimeout(async () => {
-      const result = await getSession(userId);
+    const result = await getSession(userId);
+    const isReload = false;
 
-      if (result.count < 1) {
-        await handleLogout();
-        return;
-      }
-      if (customerStatus) {
-        navigateBasedOnStatus();
-      }
-    }, 3000);
+    if (result.count < 1) {
+      await handleLogout(isReload);
+      return;
+    }
+    if (customerStatus) {
+      navigateBasedOnStatus();
+    }
   };
 
   useEffect(() => {
-    checkUserSessions();
-
-    if (isBooked && tableId !== localTableId) {
-      setSelfBooked(true);
-      return;
-    }
     const fetchData = async () => {
       try {
         setDataLoading(true);
-        const [tableResponse, restaurantResponse, isBookedResponse] =
-          await Promise.all([
-            fetchTableData(tableId),
-            fetchRestaurantData(restaurantName),
-            fetchIsBooked(),
-          ]);
+        const [tableResponse, restaurantResponse] = await Promise.all([
+          fetchTableData(tableId),
+          fetchRestaurantData(restaurantName),
+        ]);
 
         if (!tableResponse || !restaurantResponse) {
           setNotFoundError(true);
@@ -106,18 +100,30 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
         setTableData(tableResponse);
         setRestaurantData(restaurantResponse);
-        setIsBooked(isBookedResponse);
-
-        if (
-          tableResponse.is_booked === true &&
-          localTableId !== tableResponse.id
-        ) {
-          setAlreadyBooked(true);
-          return;
-        }
 
         if (!isBooked) {
           await updateVisitors(restaurantResponse.id);
+        }
+
+        if (tableResponse.restaurant_id !== restaurantResponse.id) {
+          setNotFoundError(true);
+        }
+        // Redirect Algorithm
+        if (isBooked) {
+          const isDifferentTable =
+            !tableResponse.is_booked ||
+            localTableId !== tableResponse.id ||
+            tableResponse.user_id !== userId;
+
+          if (isDifferentTable) {
+            setSelfBooked(true);
+            return;
+          }
+
+          await checkUserSessions();
+        } else if (tableResponse.is_booked) {
+          setAlreadyBooked(true);
+          return;
         }
 
         const [categoryResponse, specialMenuResponse, menuResponse] =
@@ -144,7 +150,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         console.error("Error fetching data:", error);
       } finally {
         setDataLoading(false);
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
       }
     };
 
@@ -153,7 +161,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     tableId,
     restaurantName,
     localTableId,
-    isBooked,
     currentPage,
     selectedCategory,
     pageSize,
@@ -212,12 +219,17 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (isReload = true) => {
     try {
       const updateTablePromise = supabase
         .from("tables")
-        .update({ is_booked: false, persons: null, order_id: null })
-        .eq("id", tableId)
+        .update({
+          is_booked: false,
+          persons: null,
+          order_id: null,
+          user_id: null,
+        })
+        .eq("id", localTableId)
         .select();
 
       const updateUserPromise = supabase
@@ -235,7 +247,10 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       if (userError) throw userError;
 
       await clearLocalStorage();
-      window.location.reload();
+      setIsBooked(false);
+      if (isReload) {
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Logout error:", error);
     }
