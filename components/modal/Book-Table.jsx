@@ -56,11 +56,11 @@ const BookTable = ({
         ]);
 
       if (updateTableResponse && updateVisitorResponse && messageResponse) {
-        setIsBooked(true);
         localStorage.setItem("isBooked", true);
         localStorage.setItem("tableId", tableId);
         localStorage.setItem("deviceToken", deviceToken);
         localStorage.setItem("userId", userId);
+        setIsBooked(true);
       }
     } catch (error) {
       console.error("Error booking table or updating visitor:", error);

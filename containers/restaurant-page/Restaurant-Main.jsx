@@ -15,7 +15,7 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
-import { Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, table, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
 import SpecialMenu from "./Special-Menu";
@@ -110,6 +110,11 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         }
         // Redirect Algorithm
         if (isBooked) {
+          if (isBooked && !tableResponse.is_booked) {
+            const isReload = false;
+            await handleLogout(isReload);
+            return;
+          }
           const isDifferentTable =
             !tableResponse.is_booked ||
             localTableId !== tableResponse.id ||
@@ -164,7 +169,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     currentPage,
     selectedCategory,
     pageSize,
-    userId,
   ]);
 
   const handleCartChange = (menuItem, quantity) => {
@@ -221,7 +225,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
   const handleLogout = async (isReload = true) => {
     try {
-      const updateTablePromise = supabase
+      const updateTablePromise = await supabase
         .from("tables")
         .update({
           is_booked: false,
@@ -232,7 +236,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         .eq("id", localTableId)
         .select();
 
-      const updateUserPromise = supabase
+      const updateUserPromise = await supabase
         .from("users")
         .update({ is_active: false, closed_at: new Date().toISOString() })
         .eq("id", userId)

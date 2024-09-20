@@ -346,9 +346,11 @@ export const getNotification = async () => {
 
 export const getSession = async (userId) => {
   try {
-    const currentTime = moment().format("YYYY-MM-DD HH:mm:ss");
+    const currentTime = moment()
+      .add(5, "minutes")
+      .format("YYYY-MM-DD HH:mm:ss");
     const minutesAgo = moment()
-      .subtract(5, "minutes")
+      .subtract(30, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
 
     const { data, count, error } = await supabase
