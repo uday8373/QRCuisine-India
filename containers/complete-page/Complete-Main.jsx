@@ -1,16 +1,31 @@
 "use client";
-import Happy from "@/components/icons/happy";
 import confetti from "canvas-confetti";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import ScreenError from "@/components/pages/Screen-Error";
-import { Button } from "@nextui-org/react";
-import { ArrowLeftFromLine } from "lucide-react";
+
+import ThankYou from "./Thank-You";
+import PaymentStatus from "./Payment-Status";
+import Footer from "./footer";
+import LoyaltyPoints from "./Loyalty-Points";
+import { fetchOrderData } from "@/apis/preparingApi";
+import { useRouter, notFound } from "next/navigation";
+import Header from "./Header";
 
 const CompleteMain = () => {
   const router = useRouter();
+
   const isSmallScreen = useSmallScreen();
+  const [orderData, setOrderData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const orderId =
+    typeof window !== "undefined" ? localStorage.getItem("orderId") : null;
+  useEffect(() => {
+    if (!orderId) {
+      notFound();
+    }
+  }, [orderId]);
 
   useEffect(() => {
     const handleClick = () => {
@@ -45,25 +60,44 @@ const CompleteMain = () => {
     handleClick();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [orderResponse] = await Promise.all([fetchOrderData(orderId)]);
+        if (!orderResponse) {
+          console.error("Error fetching order");
+        }
+        setOrderData(orderResponse);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [orderId]);
+
   if (!isSmallScreen) {
     return <ScreenError />;
   }
+
+  const handleclearLocalStorage = () => {
+    router.replace("/");
+    setTimeout(async () => {
+      await clearLocalStorage();
+    }, 3000);
+  };
+
   return (
     <section
       id="complete"
-      className="w-full h-svh flex justify-center items-center px-5 flex-col gap-6"
+      className="w-full h-svh flex  items-center  flex-col "
     >
-      <Happy size={175} />
-      <h3 className="text-2xl font-medium text-primary text-center">
-        Thank you for visiting us!
-      </h3>
-      <Button
-        onClick={() => router.replace("/")}
-        color="primary"
-        startContent={<ArrowLeftFromLine size={20} />}
-      >
-        Back to Home
-      </Button>
+      <Header orderData={orderData} />
+      <ThankYou orderData={orderData} />
+      <PaymentStatus />
+      <LoyaltyPoints />
+      <Footer handleclearLocalStorage={handleclearLocalStorage} />
     </section>
   );
 };
