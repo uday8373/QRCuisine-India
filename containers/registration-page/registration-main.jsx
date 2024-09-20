@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import supabase from "@/config/supabase";
 import { uploadImageToCloudinary } from "@/utils/uplaodCloudinary";
