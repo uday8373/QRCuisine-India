@@ -20,6 +20,8 @@ import ScreenError from "@/components/pages/Screen-Error";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { NotificationList } from "./Notification";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import QRLoader from "@/components/lottie/QR_loop.json";
 
 const PreparingMain = () => {
   const router = useRouter();
@@ -157,8 +159,8 @@ const PreparingMain = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   }

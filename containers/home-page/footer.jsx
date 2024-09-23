@@ -1,4 +1,5 @@
 import { Logo } from "@/components/icons/icons";
+import { siteConfig } from "@/config/site";
 import { Button, Link } from "@nextui-org/react";
 import React from "react";
 
@@ -11,7 +12,12 @@ export default function Footer() {
       >
         <div className="w-full flex flex-col md:items-center gap-5 md:flex-row max-w-screen-xl px-6 py-10 relative">
           <div className="text-default-500 absolute bottom-5 lg:flex w-full justify-center hidden text-xs font-bold tracking-widest">
-            <h5>V 1.0.P</h5>
+            <h5>
+              V{" "}
+              {siteConfig.isProduction
+                ? siteConfig.productionVersion
+                : siteConfig.developementVersion}
+            </h5>
           </div>
           <div className="space-y-3 text-default-800">
             <Logo />

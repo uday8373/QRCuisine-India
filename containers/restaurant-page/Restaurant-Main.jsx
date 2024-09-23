@@ -26,6 +26,8 @@ import SadIcon from "@/components/icons/sad";
 import { ArrowLeftFromLine } from "lucide-react";
 import supabase from "@/config/supabase";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import QRLoader from "@/components/lottie/QR_loop.json";
 
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
@@ -313,8 +315,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   } else {

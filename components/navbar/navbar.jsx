@@ -11,7 +11,7 @@ import {
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import { Logo, LogoShort } from "../icons/icons";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { Link as ScrollLink } from "react-scroll";
@@ -70,7 +70,6 @@ export const Navbar = () => {
         </NextLink>
       </NavbarBrand>
       <NavbarMenuToggle
-        isOpen={isMenuOpen}
         onClick={toggleMenu}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         className="sm:hidden p-5 w-fit h-fit"
@@ -116,11 +115,7 @@ export const Navbar = () => {
           </Button>
         </NavbarItem>
       </NavbarContent>
-      <NavbarMenu
-        isOpen={isMenuOpen}
-        onClose={toggleMenu}
-        className="z-50 pt-5"
-      >
+      <NavbarMenu onClose={toggleMenu} className="z-50 pt-5">
         {siteConfig.navMenuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <ScrollLink
@@ -135,7 +130,7 @@ export const Navbar = () => {
             </ScrollLink>
           </NavbarMenuItem>
         ))}
-        <NavbarContent className="flex w-full items-start py-5 justify-center ">
+        <NavbarContent className="flex w-full items-start py-5 justify-center">
           <Button
             color="secondary"
             href="/book-free-demo"

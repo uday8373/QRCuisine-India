@@ -13,6 +13,8 @@ import BillButton from "./Bill-Button";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import QRLoader from "@/components/lottie/QR_loop.json";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
 
 const DeliveredMain = () => {
   const router = useRouter();
@@ -139,8 +141,8 @@ const DeliveredMain = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   }

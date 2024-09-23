@@ -22,4 +22,7 @@ export const siteConfig = {
       label: "Pricing",
     },
   ],
+  isProduction: false,
+  productionVersion: "1.0.P",
+  developementVersion: "1.0.D",
 };
