@@ -15,7 +15,7 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
-import { Button, Spinner, table, useDisclosure } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
 import SpecialMenu from "./Special-Menu";
@@ -226,6 +226,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   };
 
   const handleLogout = async (isReload = true) => {
+    const orderId = localStorage.getItem("orderId");
     try {
       const updateTablePromise = await supabase
         .from("tables")
@@ -244,13 +245,32 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         .eq("id", userId)
         .select();
 
+      let updateOrderPromise = null;
+      if (orderId) {
+        updateOrderPromise = supabase
+          .from("orders")
+          .update({
+            is_abandoned: true,
+            status_id: "bb59ee8e-f74c-4d0a-a422-655a2bb1053e",
+          })
+          .eq("id", orderId)
+          .select();
+      }
+
       const [
         { data: tableData, error: tableError },
         { data: userData, error: userError },
-      ] = await Promise.all([updateTablePromise, updateUserPromise]);
+
+        orderResult = {},
+      ] = await Promise.all([
+        updateTablePromise,
+        updateUserPromise,
+        ...(orderId ? [updateOrderPromise] : []),
+      ]);
 
       if (tableError) throw tableError;
       if (userError) throw userError;
+      if (orderResult.error) throw orderResult.error;
 
       await clearLocalStorage();
       setIsBooked(false);

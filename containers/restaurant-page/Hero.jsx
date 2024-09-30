@@ -1,69 +1,61 @@
 "use client";
-import EndSession from "@/components/modal/End-Session";
-import { Avatar, Button, useDisclosure } from "@nextui-org/react";
-import { LogOut } from "lucide-react";
-import Image from "next/image";
-import React from "react";
+import ProfileSidebar from "@/components/drawer/Profile-Sidebar";
+import { Avatar, Button } from "@nextui-org/react";
+import { AlignLeft, X } from "lucide-react";
+import React, { useState } from "react";
 
 const Hero = ({ restaurantData, tableData, userId }) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const formatTableNumber = (tableNo) => {
+    return tableNo && tableNo < 10 ? `0${tableNo}` : tableNo;
+  };
+
   return (
-    <section
-      id="restaurant_hero_section"
-      className="flex items-center justify-center w-full bg-primary h-60 relative"
-    >
-      <div className="w-full h-full flex-col max-w-screen-xl relative">
-        <Image
-          priority
-          width={1080}
-          height={1080}
-          radius="none"
-          removeWrapper
-          className="w-full object-cover h-full"
-          src={restaurantData?.background_image}
-          alt={restaurantData?.restaurant_name}
-          title={restaurantData?.restaurant_name}
-        />
-        <div className="w-full h-full bg-black/60 absolute top-0 z-10" />
-        <div className="w-full h-60 absolute flex justify-center items-center flex-col top-0 z-30 gap-3 px-6">
-          <div className="absolute top-2 right-2">
+    <>
+      <section
+        id="restaurant_hero_section"
+        className="pl-5 relative bg-background z-50 border-b"
+      >
+        <div className="flex w-full items-center justify-between relative">
+          <div className="flex gap-2 items-center">
             <Button
-              isIconOnly
-              onClick={onOpen}
               size="sm"
               variant="light"
-              color="danger"
+              color="default"
+              isIconOnly
+              className="w-fit"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              <LogOut className="text-danger-500" />
+              {sidebarOpen ? <X /> : <AlignLeft />}
             </Button>
+            <Avatar
+              src={restaurantData?.logo}
+              className="w-8 h-8 text-large text-white"
+            />
+            <h1 className="text-medium font-semibold">
+              {restaurantData.restaurant_name.length > 15
+                ? `${restaurantData.restaurant_name.slice(0, 15)}...`
+                : restaurantData.restaurant_name}
+            </h1>
           </div>
-
-          <Avatar
-            src={restaurantData?.logo}
-            className="w-16 h-16 text-large text-white"
-          />
-          <h1 className="text-2xl font-semibold line-clamp-1 text-white/90">
-            {restaurantData?.restaurant_name}
-          </h1>
-          <h3 className="text-sm text-white/85">
-            - By{" "}
-            <label className="tracking-wider font-medium">
-              TABLE<span className="text-primary">QR</span>
-            </label>
-          </h3>
-          <h2 className="text-large font-semibold line-clamp-1 text-white/90">
-            Table No - {tableData?.table_no}
-          </h2>
+          <div className="bg-secondary flex flex-col px-4 py-2 justify-center items-center h-full">
+            <h3 className="text-sm font-bold text-white">TABLE</h3>
+            <p className="text-3xl font-black tracking-wider text-white leading-7">
+              {formatTableNumber(tableData?.table_no)}
+            </p>
+          </div>
         </div>
-      </div>
-      <EndSession
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+      </section>
+
+      <ProfileSidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
         tableId={tableData?.id}
-        restaturantId={restaurantData?.id}
+        restaurantId={restaurantData?.id}
         userId={userId}
       />
-    </section>
+    </>
   );
 };
 

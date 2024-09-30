@@ -5,18 +5,19 @@ import LottieAnimation from "@/components/lottie/LottieAnimation";
 import Sad from "@/components/lottie/Cancel.json";
 export default function CancelOrder() {
   return (
-    <div className="w-full  ">
+    <section id="order_cancelled">
       <div
-        className={`w-full flex flex-col items-center justify-center
-         px-5 gap-4 pt-8 pb-5`}
+        className={`w-full flex flex-col rounded-b-3xl bg-danger-500/10 px-5`}
       >
-        <div>
-          <LottieAnimation width={120} height={120} animationData={Sad} />
+        <div className="w-full flex flex-col justify-center items-center gap-1 py-5">
+          <div>
+            <LottieAnimation width={100} height={100} animationData={Sad} />
+            <h3 className="text-medium font-medium text-danger-500">
+              Your Order Is Cancelled
+            </h3>
+          </div>
         </div>
-        <h2 className=" text-center  font-bold text-2xl">
-          Your order has been cancelled
-        </h2>
       </div>
-    </div>
+    </section>
   );
 }

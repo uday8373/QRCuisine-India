@@ -7,34 +7,36 @@ const Header = ({ orderData }) => {
   };
 
   return (
-    <section
-      id="checkout_header"
-      className="shadow-small sticky top-0 backdrop-blur-xl z-30 pl-5"
-    >
-      <div className="flex w-full items-center justify-between  relative">
-        <div className="flex gap-2 items-center">
-          <Avatar
-            src={orderData?.restaurant_id?.logo}
-            className="w-8 h-8 text-large text-white"
-          />
+    <>
+      <section
+        id="checkout_header"
+        className="sticky top-0 bg-background z-50 pl-5 border-b"
+      >
+        <div className="flex w-full items-center justify-between  relative">
+          <div className="flex gap-2 items-center">
+            <Avatar
+              src={orderData?.restaurant_id?.logo}
+              className="w-8 h-8 text-large text-white"
+            />
 
-          <h1 className="text-medium font-semibold">
-            {orderData?.restaurant_id?.restaurant_name.length > 15
-              ? `${orderData?.restaurant_id?.restaurant_name.slice(0, 15)}...`
-              : orderData?.restaurant_id?.restaurant_name}
-          </h1>
-        </div>
-        <div
-          className="bg-secondary flex  flex-col px-4 py-2 justify-center items-center
+            <h1 className="text-medium font-semibold">
+              {orderData?.restaurant_id?.restaurant_name.length > 15
+                ? `${orderData?.restaurant_id?.restaurant_name.slice(0, 15)}...`
+                : orderData?.restaurant_id?.restaurant_name}
+            </h1>
+          </div>
+          <div
+            className="bg-secondary flex  flex-col px-4 py-2 justify-center items-center
          h-full "
-        >
-          <h3 className="text-sm font-bold text-white">TABLE</h3>
-          <p className="text-3xl font-black tracking-wider text-white leading-7">
-            {formatTableNumber(orderData?.tables?.table_no)}
-          </p>
+          >
+            <h3 className="text-sm font-bold text-white">TABLE</h3>
+            <p className="text-3xl font-black tracking-wider text-white leading-7">
+              {formatTableNumber(orderData?.tables?.table_no)}
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

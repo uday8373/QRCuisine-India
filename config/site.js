@@ -24,5 +24,5 @@ export const siteConfig = {
   ],
   isProduction: false,
   productionVersion: "1.0.P",
-  developementVersion: "1.0.D",
+  developementVersion: "1.1.D",
 };

@@ -56,6 +56,8 @@ const CheckoutMain = () => {
   const [mobileError, setMobileError] = useState("");
   const [loading, setLoading] = useState(false);
   const isSmallScreen = useSmallScreen();
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   if (!restaurantData || !tableData || !cartItems) {
     return notFound();
@@ -333,7 +335,11 @@ const CheckoutMain = () => {
 
   return (
     <>
-      <Header restaurantData={restaurantData} tableData={tableData} />
+      <Header
+        restaurantData={restaurantData}
+        tableData={tableData}
+        userId={userId}
+      />
       <ItemList menuItems={cartItems} handleCartChange={handleCartChange} />
       <Preferences
         mainInstructions={mainInstructions}

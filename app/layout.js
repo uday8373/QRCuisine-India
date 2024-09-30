@@ -5,6 +5,8 @@ import { Navbar } from "@/components/navbar/navbar";
 import { siteConfig } from "@/config/site";
 import QrScannerForMoblie from "@/containers/home-page/QrScanner-For-Moblie";
 import Script from "next/script";
+import { Flip, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   manifest: "/manifest.json",
@@ -122,6 +124,7 @@ export default function RootLayout({ children }) {
       <body className={`${fontRethink.variable}`}>
         <Providers>
           <Navbar />
+          <ToastContainer position="center" transition={Flip} />
           {children}
           <QrScannerForMoblie />
         </Providers>

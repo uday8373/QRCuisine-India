@@ -9,7 +9,7 @@ import {
   updateVisitorPreparing,
 } from "@/apis/preparingApi";
 import supabase from "@/config/supabase";
-import { Spinner } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
@@ -22,6 +22,9 @@ import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { NotificationList } from "./Notification";
 import LottieAnimation from "@/components/lottie/LottieAnimation";
 import QRLoader from "@/components/lottie/QR_loop.json";
+import Cookies from "js-cookie";
+import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import { toast } from "react-toastify";
 
 const PreparingMain = () => {
   const router = useRouter();
@@ -144,6 +147,26 @@ const PreparingMain = () => {
     router.replace("/delivered");
   }
 
+  if (orderData?.status_id?.sorting === 5) {
+    const expires = new Date();
+    expires.setMinutes(expires.getMinutes() + 30);
+    Cookies.set("orderId", orderData.id, { expires });
+    setTimeout(async () => {
+      await clearLocalStorage();
+    }, 3000);
+    router.replace("/cancel");
+  }
+
+  if (orderData?.status_id?.sorting === 6) {
+    toast.info("Your Order has been abandoned! Please create a new order.", {
+      icon: <span>🥺</span>,
+    });
+    setTimeout(async () => {
+      await clearLocalStorage();
+    }, 3000);
+    router.replace("/");
+  }
+
   const handleUpdate = async (id) => {
     const result = await updateNofication(id);
     if (result) {
@@ -166,7 +189,7 @@ const PreparingMain = () => {
   }
   return (
     <div>
-      <Header orderData={orderData} />
+      <Header orderData={orderData} statusData={statusData} />
       <OrderStatus orderData={orderData} />
       {notifications.length > 0 && (
         <NotificationList
