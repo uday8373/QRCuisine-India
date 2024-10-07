@@ -1,5 +1,5 @@
 import supabase from "@/config/supabase";
-import moment from "moment";
+import moment from "moment-timezone";
 import UAParser from "ua-parser-js";
 
 export const fetchTableData = async (tableNo) => {
@@ -116,8 +116,15 @@ export const fetchRestaurantMenuData = async (
 
 export const updateVisitors = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
@@ -157,8 +164,15 @@ export const updateVisitors = async (restaurantId) => {
 
 export const updateVisitorBooked = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
@@ -290,8 +304,15 @@ export const insertMessage = async (tableId, restaurantId, userId, tableNo) => {
 
 export const updateVisitorCheckout = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
@@ -347,9 +368,11 @@ export const getNotification = async () => {
 export const getSession = async (userId) => {
   try {
     const currentTime = moment()
+      .tz("Asia/Kolkata")
       .add(5, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
     const minutesAgo = moment()
+      .tz("Asia/Kolkata")
       .subtract(30, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
 
