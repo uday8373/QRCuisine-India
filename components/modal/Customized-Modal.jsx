@@ -220,7 +220,6 @@ export default function CustomizedModal({
         temperature: false,
         sides: false,
       });
-      // setIsCustomized(false);
       onOpenChange(false);
     }
   };
