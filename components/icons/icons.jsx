@@ -178,3 +178,21 @@ export const CircleRingElement = ({ size = 50, width, height, ...props }) => (
     ></path>
   </svg>
 );
+export const PolygonIcon = ({ size = 50, width, height, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    // width="81"
+    // height="71"
+    width={size || width}
+    height={size || height}
+    fill="none"
+    viewBox="0 0 81 71"
+    fillRule="evenodd"
+    strokeLinejoin="round"
+    strokeMiterlimit="2"
+    clipRule="evenodd"
+    {...props}
+  >
+    <path d="M36.17 2.5c1.924-3.333 6.736-3.333 8.66 0l35.074 60.75c1.925 3.333-.481 7.5-4.33 7.5H5.426c-3.849 0-6.255-4.167-4.33-7.5L36.17 2.5z"></path>
+  </svg>
+);

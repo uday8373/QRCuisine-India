@@ -68,6 +68,7 @@ const CallWaiterButton = ({ orderData }) => {
           size="lg"
           startContent={<ReceiptText size={20} />}
           color="default"
+          variant="flat"
         >
           Order Details
         </Button>

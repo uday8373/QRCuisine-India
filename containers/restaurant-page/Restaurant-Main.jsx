@@ -1,7 +1,6 @@
 "use client";
 import {
   fetchCategoriesData,
-  fetchIsBooked,
   fetchRestaurantData,
   fetchRestaurantMenuData,
   fetchSpecialMenuData,
@@ -28,6 +27,7 @@ import supabase from "@/config/supabase";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import LottieAnimation from "@/components/lottie/LottieAnimation";
 import QRLoader from "@/components/lottie/QR_loop.json";
+import CustomizedModal from "@/components/modal/Customized-Modal";
 
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
@@ -57,6 +57,13 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     typeof window !== "undefined" ? localStorage.getItem("isBooked") : null;
   const initialIsBooked = storeIsBooked ? true : false;
   const [isBooked, setIsBooked] = useState(initialIsBooked);
+  const [selecetedFoodItem, setSelecetedFoodItem] = useState(null);
+
+  const {
+    isOpen: isCustomizedOpen,
+    onOpen: onCustomizedOpen,
+    onOpenChange: onCustomizedChange,
+  } = useDisclosure();
 
   const pageSize = 10;
 
@@ -99,7 +106,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           setNotFoundError(true);
           return;
         }
-
         setTableData(tableResponse);
         setRestaurantData(restaurantResponse);
 
@@ -173,7 +179,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     pageSize,
   ]);
 
-  const handleCartChange = (menuItem, quantity) => {
+  const handleCartChange = (menuItem, quantity, customizations) => {
     setCartItems((prevCartItems) => {
       const itemIndex = prevCartItems.findIndex(
         (item) => item.id === menuItem.id
@@ -182,10 +188,18 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
       if (itemIndex !== -1) {
         updatedCartItems = [...prevCartItems];
-        updatedCartItems[itemIndex].quantity = quantity;
+        updatedCartItems[itemIndex] = {
+          ...updatedCartItems[itemIndex],
+          quantity,
+          orderQuantity: quantity,
+          ...customizations,
+        };
         updatedCartItems = updatedCartItems.filter((item) => item.quantity > 0);
       } else {
-        updatedCartItems = [...prevCartItems, { ...menuItem, quantity }];
+        updatedCartItems = [
+          ...prevCartItems,
+          { ...menuItem, quantity, orderQuantity: quantity, ...customizations },
+        ];
       }
 
       localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
@@ -282,6 +296,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     }
   };
 
+  // Custimizables Functions
+
   if (!isSmallScreen) {
     return <ScreenError />;
   }
@@ -351,6 +367,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           specialMenuData={specialMenuData}
           onCartChange={handleCartChange}
           cartItems={cartItems}
+          onCustomizedOpen={onCustomizedOpen}
+          setSelecetedFoodItem={setSelecetedFoodItem}
         />
         <FoodMenu
           categoryData={categoryData}
@@ -362,10 +380,12 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           maxItems={maxItems}
           onLoadMore={handleLoadMore}
           dataLoading={dataLoading}
+          onCustomizedOpen={onCustomizedOpen}
+          setSelecetedFoodItem={setSelecetedFoodItem}
         />
         {!isBooked && (
           <BookTable
-            isOpen={!isBooked}
+            isModalOpen={!isBooked}
             onOpenChange={onOpenChange}
             setIsBooked={setIsBooked}
             tableId={tableId}
@@ -381,6 +401,13 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             isLoading={isCheckoutLoading}
           />
         )}
+        <CustomizedModal
+          isOpen={isCustomizedOpen}
+          onOpenChange={onCustomizedChange}
+          selecetedFoodItem={selecetedFoodItem}
+          onCartChange={handleCartChange}
+          cartItems={cartItems}
+        />
       </>
     );
   }

@@ -1,6 +1,5 @@
 "use client";
 import { fetchOrderData } from "@/apis/preparingApi";
-import { Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ScreenError from "@/components/pages/Screen-Error";
@@ -15,6 +14,7 @@ import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import QRLoader from "@/components/lottie/QR_loop.json";
 import LottieAnimation from "@/components/lottie/LottieAnimation";
+import Cookies from "js-cookie";
 
 const DeliveredMain = () => {
   const router = useRouter();
@@ -123,6 +123,9 @@ const DeliveredMain = () => {
         console.error("Error updating table, waiter message, or user");
         return;
       } else {
+        const expires = new Date();
+        expires.setMinutes(expires.getMinutes() + 30);
+        Cookies.set("orderId", orderData.id, { expires });
         setTimeout(async () => {
           await clearLocalStorage();
         }, 3000);

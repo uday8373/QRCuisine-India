@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar/navbar";
 import { siteConfig } from "@/config/site";
 import QrScannerForMoblie from "@/containers/home-page/QrScanner-For-Moblie";
 import Script from "next/script";
-import { Flip, ToastContainer, toast } from "react-toastify";
+import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
@@ -104,7 +104,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark text-foreground bg-background">
+    <html lang="en">
       <Script
         id="one-signal"
         src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
@@ -121,7 +121,7 @@ export default function RootLayout({ children }) {
         `}
       </Script>
 
-      <body className={`${fontRethink.variable}`}>
+      <body className={fontRethink.variable}>
         <Providers>
           <Navbar />
           <ToastContainer position="center" transition={Flip} />

@@ -50,7 +50,10 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                       <TableRow key={index}>
                         <TableCell className="flex items-center gap-2">
                           <Image
-                            src={item.image}
+                            src={`${item?.image?.replace(
+                              "/upload/",
+                              "/upload/c_scale,w_100/"
+                            )}`}
                             alt={item.food_name}
                             width={100}
                             height={100}

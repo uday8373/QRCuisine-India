@@ -13,6 +13,8 @@ const FoodMenu = ({
   maxItems,
   onLoadMore,
   dataLoading,
+  onCustomizedOpen,
+  setSelecetedFoodItem,
 }) => {
   return (
     <section
@@ -49,6 +51,8 @@ const FoodMenu = ({
                   menuItem={menuItem}
                   onCartChange={onCartChange}
                   cartItems={cartItems}
+                  onCustomizedOpen={onCustomizedOpen}
+                  setSelecetedFoodItem={setSelecetedFoodItem}
                 />
                 {index !== menuItems.length - 1 && <Divider />}
               </div>

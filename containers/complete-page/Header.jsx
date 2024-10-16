@@ -9,7 +9,7 @@ const Header = ({ orderData }) => {
   return (
     <section
       id="checkout_header"
-      className="shadow-small w-full sticky top-0 backdrop-blur-xl z-30 pl-5"
+      className="sticky top-0 bg-background z-50 pl-5 border-b"
     >
       <div className="flex w-full items-center justify-between  relative">
         <div className="flex gap-2 items-center">

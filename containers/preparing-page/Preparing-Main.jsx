@@ -9,7 +9,6 @@ import {
   updateVisitorPreparing,
 } from "@/apis/preparingApi";
 import supabase from "@/config/supabase";
-import { Button, Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "./Header";

@@ -1,4 +1,6 @@
+import { siteConfig } from "@/config/site";
 import supabase from "@/config/supabase";
+import CryptoJS from "crypto-js";
 import moment from "moment";
 import UAParser from "ua-parser-js";
 
@@ -63,7 +65,7 @@ export const fetchSpecialMenuData = async (restaurantId, pageSize) => {
     const { data, count, error } = await supabase
       .from("food_menus")
       .select(
-        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at",
+        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at,is_customized, quantity_id, quick_instruction_id, side_id, additional_side_id, is_temperature",
         { count: "exact" }
       )
       .eq("restaurant_id", restaurantId)
@@ -83,6 +85,80 @@ export const fetchSpecialMenuData = async (restaurantId, pageSize) => {
   }
 };
 
+export const fetchUserData = async () => {
+  const encryptedToken = localStorage.getItem("userToken");
+
+  if (!encryptedToken) {
+    return null;
+  }
+  const decryptedBytes = CryptoJS.AES.decrypt(
+    encryptedToken,
+    siteConfig.cryptoSecret
+  );
+
+  const decryptedToken = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  try {
+    const { data, error } = await supabase
+      .from("verified_users")
+      .select("*")
+      .eq("id", decryptedToken)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching restaurant menu data:", error);
+  }
+};
+
+export const fetchUserPointData = async () => {
+  const encryptedToken = localStorage.getItem("userToken");
+
+  if (!encryptedToken) {
+    return null;
+  }
+  const decryptedBytes = CryptoJS.AES.decrypt(
+    encryptedToken,
+    siteConfig.cryptoSecret
+  );
+
+  const decryptedToken = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  try {
+    const { data, error } = await supabase
+      .from("loyality_point")
+      .select("*")
+      .eq("user_id", decryptedToken);
+
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching restaurant menu data:", error);
+  }
+};
+
+export const fetchRankBadgeData = async () => {
+  try {
+    const { data, error } = await supabase.from("ranking_badge").select("*");
+
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 export const fetchRestaurantMenuData = async (
   restaurantId,
   page,
@@ -93,7 +169,7 @@ export const fetchRestaurantMenuData = async (
     let query = supabase
       .from("food_menus")
       .select(
-        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at",
+        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at, is_customized, quantity_id, quick_instruction_id, side_id, additional_side_id, is_temperature",
         { count: "exact" }
       )
       .eq("restaurant_id", restaurantId)

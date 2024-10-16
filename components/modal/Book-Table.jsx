@@ -14,11 +14,11 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { Loader } from "lucide-react";
+import { ChevronsRight, Loader, UsersRound } from "lucide-react";
 import React, { useState } from "react";
 
 const BookTable = ({
-  isOpen,
+  isModalOpen,
   onOpenChange,
   tableId,
   setIsBooked,
@@ -83,7 +83,7 @@ const BookTable = ({
         backdrop="blur"
         size="xs"
         placement="center"
-        isOpen={isOpen}
+        isOpen={isModalOpen}
         onOpenChange={onOpenChange}
       >
         <ModalContent>
@@ -98,19 +98,28 @@ const BookTable = ({
                     </p>
                   </div>
                 </div>
-                {/* <p>Booked this table</p> */}
               </ModalHeader>
               <ModalBody className="pt-0 ">
-                <Select
-                  onSelectionChange={(key) => {
-                    setSelectedPerson(key.currentKey);
-                  }}
-                  label="Select number of persons"
-                >
-                  {persons.map((person) => (
-                    <SelectItem key={person.key}>{person.label}</SelectItem>
-                  ))}
-                </Select>
+                <div>
+                  <Select
+                    onSelectionChange={(key) => {
+                      setSelectedPerson(key.currentKey);
+                    }}
+                    fullWidth
+                    placeholder="Number of persons"
+                    size="lg"
+                    startContent={<UsersRound size={20} className="mr-1" />}
+                    classNames={{
+                      trigger: "!h-14",
+                    }}
+                    aria-label="person"
+                    aria-labelledby="person"
+                  >
+                    {persons.map((person) => (
+                      <SelectItem key={person.key}>{person.label}</SelectItem>
+                    ))}
+                  </Select>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -122,6 +131,8 @@ const BookTable = ({
                   fullWidth
                   color="primary"
                   onPress={onClose}
+                  endContent={<ChevronsRight size={22} />}
+                  className="font-medium"
                 >
                   Book Now
                 </Button>

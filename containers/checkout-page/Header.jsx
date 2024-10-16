@@ -16,16 +16,24 @@ const Header = ({ restaurantData, tableData, userId }) => {
       >
         <div className="flex w-full items-center justify-between  relative">
           <div className="flex gap-2 items-center">
-            <Button
-              size="sm"
-              variant="light"
-              color="default"
-              isIconOnly
-              className="w-fit"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {sidebarOpen ? <X /> : <AlignLeft />}
-            </Button>
+            <div className="relative">
+              <Button
+                size="sm"
+                variant="flat"
+                color="default"
+                isIconOnly
+                className="w-10 h-10"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+              >
+                {sidebarOpen ? <X /> : <AlignLeft />}
+              </Button>
+              <div className="absolute -top-1 -right-1 z-50">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
+                </span>
+              </div>
+            </div>
             <Avatar
               src={restaurantData?.logo}
               className="w-8 h-8 text-large text-white"
