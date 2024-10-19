@@ -1,4 +1,5 @@
 import supabase from "@/config/supabase";
+import moment from "moment-timezone";
 
 export const fetchOrderData = async (orderId) => {
   try {
@@ -34,8 +35,15 @@ export const fetchStatusData = async () => {
 
 export const updateVisitorConfirm = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
@@ -76,8 +84,15 @@ export const updateVisitorConfirm = async (restaurantId) => {
 
 export const updateVisitorPreparing = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")
@@ -118,8 +133,15 @@ export const updateVisitorPreparing = async (restaurantId) => {
 
 export const updateVisitorDelivered = async (restaurantId) => {
   try {
-    const startDate = moment().startOf("day").format("YYYY-MM-DD");
-    const endDate = moment().add(1, "day").startOf("day").format("YYYY-MM-DD");
+    const startDate = moment()
+      .tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const endDate = moment()
+      .tz("Asia/Kolkata")
+      .add(1, "day")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("visitors")

@@ -61,9 +61,10 @@ export default function CustomizedModal({
   useEffect(() => {
     if (selecetedFoodItem) {
       getInitialCustomization();
+      getCustomization();
       fetchData();
     }
-  }, [selecetedFoodItem]);
+  }, [selecetedFoodItem, isOpen]);
 
   const handleQuantityChange = (quantity) => {
     if (selectedQuantity?.id === quantity.id) {
@@ -214,12 +215,7 @@ export default function CustomizedModal({
         price: calculateCusmizationPrice(),
         basePrice: selecetedFoodItem.price,
       });
-      // resetSelections();
-      setErrors({
-        quantity: false,
-        temperature: false,
-        sides: false,
-      });
+      resetSelections();
       onOpenChange(false);
     }
   };
@@ -234,8 +230,26 @@ export default function CustomizedModal({
       setSelectedSides(item?.selectedSides);
       setSelectedAdditionalSides(item?.selectedAdditionalSides);
       setSelectedTemperature(item?.selectedTemperature);
-      setIsCustomized(true);
     }
+  };
+
+  const getCustomization = () => {
+    const item = cartItems.find((item) => item.id === selecetedFoodItem?.id);
+    if (!item) {
+      setIsCustomized(false);
+      return;
+    }
+    if (
+      item?.selectedQuantity ||
+      item?.selectedInstructions ||
+      item?.selectedSides ||
+      item?.selectedAdditionalSides ||
+      item?.selectedTemperature
+    ) {
+      setIsCustomized(true);
+      return;
+    }
+    setIsCustomized(false);
   };
 
   const handleUpdate = () => {
@@ -250,25 +264,18 @@ export default function CustomizedModal({
         price: calculateCusmizationPrice(),
         basePrice: selecetedFoodItem.price,
       });
-      // resetSelections();
-      setErrors({
-        quantity: false,
-        temperature: false,
-        sides: false,
-      });
-      // setIsCustomized(false);
+      resetSelections();
       onOpenChange(false);
     }
   };
 
   const modalClose = () => {
-    // resetSelections();
+    resetSelections();
     setErrors({
       quantity: false,
       temperature: false,
       sides: false,
     });
-    // setIsCustomized(false);
     onOpenChange(false);
   };
 
