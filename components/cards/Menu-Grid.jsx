@@ -3,6 +3,7 @@ import { SquareDot, SquarePen } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CartButton from "../button/Cart-Button";
+import { siteConfig } from "@/config/site";
 
 const MenuGrid = ({
   menuItem,
@@ -80,6 +81,7 @@ const MenuGrid = ({
           </div>
           <div className="w-full flex justify-between items-center">
             <p className="text-tiny text-white/80 font-medium line-clamp-1">
+              {siteConfig?.currencySymbol}
               {menuItem?.price.toFixed(2)} /- ({menuItem?.quantity} Plate)
             </p>
             <SquareDot

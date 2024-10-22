@@ -2,6 +2,7 @@ import { SquareDot } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import CartButton from "../button/Cart-Button";
 import { Button } from "@nextui-org/react";
+import { siteConfig } from "@/config/site";
 
 const MenuList = ({
   menuItem,
@@ -59,7 +60,8 @@ const MenuList = ({
             </h2>
             <div className="flex flex-col gap-1 justify-center text-default-500">
               <h2 className="text-small font-medium line-clamp-1 text-[14px] leading-tight">
-                ₹{menuItem?.price.toFixed(2)} /- ({menuItem?.quantity} Plate)
+                {siteConfig?.currencySymbol} {menuItem?.price.toFixed(2)} /- (
+                {menuItem?.quantity} Plate)
               </h2>
               {isCustomized && (
                 <h4

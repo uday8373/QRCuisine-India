@@ -1,4 +1,5 @@
 import ItemButton from "@/components/button/Item-Button";
+import { siteConfig } from "@/config/site";
 import { Button } from "@nextui-org/react";
 import { SquareDot } from "lucide-react";
 import React, { useState } from "react";
@@ -38,7 +39,8 @@ const ItemList = ({ menuItems, handleCartChange }) => {
                       </h2>
                       <div className="flex gap-1 items-center text-default-500">
                         <h2 className="text-small font-medium line-clamp-1 text-[14px]">
-                          ₹{menuItem?.price} /- ({menuItem?.quantity} Plate)
+                          {siteConfig?.currencySymbol}
+                          {menuItem?.price} /- ({menuItem?.quantity} Plate)
                         </h2>
                       </div>
                     </div>

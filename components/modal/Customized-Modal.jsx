@@ -14,6 +14,7 @@ import { SquareDot } from "lucide-react";
 import { Checkbox } from "../checkbox/Checkbox";
 import { useEffect, useState } from "react";
 import supabase from "@/config/supabase";
+import { siteConfig } from "@/config/site";
 
 export default function CustomizedModal({
   isOpen,
@@ -299,7 +300,8 @@ export default function CustomizedModal({
                     {selecetedFoodItem?.food_name}
                   </h4>
                   <h5 className="text-primary text-medium leading-none">
-                    ₹ {selecetedFoodItem?.price.toFixed(2)}/-{" "}
+                    {siteConfig?.currencySymbol}{" "}
+                    {selecetedFoodItem?.price.toFixed(2)}/-{" "}
                     <span className="text-default-500 font-normal">
                       ({selecetedFoodItem?.quantity})
                     </span>
@@ -503,7 +505,7 @@ export default function CustomizedModal({
                       Total Amount
                     </h3>
                     <h2 className="text-xl font-bold text-primary-500">
-                      ₹ {totalPrice.toFixed(2)}
+                      {siteConfig?.currencySymbol} {totalPrice.toFixed(2)}
                     </h2>
                   </div>
                   <div className="flex gap-2">

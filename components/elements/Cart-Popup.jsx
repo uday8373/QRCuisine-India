@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
 import { ChevronsRight, Loader } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const CartPopup = ({
   totalPrice,
@@ -25,7 +26,8 @@ const CartPopup = ({
                     <h2>Total:</h2>
 
                     <h3 className="text-success-600 font-bold">
-                      ₹{totalPrice.toFixed(2)}
+                      {siteConfig?.currencySymbol}
+                      {totalPrice.toFixed(2)}
                     </h3>
                   </div>
                 </div>

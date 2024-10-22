@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import React from "react";
 
 const Bill = ({ totalPrice, gstAmount, grandTotal }) => {
@@ -12,15 +13,17 @@ const Bill = ({ totalPrice, gstAmount, grandTotal }) => {
             <h4 className="text-small font-medium">Subtotal</h4>
             <div className="flex items-center gap-2">
               <h2 className="text-default-700 font-bold text-small">
-                ₹ {totalPrice.toFixed(2)}
+                {siteConfig?.currencySymbol} {totalPrice.toFixed(2)}
               </h2>
             </div>
           </div>
           <div className="text-small font-medium w-full flex justify-between items-center">
-            <h4 className="text-[13px] font-semibold text-default-500">GST</h4>
+            <h4 className="text-[13px] font-semibold text-default-500">
+              {siteConfig?.taxTitle}
+            </h4>
             <div className="flex items-center gap-2">
               <h2 className="text-default-500 font-bold text-[13px]">
-                ₹ {gstAmount.toFixed(2)}
+                {siteConfig?.currencySymbol} {gstAmount.toFixed(2)}
               </h2>
             </div>
           </div>
@@ -29,7 +32,7 @@ const Bill = ({ totalPrice, gstAmount, grandTotal }) => {
             <h4 className="text-medium font-medium">Grand Total</h4>
             <div className="flex items-center gap-2">
               <h2 className="text-success font-bold text-medium">
-                ₹ {grandTotal.toFixed(2)}
+                {siteConfig?.currencySymbol} {grandTotal.toFixed(2)}
               </h2>
             </div>
           </div>

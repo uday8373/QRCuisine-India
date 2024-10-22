@@ -6,11 +6,13 @@ import {
   Chip,
   Image,
   Progress,
+  useDisclosure,
 } from "@nextui-org/react";
 import {
   ArrowLeft,
   ChartNoAxesColumn,
   ChevronRight,
+  CircleHelp,
   Edit,
   HandPlatter,
   History,
@@ -19,13 +21,15 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import CryptoJS from "crypto-js";
+
 import {
   fetchRankBadgeData,
   fetchUserData,
   fetchUserPointData,
 } from "@/apis/restaurantApi";
-import { siteConfig } from "@/config/site";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import QRLoader from "@/components/lottie/QR_loop.json";
+import EditProfileModal from "@/components/modal/Edit-Profile";
 
 const ProfileMain = () => {
   const router = useRouter();
@@ -34,6 +38,12 @@ const ProfileMain = () => {
   const [userData, setUserData] = useState(null);
   const [rankData, setRankData] = useState([]);
   const [nextRankBadge, setNextRankBadge] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+  } = useDisclosure();
 
   const encryptedToken =
     typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
@@ -41,13 +51,6 @@ const ProfileMain = () => {
   if (!encryptedToken) {
     router.push("/login");
   }
-
-  const decryptedBytes = CryptoJS.AES.decrypt(
-    encryptedToken,
-    siteConfig.cryptoSecret
-  );
-
-  const userId = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
   const fetchData = async () => {
     try {
@@ -86,6 +89,8 @@ const ProfileMain = () => {
       setNextRankBadge(nextBadge);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,9 +115,22 @@ const ProfileMain = () => {
       100
     : 100;
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
+      </div>
+    );
+  }
+
+  const handleLogout = () => {
+    alert("Are you sure you want to log out?");
+    localStorage.removeItem("userToken");
+    router.push("/login");
+  };
   return (
     <section id="profile" className="flex flex-col w-full ">
-      <div className="bg-gradient-to-bl from-primary-500/50 to-secondary-500/25 backdrop-blur-xl p-6 rounded-b-3xl text-black sticky top-0 z-50">
+      <div className="bg-gradient-to-bl from-primary-500/50 to-secondary-500/25 backdrop-blur-xl p-6 rounded-b-3xl text-black z-50">
         <div className="w-full items-center relative flex justify-center mb-4">
           <Button
             onClick={() => {
@@ -220,6 +238,9 @@ const ProfileMain = () => {
           >
             <CardBody className="py-0">
               <div
+                onClick={() => {
+                  router.push("leaderboard");
+                }}
                 variant="outline"
                 className="w-full justify-between flex items-center py-4"
               >
@@ -231,6 +252,7 @@ const ProfileMain = () => {
               </div>
               <div className="border w-full border-dashed border-default-300" />
               <div
+                onClick={onEditOpen}
                 variant="outline"
                 className="w-full justify-between flex items-center py-4"
               >
@@ -242,17 +264,20 @@ const ProfileMain = () => {
               </div>
               <div className="border w-full border-dashed border-default-300" />
               <div
+                onClick={() => {
+                  router.push("order-history");
+                }}
                 variant="outline"
                 className="w-full justify-between flex items-center py-4"
               >
                 <div className="flex items-center">
                   <HandPlatter className="mr-2 h-4 w-4" />
-                  My Orders
+                  Order History
                 </div>
                 <ChevronRight className="h-4 w-4" />
               </div>
-              <div className="border w-full border-dashed border-default-300" />
-              <div
+              {/* <div className="border w-full border-dashed border-default-300" /> */}
+              {/* <div
                 variant="outline"
                 className="w-full justify-between flex items-center py-4"
               >
@@ -261,7 +286,7 @@ const ProfileMain = () => {
                   Point History
                 </div>
                 <ChevronRight className="h-4 w-4" />
-              </div>
+              </div> */}
             </CardBody>
           </Card>
         </div>
@@ -277,6 +302,21 @@ const ProfileMain = () => {
           >
             <CardBody className="py-0">
               <div
+                onClick={() => {
+                  router.push("https://erexstudio.com/contact-us");
+                }}
+                variant="outline"
+                className="w-full justify-between flex items-center py-4"
+              >
+                <div className="flex items-center">
+                  <CircleHelp className="mr-2 h-4 w-4" />
+                  Help & Support
+                </div>
+                <ChevronRight className="h-4 w-4" />
+              </div>
+              <div className="border w-full border-dashed border-default-300" />
+              <div
+                onClick={handleLogout}
                 variant="outline"
                 className="w-full justify-between flex items-center py-4"
               >
@@ -286,21 +326,16 @@ const ProfileMain = () => {
                 </div>
                 <ChevronRight className="h-4 w-4" />
               </div>
-              <div className="border w-full border-dashed border-default-300" />
-              <div
-                variant="outline"
-                className="w-full justify-between flex items-center py-4"
-              >
-                <div className="flex items-center">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Account
-                </div>
-                <ChevronRight className="h-4 w-4" />
-              </div>
             </CardBody>
           </Card>
         </div>
       </div>
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onOpenChange={onEditOpenChange}
+        userData={userData}
+        fetchUserData={fetchData}
+      />
     </section>
   );
 };

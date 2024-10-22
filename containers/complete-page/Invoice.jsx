@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Image from "next/image";
 import { Download } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const Invoice = ({ orderData }) => {
   const invoiceRef = useRef(null);
@@ -135,13 +136,15 @@ const Invoice = ({ orderData }) => {
                               {item.food_name}
                             </td>
                             <td className="whitespace-nowrap  px-6 py-4">
-                              ₹ {item.price.toFixed(2)}
+                              {siteConfig?.currencySymbol}{" "}
+                              {item.price.toFixed(2)}
                             </td>
                             <td className="whitespace-nowrap  px-6 py-4">
                               {item.quantity}
                             </td>
                             <td className="whitespace-nowrap  px-6 py-4">
-                              ₹ {(item.price * item.quantity).toFixed(2)}
+                              {siteConfig?.currencySymbol}{" "}
+                              {(item.price * item.quantity).toFixed(2)}
                             </td>
                           </tr>
                         ))}
@@ -150,7 +153,11 @@ const Invoice = ({ orderData }) => {
 
                     <div className=" border-b border-t border-gray-600  text-black  w-full  py-3 flex justify-between px-7   font-medium  ">
                       <h2>TOTAL</h2>
-                      <h3> ₹ {orderData.total_amount.toFixed(2)}</h3>
+                      <h3>
+                        {" "}
+                        {siteConfig?.currencySymbol}{" "}
+                        {orderData.total_amount.toFixed(2)}
+                      </h3>
                     </div>
                   </div>
                 </div>
@@ -162,11 +169,12 @@ const Invoice = ({ orderData }) => {
             <div className="flex gap-2 items-center">
               <strong className="text-black font-medium">Total Amount :</strong>{" "}
               <p className="text-gray-700 font-normal">
-                ₹ {orderData.total_amount.toFixed(2)}
+                {siteConfig?.currencySymbol} {orderData.total_amount.toFixed(2)}
               </p>
             </div>
             <div className="flex gap-2 items-center">
-              <strong className="text-black font-medium">Tax Amount :</strong> ₹{" "}
+              <strong className="text-black font-medium">Tax Amount :</strong>{" "}
+              {siteConfig?.currencySymbol}{" "}
               <p className="text-gray-700 font-normal">
                 {" "}
                 {orderData.tax_amount.toFixed(2)}
@@ -177,7 +185,7 @@ const Invoice = ({ orderData }) => {
                 Grand Total :
               </strong>{" "}
               <p className="text-gray-700  text-xl font-normal">
-                ₹ {orderData.grand_amount.toFixed(2)}
+                {siteConfig?.currencySymbol} {orderData.grand_amount.toFixed(2)}
               </p>
             </div>
           </div>

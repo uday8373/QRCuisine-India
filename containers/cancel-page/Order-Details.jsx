@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import { CalendarDays, Hash, WalletMinimal } from "lucide-react";
 import moment from "moment";
 import React from "react";
@@ -35,7 +36,8 @@ export default function OrderDetails({ orderData }) {
             <h3 className="text-default-600 flex items-center gap-1 font-medium text-medium">
               Total Amount :{" "}
               <span className="text-default-900">
-                ₹ {orderData?.grand_amount.toFixed(2)}
+                {siteConfig?.currencySymbol}{" "}
+                {orderData?.grand_amount.toFixed(2)}
               </span>
             </h3>
           </div>

@@ -172,7 +172,7 @@ const ProfileSidebar = ({
                   variant="solid"
                   className="gap-0.5"
                 >
-                  <Button
+                  {/* <Button
                     className={`font-medium text-white `}
                     style={{
                       backgroundColor: rankBadge
@@ -181,8 +181,11 @@ const ProfileSidebar = ({
                     }}
                   >
                     HISTORY
-                  </Button>
+                  </Button> */}
                   <Button
+                    onClick={() => {
+                      router.push("/profile");
+                    }}
                     className={`font-medium text-white `}
                     style={{
                       backgroundColor: rankBadge
@@ -254,7 +257,7 @@ const ProfileSidebar = ({
                 </Button>
               </>
             )}
-            <Button
+            {/* <Button
               onClick={() => {
                 localStorage.removeItem("userToken");
               }}
@@ -265,7 +268,7 @@ const ProfileSidebar = ({
               <ArrowLeftToLine size={18} className="mr-1" />
               Log Out
               <ChevronRight size={20} className="absolute right-2" />
-            </Button>
+            </Button> */}
             <Button
               onClick={clickEndSession}
               variant="flat"

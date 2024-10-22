@@ -181,17 +181,6 @@ const CompleteMain = () => {
   }
   return (
     <main>
-      {/* <Happy size={175} />
-      <h3 className="text-2xl font-medium text-primary text-center">
-        Thank you for visiting us!
-      </h3>
-      <Button
-        onClick={() => router.replace("/")}
-        color="primary"
-        startContent={<ArrowLeftFromLine size={20} />}
-      >
-        Back to Home
-      </Button> */}
       <Header orderData={orderData} />
       <ThankYou orderData={orderData} />
       <PaymentStatus orderData={orderData} isClaimed={isClaimed} />

@@ -2,6 +2,7 @@ import { Button } from "@nextui-org/react";
 import { ChevronsRight, Loader } from "lucide-react";
 import React from "react";
 import Invoice from "./Invoice";
+import { siteConfig } from "@/config/site";
 
 const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
   return (
@@ -13,7 +14,7 @@ const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
               Grand Total
             </h4>
             <h4 className="text-xl font-bold text-default-900">
-              ₹ {orderData.grand_amount.toFixed(2)}
+              {siteConfig?.currencySymbol} {orderData.grand_amount.toFixed(2)}
             </h4>
           </div>
           <Invoice orderData={orderData} />

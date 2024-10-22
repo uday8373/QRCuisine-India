@@ -17,6 +17,7 @@ import {
   TableCell,
 } from "@nextui-org/react";
 import Image from "next/image";
+import { siteConfig } from "@/config/site";
 export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
   return (
     <>
@@ -63,7 +64,8 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                         </TableCell>
                         <TableCell> x {item.quantity}</TableCell>
                         <TableCell>
-                          ₹ {(item.price * item.quantity).toFixed(2)}
+                          {siteConfig?.currencySymbol}{" "}
+                          {(item.price * item.quantity).toFixed(2)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -75,17 +77,28 @@ export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
                 <div className="pr-6 pl-4 pb-4 flex flex-col items-center  w-full gap-2">
                   <div className="flex w-full items-center justify-between">
                     <h3 className=" text-default-900 font-medium ">Subtotal</h3>
-                    <h3>₹ {orderData?.total_amount.toFixed(2)}</h3>
+                    <h3>
+                      {siteConfig?.currencySymbol}{" "}
+                      {orderData?.total_amount.toFixed(2)}
+                    </h3>
                   </div>
                   <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-default-900 font-medium">GST</h3>
-                    <h3>₹ {orderData?.tax_amount.toFixed(2)}</h3>
+                    <h3 className=" text-default-900 font-medium">
+                      {siteConfig?.taxTitle}
+                    </h3>
+                    <h3>
+                      {siteConfig?.currencySymbol}{" "}
+                      {orderData?.tax_amount.toFixed(2)}
+                    </h3>
                   </div>
                   <div className="flex w-full items-center justify-between">
                     <h3 className=" text-default-900 font-medium text-lg">
                       Total
                     </h3>
-                    <h3>₹ {orderData?.grand_amount.toFixed(2)}</h3>
+                    <h3>
+                      {siteConfig?.currencySymbol}{" "}
+                      {orderData?.grand_amount.toFixed(2)}
+                    </h3>
                   </div>
                 </div>
               </ModalFooter>

@@ -16,6 +16,7 @@ import supabase from "@/config/supabase";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import Cookies from "js-cookie";
 import { Loader } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const CancelOrder = ({
   isOpen,
@@ -117,7 +118,8 @@ const CancelOrder = ({
                     Order: {orderData?.order_id}
                   </p>
                   <p className="text-sm text-default-600">
-                    Total: ₹{orderData?.grand_amount.toFixed(2)}
+                    Total: {siteConfig?.currencySymbol}
+                    {orderData?.grand_amount.toFixed(2)}
                   </p>
                   <p className="text-sm text-default-600">
                     Status:{" "}

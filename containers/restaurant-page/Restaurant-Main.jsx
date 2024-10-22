@@ -287,6 +287,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       if (orderResult.error) throw orderResult.error;
 
       await clearLocalStorage();
+      setCartItems([]);
       setIsBooked(false);
       if (isReload) {
         window.location.reload();

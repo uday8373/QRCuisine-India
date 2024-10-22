@@ -13,7 +13,9 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import ScreenError from "@/components/pages/Screen-Error";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
-import moment from "moment";
+import moment from "moment-timezone";
+import { siteConfig } from "@/config/site";
+import CryptoJS from "crypto-js";
 
 const CheckoutMain = () => {
   const router = useRouter();
@@ -129,6 +131,15 @@ const CheckoutMain = () => {
   const insertOrder = async () => {
     try {
       const userId = localStorage.getItem("userId");
+      let verifiedUserId = "";
+      const userToken = localStorage.getItem("userToken");
+      if (userToken) {
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          userToken,
+          siteConfig.cryptoSecret
+        );
+        verifiedUserId = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      }
       const { data: maxOrderData, error: maxOrderError } = await supabase
         .from("orders")
         .select("order_id")
@@ -155,6 +166,7 @@ const CheckoutMain = () => {
             tax_amount: gstAmount,
             grand_amount: grandTotal,
             order_id: newOrderId,
+            verified_user_id: verifiedUserId,
           },
         ])
         .select("id");
@@ -202,8 +214,12 @@ const CheckoutMain = () => {
 
   const updateVisitor = async () => {
     try {
-      const startDate = moment().startOf("day").format("YYYY-MM-DD");
+      const startDate = moment()
+        .tz(siteConfig?.timeZone)
+        .startOf("day")
+        .format("YYYY-MM-DD");
       const endDate = moment()
+        .tz(siteConfig?.timeZone)
         .add(1, "day")
         .startOf("day")
         .format("YYYY-MM-DD");
@@ -244,7 +260,7 @@ const CheckoutMain = () => {
     }
   };
 
-  const insertMessage = async () => {
+  const insertMessage = async (orderId) => {
     const message = `A new order has been placed at Table No. ${tableData?.table_no}`;
     const sub_message = "For more details, please visit the order list page.";
     const userId = localStorage.getItem("userId");
@@ -255,7 +271,7 @@ const CheckoutMain = () => {
         table_id: tableData?.id,
         restaurant_id: restaurantData?.id,
         user_id: userId,
-        order_id: null,
+        order_id: orderId,
         waiter_id: null,
         message: message,
         sub_message: sub_message,
@@ -295,30 +311,27 @@ const CheckoutMain = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const [userResponse, orderResponse, visitorsResponse, messageResponse] =
-        await Promise.all([
-          updateUser(),
-          insertOrder(),
-          updateVisitor(),
-          insertMessage(),
-        ]);
+      const [userResponse, orderResponse, visitorsResponse] = await Promise.all(
+        [updateUser(), insertOrder(), updateVisitor()]
+      );
 
-      if (
-        !userResponse ||
-        !orderResponse ||
-        !visitorsResponse ||
-        !messageResponse
-      ) {
+      if (!userResponse || !orderResponse || !visitorsResponse) {
         throw new Error("Failed to create order");
       } else {
-        const result = await updateTable(orderResponse[0].id);
-        if (result) {
+        const [updateTableResult, messageResponse] = await Promise.all([
+          updateTable(orderResponse[0].id),
+          insertMessage(orderResponse[0].id),
+        ]);
+
+        if (updateTableResult && messageResponse) {
           localStorage.setItem("orderId", orderResponse[0].id);
           localStorage.setItem("status", "preparing");
           router.replace("/preparing");
           localStorage.removeItem("cartItems");
           localStorage.removeItem("restaurantData");
           localStorage.removeItem("instructions");
+        } else {
+          throw new Error("Failed to update table or send message");
         }
       }
     } catch (error) {
