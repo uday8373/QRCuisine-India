@@ -131,7 +131,7 @@ const CheckoutMain = () => {
   const insertOrder = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      let verifiedUserId = "";
+      let verifiedUserId = null;
       const userToken = localStorage.getItem("userToken");
       if (userToken) {
         const decryptedBytes = CryptoJS.AES.decrypt(
