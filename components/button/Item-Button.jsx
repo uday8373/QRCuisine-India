@@ -1,9 +1,17 @@
 "use client";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Minus, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const ItemButton = ({ menuItem, onCartChange, cartItems }) => {
+const ItemButton = ({
+  menuItem,
+  onCartChange,
+  cartItems,
+  tableId,
+  restaurantId,
+}) => {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(menuItem?.quantity || 0);
 
   useEffect(() => {
@@ -29,6 +37,12 @@ const ItemButton = ({ menuItem, onCartChange, cartItems }) => {
     }
   };
 
+  const handleback = () => {
+    handleDecrement();
+    localStorage.removeItem("status");
+    router.replace(`/${restaurantId}/${tableId}/`);
+  };
+
   return (
     <div>
       <ButtonGroup className="bg-default-100 rounded-lg shadow-sm w-auto">
@@ -37,8 +51,11 @@ const ItemButton = ({ menuItem, onCartChange, cartItems }) => {
           color="primary"
           aria-label="Decrease"
           size="sm"
-          onClick={handleDecrement}
-          isDisabled={cartItems.length <= 1 && quantity === 1}
+          onClick={
+            cartItems.length <= 1 && quantity === 1
+              ? handleback
+              : handleDecrement
+          }
         >
           <Minus className="w-4 h-4 fill-white" />
         </Button>

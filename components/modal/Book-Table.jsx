@@ -24,18 +24,15 @@ const BookTable = ({
   setIsBooked,
   restaurantId,
   tableNo,
+  maxCapacity,
 }) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const persons = [
-    { key: 1, label: "01" },
-    { key: 2, label: "02" },
-    { key: 3, label: "03" },
-    { key: 4, label: "04" },
-    { key: 5, label: "05" },
-    { key: 6, label: "06" },
-  ];
+  const persons = Array.from({ length: maxCapacity }, (_, index) => ({
+    key: index + 1,
+    label: String(index + 1).padStart(2, "0"),
+  }));
 
   const handleBookTable = async () => {
     setIsLoading(true);

@@ -392,6 +392,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             tableId={tableId}
             restaurantId={restaurantData.id}
             tableNo={tableData.table_no}
+            maxCapacity={tableData?.max_capacity}
           />
         )}
         {cartItems.length !== 0 && (

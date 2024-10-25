@@ -60,8 +60,8 @@ const MenuList = ({
             </h2>
             <div className="flex flex-col gap-1 justify-center text-default-500">
               <h2 className="text-small font-medium line-clamp-1 text-[14px] leading-tight">
-                {siteConfig?.currencySymbol} {menuItem?.price.toFixed(2)} /- (
-                {menuItem?.quantity} Plate)
+                {siteConfig?.currencySymbol}
+                {menuItem?.price.toFixed(2)} /-
               </h2>
               {isCustomized && (
                 <h4

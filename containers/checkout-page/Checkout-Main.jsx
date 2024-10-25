@@ -61,6 +61,12 @@ const CheckoutMain = () => {
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
+  const orderId =
+    typeof window !== "undefined" ? localStorage.getItem("orderId") : null;
+
+  const isSuborder =
+    typeof window !== "undefined" ? localStorage.getItem("is_suborder") : false;
+
   if (!restaurantData || !tableData || !cartItems) {
     return notFound();
   }
@@ -162,9 +168,9 @@ const CheckoutMain = () => {
             user_id: userId,
             fooditem_ids: cartItems,
             instructions: mainInstructions,
-            total_amount: totalPrice,
-            tax_amount: gstAmount,
-            grand_amount: grandTotal,
+            total_amount: totalPrice.toFixed(2),
+            tax_amount: gstAmount.toFixed(2),
+            grand_amount: grandTotal.toFixed(2),
             order_id: newOrderId,
             verified_user_id: verifiedUserId,
           },
@@ -342,6 +348,102 @@ const CheckoutMain = () => {
     }
   };
 
+  const insertSubOrder = async () => {
+    try {
+      const { data: maxOrderData, error: maxOrderError } = await supabase
+        .from("sub_orders")
+        .select("sub_order_id")
+        .eq("order_id", orderId)
+        .order("sub_order_id", { ascending: false })
+        .limit(1);
+      if (maxOrderError) throw maxOrderError;
+
+      let newOrderId = "00001";
+      if (maxOrderData && maxOrderData.length > 0) {
+        const maxOrderId = maxOrderData[0].sub_order_id;
+        newOrderId = String(parseInt(maxOrderId) + 1).padStart(5, "0");
+      }
+      const { data, error } = await supabase
+        .from("sub_orders")
+        .insert([
+          {
+            sub_order_id: newOrderId,
+            fooditem_ids: cartItems,
+            instructions: mainInstructions,
+            total_amount: totalPrice.toFixed(2),
+            order_id: orderId,
+          },
+        ])
+        .select("id");
+      if (error) throw error;
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
+
+  const insertSubOrderMessage = async (subOrderId) => {
+    const message = `A new sub order has been placed at Table No. ${tableData?.table_no}`;
+    const sub_message = "For more details, please visit the order list page.";
+    const userId = localStorage.getItem("userId");
+
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        table_id: tableData?.id,
+        restaurant_id: restaurantData?.id,
+        user_id: userId,
+        order_id: orderId,
+        waiter_id: null,
+        message: message,
+        sub_message: sub_message,
+        is_read: false,
+        user_read: true,
+        sub_order_id: subOrderId,
+      })
+      .select("id");
+    if (error) {
+      return console.error(error);
+    }
+    if (data) {
+      return data;
+    }
+  };
+
+  const handleSubOrderSubmit = async () => {
+    setLoading(true);
+    try {
+      const [orderResponse, visitorsResponse] = await Promise.all([
+        insertSubOrder(),
+        updateVisitor(),
+      ]);
+
+      if (!orderResponse || !visitorsResponse) {
+        throw new Error("Failed to create order");
+      } else {
+        const [messageResponse] = await Promise.all([
+          insertSubOrderMessage(orderResponse[0].id),
+        ]);
+
+        if (messageResponse) {
+          localStorage.setItem("status", "preparing");
+          router.replace("/preparing");
+          localStorage.removeItem("cartItems");
+          localStorage.removeItem("restaurantData");
+          localStorage.removeItem("instructions");
+        } else {
+          throw new Error("Failed to update table or send message");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isSmallScreen) {
     return <ScreenError />;
   }
@@ -353,7 +455,12 @@ const CheckoutMain = () => {
         tableData={tableData}
         userId={userId}
       />
-      <ItemList menuItems={cartItems} handleCartChange={handleCartChange} />
+      <ItemList
+        menuItems={cartItems}
+        handleCartChange={handleCartChange}
+        tableId={tableData?.id}
+        restaurantId={restaurantData?.unique_name}
+      />
       <Preferences
         mainInstructions={mainInstructions}
         onOpen={onOpen}
@@ -370,6 +477,8 @@ const CheckoutMain = () => {
         restaurantData={restaurantData}
         tableData={tableData}
         loading={loading}
+        isSuborder={isSuborder}
+        handleSubOrderSubmit={handleSubOrderSubmit}
       />
       <Instructions
         isOpen={isOpen}

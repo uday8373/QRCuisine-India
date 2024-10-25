@@ -10,6 +10,7 @@ export const clearLocalStorage = async () => {
     "orderId",
     "isRated",
     "instructions",
+    "is_suborder",
   ];
 
   keysToRemove.forEach((key) => localStorage.removeItem(key));

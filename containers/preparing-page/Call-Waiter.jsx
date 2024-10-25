@@ -2,10 +2,12 @@ import CallWaiter from "@/components/modal/Call-Waiter";
 import OrderPreview from "@/components/modal/Order-Preview";
 import supabase from "@/config/supabase";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { ConciergeBell, ReceiptText } from "lucide-react";
+import { CirclePlus, ConciergeBell, ReceiptText } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const CallWaiterButton = ({ orderData }) => {
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isWaiterOpen,
@@ -59,32 +61,52 @@ const CallWaiterButton = ({ orderData }) => {
     onOpen();
   };
 
+  const handleMoreOrder = () => {
+    localStorage.setItem("is_suborder", true);
+    localStorage.removeItem("status");
+    router.replace(
+      `/${orderData.restaurant_id.unique_name}/${orderData.tables.id}`
+    );
+  };
+
   return (
     <section id="call_waiter_section">
-      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl flex gap-2 shadow-small rounded-t-large">
+      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl flex flex-col gap-2 shadow-small rounded-t-large">
+        <div className="w-full flex gap-2 flex-shrink items-center">
+          <Button
+            onPress={hendleOrderPreview}
+            fullWidth
+            size="lg"
+            startContent={<ReceiptText size={20} />}
+            color="default"
+            variant="flat"
+          >
+            Order Details
+          </Button>
+          <Button
+            onClick={handleCallWaiter}
+            isDisabled={isCalling}
+            startContent={<ConciergeBell size={20} className="mb-1" />}
+            size="lg"
+            fullWidth
+            color="primary"
+          >
+            {isCalling
+              ? `${Math.floor(countdown / 60)}:${(countdown % 60)
+                  .toString()
+                  .padStart(2, "0")}`
+              : "Call Waiter"}
+          </Button>
+        </div>
         <Button
-          onPress={hendleOrderPreview}
+          onClick={handleMoreOrder}
           fullWidth
           size="lg"
-          startContent={<ReceiptText size={20} />}
+          startContent={<CirclePlus size={20} />}
           color="default"
           variant="flat"
         >
-          Order Details
-        </Button>
-        <Button
-          onClick={handleCallWaiter}
-          isDisabled={isCalling}
-          startContent={<ConciergeBell size={20} className="mb-1" />}
-          size="lg"
-          fullWidth
-          color="primary"
-        >
-          {isCalling
-            ? `${Math.floor(countdown / 60)}:${(countdown % 60)
-                .toString()
-                .padStart(2, "0")}`
-            : "Call Waiter"}
+          Order More Items
         </Button>
       </div>
       <OrderPreview

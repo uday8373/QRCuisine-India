@@ -24,6 +24,7 @@ import QRLoader from "@/components/lottie/QR_loop.json";
 import Cookies from "js-cookie";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import { toast } from "react-toastify";
+import SubOrders from "./Sub-Orders";
 
 const PreparingMain = () => {
   const router = useRouter();
@@ -66,6 +67,7 @@ const PreparingMain = () => {
         if (!orderResponse || !statusResponse) {
           console.error("Error fetching order or status data");
         }
+        console.log("Order", orderResponse);
         setOrderData(orderResponse);
         setStatusData(statusResponse);
         const reversedNotifications = [...notificationResponse].reverse();
@@ -197,6 +199,7 @@ const PreparingMain = () => {
         />
       )}
       <Status orderData={orderData} statusData={statusData} />
+      <SubOrders orderData={orderData} statusData={statusData} />
       <CallWaiterButton orderData={orderData} />
     </div>
   );

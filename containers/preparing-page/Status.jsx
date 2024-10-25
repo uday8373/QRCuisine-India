@@ -9,8 +9,8 @@ const Status = ({ orderData, statusData }) => {
 
   return (
     <section id="status">
-      <div className="w-full flex flex-col gap-3 py-5 px-5 mb-32">
-        <div className="w-full flex flex-col gap-2 bg-default-100 rounded-large p-3">
+      <div className="w-full flex flex-col gap-3 py-5 px-5">
+        {/* <div className="w-full flex flex-col gap-2 bg-default-100 rounded-large p-3 border">
           {statusData
             .filter((status) => status.sorting < 5)
             .map((status) => (
@@ -74,14 +74,14 @@ const Status = ({ orderData, statusData }) => {
                     )}
                   </div>
                 </div>
-                {status !== statusData[statusData.length - 1] && (
+                {status !== statusData[statusData.length - 3] && (
                   <div className="border w-full border-dashed border-default-300" />
                 )}
               </React.Fragment>
             ))}
-        </div>
+        </div> */}
 
-        <div className="w-full flex py-4 bg-default-100 rounded-large gap-4 px-3">
+        <div className="w-full flex py-4 bg-default-100 rounded-large gap-4 px-3 border">
           <div className="col-span-1 flex items-center justify-center">
             <div className="w-12 h-12 bg-primary/10 rounded-full flex justify-center items-center">
               <ConciergeBell size={24} className="text-primary mb-1" />

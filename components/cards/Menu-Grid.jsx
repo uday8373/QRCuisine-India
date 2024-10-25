@@ -82,7 +82,7 @@ const MenuGrid = ({
           <div className="w-full flex justify-between items-center">
             <p className="text-tiny text-white/80 font-medium line-clamp-1">
               {siteConfig?.currencySymbol}
-              {menuItem?.price.toFixed(2)} /- ({menuItem?.quantity} Plate)
+              {menuItem?.price.toFixed(2)} /-
             </p>
             <SquareDot
               size={18}

@@ -8,7 +8,9 @@ export const fetchTableData = async (tableNo) => {
   try {
     const { data, error } = await supabase
       .from("tables")
-      .select("id, table_no, is_booked, is_available, restaurant_id, user_id")
+      .select(
+        "id, table_no, is_booked, is_available, restaurant_id, user_id, max_capacity"
+      )
       .eq("id", tableNo)
       .single();
 

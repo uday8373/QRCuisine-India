@@ -28,7 +28,7 @@ export default function CustomizedModal({
   const [selectedInstructions, setSelectedInstructions] = useState(null);
   const [selectedSides, setSelectedSides] = useState(null);
   const [selectedAdditionalSides, setSelectedAdditionalSides] = useState(null);
-  const [selectedTemperature, setSelectedTemperature] = useState(null);
+  const [selectedTemperature, setSelectedTemperature] = useState({ value: 0 });
   const [totalPrice, setTotalPrice] = useState(0);
   const [isCustomized, setIsCustomized] = useState(true);
   const [errors, setErrors] = useState({
@@ -196,7 +196,7 @@ export default function CustomizedModal({
     setSelectedInstructions(null);
     setSelectedSides(null);
     setSelectedAdditionalSides(null);
-    setSelectedTemperature(null);
+    setSelectedTemperature({ value: 0 });
     setIsCustomized(false);
     setErrors({
       quantity: false,
@@ -282,7 +282,12 @@ export default function CustomizedModal({
 
   return (
     <>
-      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={modalClose}>
+      <Modal
+        scrollBehavior="inside"
+        backdrop="blur"
+        isOpen={isOpen}
+        onOpenChange={modalClose}
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -300,7 +305,7 @@ export default function CustomizedModal({
                     {selecetedFoodItem?.food_name}
                   </h4>
                   <h5 className="text-primary text-medium leading-none">
-                    {siteConfig?.currencySymbol}{" "}
+                    {siteConfig?.currencySymbol}
                     {selecetedFoodItem?.price.toFixed(2)}/-{" "}
                     <span className="text-default-500 font-normal">
                       ({selecetedFoodItem?.quantity})
@@ -358,6 +363,7 @@ export default function CustomizedModal({
                           </Checkbox>
                         ))}
                       </div>
+                      <div className="min-h-4" />
                     </div>
                   )}
                   {data?.temperature && (
@@ -371,9 +377,9 @@ export default function CustomizedModal({
                           classNames={{
                             mark: "text-xs pt-1",
                             base: "max-w-md gap-3",
-                            track: "border-s-blue-500",
+                            track: "border-s-secondary-500",
                             filler:
-                              "bg-gradient-to-r from-blue-500 to-danger-500",
+                              "bg-gradient-to-r from-secondary-500 to-danger-500",
                           }}
                           aria-label="temperature"
                           showSteps={true}
@@ -494,6 +500,7 @@ export default function CustomizedModal({
                             </Checkbox>
                           ))}
                       </div>
+                      <div className="min-h-4" />
                     </div>
                   )}
                 </div>
@@ -505,7 +512,8 @@ export default function CustomizedModal({
                       Total Amount
                     </h3>
                     <h2 className="text-xl font-bold text-primary-500">
-                      {siteConfig?.currencySymbol} {totalPrice.toFixed(2)}
+                      {siteConfig?.currencySymbol}
+                      {totalPrice.toFixed(2)}
                     </h2>
                   </div>
                   <div className="flex gap-2">

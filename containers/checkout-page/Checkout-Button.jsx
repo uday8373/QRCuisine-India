@@ -1,10 +1,23 @@
 import CallWaiter from "@/components/modal/Call-Waiter";
 import supabase from "@/config/supabase";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { ConciergeBell, UserPen } from "lucide-react";
+import {
+  ChevronsRight,
+  ClipboardCheck,
+  ConciergeBell,
+  Loader,
+  UserPen,
+} from "lucide-react";
 import React, { useState, useEffect } from "react";
 
-const CheckoutButton = ({ onOpen, tableData, restaurantData, loading }) => {
+const CheckoutButton = ({
+  onOpen,
+  tableData,
+  restaurantData,
+  loading,
+  isSuborder,
+  handleSubOrderSubmit,
+}) => {
   const {
     isOpen: isWaiterOpen,
     onOpen: onWaiterOpen,
@@ -67,7 +80,7 @@ const CheckoutButton = ({ onOpen, tableData, restaurantData, loading }) => {
           variant="flat"
           aria-label="call waiter"
           className="text-small font-medium rounded-large"
-          startContent={<ConciergeBell size={18} className="mb-1" />}
+          startContent={<ConciergeBell size={18} className="mb-0.5" />}
         >
           {isCalling
             ? `${Math.floor(countdown / 60)}:${(countdown % 60)
@@ -75,16 +88,30 @@ const CheckoutButton = ({ onOpen, tableData, restaurantData, loading }) => {
                 .padStart(2, "0")}`
             : "Call Waiter"}
         </Button>
-        <Button
-          isLoading={loading}
-          onPress={onOpen}
-          size="lg"
-          color="primary"
-          className="text-small font-medium rounded-large"
-          startContent={<UserPen size={18} className="mb-1" />}
-        >
-          Add Details
-        </Button>
+        {isSuborder ? (
+          <Button
+            spinner={<Loader size={20} className="animate-spin" />}
+            isLoading={loading}
+            onPress={handleSubOrderSubmit}
+            size="lg"
+            color="primary"
+            className="text-small font-medium rounded-large"
+            startContent={<ClipboardCheck size={18} className="mb-0.5" />}
+          >
+            Place Order
+          </Button>
+        ) : (
+          <Button
+            isLoading={loading}
+            onPress={onOpen}
+            size="lg"
+            color="primary"
+            className="text-small font-medium rounded-large"
+            startContent={<UserPen size={18} className="mb-0.5" />}
+          >
+            Add Details
+          </Button>
+        )}
       </div>
       <CallWaiter isOpen={isWaiterOpen} onOpenChange={onWaiterOpenChange} />
     </section>
