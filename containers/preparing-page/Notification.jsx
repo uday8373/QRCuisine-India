@@ -14,7 +14,7 @@ const Notification = ({
   return (
     <figure
       className={cn(
-        "relative mx-auto min-h-fit w-full cursor-pointer overflow-hidden rounded-2xl py-2 px-3 bg-default-100 shadow-sm border border-default-200 flex justify-between items-center h-full"
+        "relative mx-auto min-h-fit w-full cursor-pointer overflow-hidden rounded-2xl py-2 px-3 bg-default-100 border border-default-200 flex justify-between items-center h-full"
       )}
     >
       <div className="flex flex-row items-center gap-3">
@@ -50,17 +50,22 @@ const Notification = ({
 
 export function NotificationList({ className, notifications, handleUpdate }) {
   return (
-    <div
-      className={cn(
-        "relative flex w-full max-h-[167px] flex-col px-5 py-3 overflow-hidden bg-background md:shadow-xl border-b border-default-200",
-        className
-      )}
-    >
-      <AnimatedList>
-        {notifications.map((item, idx) => (
-          <Notification {...item} key={idx} handleUpdate={handleUpdate} />
-        ))}
-      </AnimatedList>
-    </div>
+    <>
+      <h2 className="text-default-700 font-medium text-medium px-6 -mb-1.5 mt-3">
+        Notifications
+      </h2>
+      <div
+        className={cn(
+          "relative flex w-full max-h-[167px] flex-col px-5 py-3 overflow-hidden",
+          className
+        )}
+      >
+        <AnimatedList>
+          {notifications.map((item, idx) => (
+            <Notification {...item} key={idx} handleUpdate={handleUpdate} />
+          ))}
+        </AnimatedList>
+      </div>
+    </>
   );
 }

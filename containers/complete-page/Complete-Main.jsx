@@ -26,6 +26,8 @@ const CompleteMain = () => {
   const [orderData, setOrderData] = useState();
   const [isClaimed, setIsClaimed] = useState(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const {
     isOpen: isClaimOpen,
     onOpen: onClaimOpen,
@@ -181,7 +183,7 @@ const CompleteMain = () => {
   }
   return (
     <main>
-      <Header orderData={orderData} />
+      <Header orderData={orderData} userId={userId} />
       <ThankYou orderData={orderData} />
       <PaymentStatus orderData={orderData} isClaimed={isClaimed} />
       {!isClaimed && (

@@ -28,6 +28,7 @@ const ProfileSidebar = ({
   tableId,
   restaurantId,
   userId,
+  isEndSession = true,
 }) => {
   const router = useRouter();
   const sidebarRef = useRef(null);
@@ -132,7 +133,11 @@ const ProfileSidebar = ({
           {userData ? (
             <>
               <div className="flex flex-col items-center mb-5 mt-20">
-                <Avatar src={userData?.image} className="w-20 h-20 mb-2" />
+                <Avatar
+                  src={userData?.image}
+                  className="w-20 h-20 mb-2 border shadow-small"
+                  radius="md"
+                />
                 <h2 className="text-large font-semibold text-default-900">
                   {userData?.name ? userData?.name : "Anonymous"}
                 </h2>
@@ -193,7 +198,7 @@ const ProfileSidebar = ({
                         : "var(--nextui-colors-secondary-500)",
                     }}
                   >
-                    DETAILS
+                    PROFILE DETAILS
                   </Button>
                 </ButtonGroup>
               </div>
@@ -269,17 +274,19 @@ const ProfileSidebar = ({
               Log Out
               <ChevronRight size={20} className="absolute right-2" />
             </Button> */}
-            <Button
-              onClick={clickEndSession}
-              variant="flat"
-              color="danger"
-              className="w-full justify-start mb-2 rounded-lg px-3 relative text-danger-500 font-medium text-[15px]"
-              size="lg"
-            >
-              <LogOut size={18} className="mr-1" />
-              End Session
-              <ChevronRight size={20} className="absolute right-2" />
-            </Button>
+            {isEndSession && (
+              <Button
+                onClick={clickEndSession}
+                variant="flat"
+                color="danger"
+                className="w-full justify-start mb-2 rounded-lg px-3 relative text-danger-500 font-medium text-[15px]"
+                size="lg"
+              >
+                <LogOut size={18} className="mr-1" />
+                End Session
+                <ChevronRight size={20} className="absolute right-2" />
+              </Button>
+            )}
           </div>
         </div>
       </aside>

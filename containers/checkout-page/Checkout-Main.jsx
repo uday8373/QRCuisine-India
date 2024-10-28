@@ -111,27 +111,39 @@ const CheckoutMain = () => {
 
   const handleNameChange = (e) => {
     const value = e.target.value;
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    setPersonalDetails((prevDetails) => ({
+      ...prevDetails,
+      name: value,
+    }));
+
     if (/\s{2,}/.test(value)) {
       setNameError("Double spaces are not allowed");
+    } else if (!nameRegex.test(value)) {
+      setNameError("Name should contain only letters and spaces");
+    } else if (value.length < 3) {
+      setNameError("Name should be at least 3 characters long");
+    } else if (value.length > 50) {
+      setNameError("Name should not exceed 50 characters");
     } else {
       setNameError("");
-      setPersonalDetails((prevDetails) => ({
-        ...prevDetails,
-        name: value,
-      }));
     }
   };
 
   const handleMobileChange = (e) => {
     const value = e.target.value;
+    const mobileRegex = /^[0-9]{10}$/;
+    setPersonalDetails((prevDetails) => ({
+      ...prevDetails,
+      mobile: value,
+    }));
+
     if (/\s{2,}/.test(value)) {
       setMobileError("Double spaces are not allowed");
+    } else if (!mobileRegex.test(value)) {
+      setMobileError("Mobile number must be a 10-digit number");
     } else {
       setMobileError("");
-      setPersonalDetails((prevDetails) => ({
-        ...prevDetails,
-        mobile: value,
-      }));
     }
   };
   const insertOrder = async () => {
@@ -186,16 +198,6 @@ const CheckoutMain = () => {
   };
 
   const updateUser = async () => {
-    if (!personalDetails.name) {
-      setNameError("Name is required");
-      return;
-    }
-    if (!personalDetails.mobile) {
-      setMobileError("Mobile number is required");
-      return;
-    }
-    if (nameError || mobileError) return;
-
     try {
       const userId = localStorage.getItem("userId");
       const { data, error } = await supabase
@@ -315,6 +317,20 @@ const CheckoutMain = () => {
   };
 
   const handleSubmit = async () => {
+    let hasError = false;
+
+    if (!personalDetails.name) {
+      setNameError("Name is required");
+      hasError = true;
+    }
+    if (!personalDetails.mobile) {
+      setMobileError("Mobile number is required");
+      hasError = true;
+    }
+    if (nameError || mobileError || hasError) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const [userResponse, orderResponse, visitorsResponse] = await Promise.all(
@@ -336,6 +352,7 @@ const CheckoutMain = () => {
           localStorage.removeItem("cartItems");
           localStorage.removeItem("restaurantData");
           localStorage.removeItem("instructions");
+          onDetailsOpenChange(false);
         } else {
           throw new Error("Failed to update table or send message");
         }
@@ -343,7 +360,6 @@ const CheckoutMain = () => {
     } catch (error) {
       console.error("Error updating:", error);
     } finally {
-      onDetailsOpenChange(false);
       setLoading(false);
     }
   };
@@ -351,18 +367,22 @@ const CheckoutMain = () => {
   const insertSubOrder = async () => {
     try {
       const { data: maxOrderData, error: maxOrderError } = await supabase
-        .from("sub_orders")
-        .select("sub_order_id")
-        .eq("order_id", orderId)
-        .order("sub_order_id", { ascending: false })
-        .limit(1);
+        .from("orders")
+        .select(`order_id, id, sub_orders(id)`)
+        .eq("id", orderId)
+        .single();
       if (maxOrderError) throw maxOrderError;
 
-      let newOrderId = "00001";
-      if (maxOrderData && maxOrderData.length > 0) {
-        const maxOrderId = maxOrderData[0].sub_order_id;
-        newOrderId = String(parseInt(maxOrderId) + 1).padStart(5, "0");
+      const totalSubOrder = maxOrderData?.sub_orders.length + 1;
+
+      let newOrderId = `${maxOrderData?.order_id}-01`;
+
+      if (maxOrderData.sub_orders.length > 0) {
+        newOrderId = `${maxOrderData?.order_id}-${String(
+          totalSubOrder
+        ).padStart(2, "0")}`;
       }
+
       const { data, error } = await supabase
         .from("sub_orders")
         .insert([
@@ -372,6 +392,7 @@ const CheckoutMain = () => {
             instructions: mainInstructions,
             total_amount: totalPrice.toFixed(2),
             order_id: orderId,
+            restaurant_id: restaurantData.id,
           },
         ])
         .select("id");
@@ -454,6 +475,7 @@ const CheckoutMain = () => {
         restaurantData={restaurantData}
         tableData={tableData}
         userId={userId}
+        isSuborder={isSuborder}
       />
       <ItemList
         menuItems={cartItems}

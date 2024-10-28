@@ -11,7 +11,7 @@ const CartPopup = ({
 }) => {
   return (
     <section className="w-full relative overflow-hidden ">
-      <div className="fixed bottom-0 backdrop-blur-xl z-20 w-full left-0 pt-3 pb-5 rounded-t-3xl shadow-container">
+      <div className="fixed bottom-0 backdrop-blur-xl bg-background/50 z-20 w-full left-0 pt-3 pb-5 rounded-t-3xl shadow-container">
         <div className="flex items-center justify-center w-full">
           <div className="w-full h-full flex-col max-w-screen-xl relative px-5">
             <div className="w-full h-full flex flex-col gap-3">
@@ -41,7 +41,7 @@ const CartPopup = ({
                 className="font-semibold"
                 endContent={<ChevronsRight />}
               >
-                Check Out
+                View Cart
               </Button>
             </div>
           </div>

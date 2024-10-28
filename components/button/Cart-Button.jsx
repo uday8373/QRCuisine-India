@@ -1,6 +1,6 @@
 "use client";
 import { Button, ButtonGroup } from "@nextui-org/react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 const CartButton = ({
@@ -79,7 +79,11 @@ const CartButton = ({
             size="sm"
             onClick={handleDecrement}
           >
-            <Minus className="w-4 h-4 fill-white" />
+            {quantity === 1 ? (
+              <Trash2 className="w-4 h-4 text-white" />
+            ) : (
+              <Minus className="w-4 h-4 fill-white" />
+            )}
           </Button>
           <h3
             className={`${

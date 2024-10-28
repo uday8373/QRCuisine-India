@@ -22,6 +22,9 @@ const EditProfileModal = ({
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [nameError, setNameError] = useState("");
+
+  const MAX_NAME_LENGTH = 50; // Set a max limit for the name
 
   useEffect(() => {
     if (userData) {
@@ -41,7 +44,52 @@ const EditProfileModal = ({
     }
   };
 
+  const validateName = () => {
+    // Check if name is empty
+    if (!name) {
+      setNameError("Name is required.");
+      return false;
+    }
+
+    // Check if name contains special characters
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/g;
+    if (specialCharRegex.test(name)) {
+      setNameError("Name should not contain special characters.");
+      return false;
+    }
+
+    // Check if name contains double spaces
+    if (/\s{2,}/.test(name)) {
+      setNameError("Name should not contain double spaces.");
+      return false;
+    }
+
+    // Check if name contains numbers
+    const numberRegex = /\d/;
+    if (numberRegex.test(name)) {
+      setNameError("Name should not contain numbers.");
+      return false;
+    }
+
+    // Check if name length exceeds the max limit
+    if (name.length > MAX_NAME_LENGTH) {
+      setNameError(`Name should not exceed ${MAX_NAME_LENGTH} characters.`);
+      return false;
+    }
+
+    // Ensure name has at least 3 characters
+    if (name.length < 3) {
+      setNameError("Name must be at least 3 characters long.");
+      return false;
+    }
+
+    setNameError("");
+    return true;
+  };
+
   const handleSave = async () => {
+    if (!validateName()) return;
+
     setUploading(true);
     try {
       let imageUrlToUpdate = imageUrl;
@@ -88,12 +136,12 @@ const EditProfileModal = ({
                 alt="Profile picture"
                 className="w-24 h-24"
                 size="lg"
-                radius="full"
+                radius="md"
               />
             ) : (
               <label
                 htmlFor="picture"
-                className="w-24 h-24 cursor-pointer bg-default-100 rounded-full flex items-center justify-center border-dashed border-2 border-default-300"
+                className="w-24 h-24 cursor-pointer bg-default-100 rounded-md flex items-center justify-center border-dashed border-2 border-default-300"
               >
                 <Upload className="h-6 w-6 text-default-500" />
               </label>
@@ -102,6 +150,7 @@ const EditProfileModal = ({
               htmlFor="picture"
               className="cursor-pointer flex items-center space-x-2 text-sm text-default-500 font-medium mb-5 mt-2"
             >
+              <Upload size={16} className="text-default-500 font-semibold" />
               <span>Upload new picture</span>
             </label>
             <Input
@@ -111,13 +160,17 @@ const EditProfileModal = ({
               className="hidden"
               onChange={handleFileChange}
             />
-            <Input
-              label="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              variant="faded"
-            />
+            <div className="min-h-20 w-full flex">
+              <Input
+                label="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                variant="faded"
+                errorMessage={nameError}
+                isInvalid={nameError && true}
+              />
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
@@ -128,6 +181,7 @@ const EditProfileModal = ({
             fullWidth
             size="lg"
             color="primary"
+            className="-mt-3"
           >
             Save Changes
           </Button>

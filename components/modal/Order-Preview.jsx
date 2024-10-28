@@ -5,101 +5,139 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  Accordion,
+  AccordionItem,
+  Avatar,
   ModalFooter,
-  Divider,
 } from "@nextui-org/react";
+
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@nextui-org/react";
-import Image from "next/image";
+  Filter,
+  MessageCircle,
+  Soup,
+  Thermometer,
+  Utensils,
+} from "lucide-react";
 import { siteConfig } from "@/config/site";
-export default function OrderPreview({ isOpen, onOpenChange, orderData }) {
+export default function OrderPreview({
+  isOpen,
+  onOpenChange,
+  foodData,
+  totalAmount,
+}) {
   return (
     <>
       <Modal
+        backdrop="blur"
         scrollBehavior="inside"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        classNames={{
+          header: "border-b border-dotted",
+          footer: "border-t border-dotted",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 border-b decoration-dotted">
                 Your Order Details
               </ModalHeader>
-              <ModalBody className="relative !p-0">
-                <Divider />
-
-                <Table
-                  shadow="none"
-                  removeWrapper={true}
-                  hideHeader
-                  aria-label="Example static collection table"
-                >
-                  <TableHeader>
-                    <TableColumn>Description</TableColumn>
-                    <TableColumn>QTY</TableColumn>
-                    <TableColumn>Total</TableColumn>
-                  </TableHeader>
-                  <TableBody>
-                    {orderData.fooditem_ids.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="flex items-center gap-2">
-                          <Image
-                            src={`${item?.image?.replace(
-                              "/upload/",
-                              "/upload/c_scale,w_100/"
-                            )}`}
-                            alt={item.food_name}
-                            width={100}
-                            height={100}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />{" "}
-                          {item.food_name}
-                        </TableCell>
-                        <TableCell> x {item.quantity}</TableCell>
-                        <TableCell>
-                          {siteConfig?.currencySymbol}{" "}
-                          {(item.price * item.quantity).toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <ModalBody>
+                <Accordion variant="light" className="px-0">
+                  {foodData &&
+                    foodData.map((item, index) => {
+                      return (
+                        <AccordionItem
+                          key={index}
+                          aria-label="Accordion 1"
+                          startContent={
+                            <Avatar src={item?.image} radius="sm" />
+                          }
+                          title={item?.food_name}
+                          subtitle={<span>x{item?.quantity}</span>}
+                          classNames={{
+                            title: "text-medium",
+                          }}
+                        >
+                          {item?.is_customized && (
+                            <>
+                              <div className="w-full flex flex-col gap-3 disabled:bg-opacity-100">
+                                {item?.selectedQuantity && (
+                                  <div className="w-full flex items-center gap-3">
+                                    <Filter
+                                      size={18}
+                                      className="text-default-600"
+                                    />
+                                    <h4 className="text-default-700 text-small  line-clamp-1">
+                                      Quantity : {item?.selectedQuantity?.title}
+                                    </h4>
+                                  </div>
+                                )}
+                                {item?.selectedInstructions && (
+                                  <div className="w-full flex items-center gap-3">
+                                    <MessageCircle
+                                      size={18}
+                                      className="text-default-600"
+                                    />
+                                    <h4 className="text-default-700 text-small line-clamp-1">
+                                      Quick Instructions :{" "}
+                                      {item?.selectedInstructions?.title}
+                                    </h4>
+                                  </div>
+                                )}
+                                {item?.selectedTemperature && (
+                                  <div className="w-full flex items-center gap-3">
+                                    <Thermometer
+                                      size={18}
+                                      className="text-default-600"
+                                    />
+                                    <h4 className="text-default-700 text-small line-clamp-1">
+                                      Temperature :{" "}
+                                      {item?.selectedTemperature?.title}
+                                    </h4>
+                                  </div>
+                                )}
+                                {item?.selectedSides && (
+                                  <div className="w-full flex items-center gap-3">
+                                    <Utensils
+                                      size={18}
+                                      className="text-default-600"
+                                    />
+                                    <h4 className="text-default-700 text-small">
+                                      Side Item : {item?.selectedSides?.title}
+                                    </h4>
+                                  </div>
+                                )}
+                                {item?.selectedAdditionalSides && (
+                                  <div className="w-full flex items-center gap-3">
+                                    <Soup
+                                      size={18}
+                                      className="text-default-600"
+                                    />
+                                    <h4 className="text-default-700 text-small line-clamp-1">
+                                      Additional Side :{" "}
+                                      {item?.selectedAdditionalSides?.title}
+                                    </h4>
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          )}
+                        </AccordionItem>
+                      );
+                    })}
+                </Accordion>
               </ModalBody>
-              <ModalFooter className="w-full flex flex-col !p-0 ">
-                <Divider />
-                <div className="pr-6 pl-4 pb-4 flex flex-col items-center  w-full gap-2">
-                  <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-default-900 font-medium ">Subtotal</h3>
-                    <h3>
-                      {siteConfig?.currencySymbol}{" "}
-                      {orderData?.total_amount.toFixed(2)}
-                    </h3>
-                  </div>
-                  <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-default-900 font-medium">
-                      {siteConfig?.taxTitle}
-                    </h3>
-                    <h3>
-                      {siteConfig?.currencySymbol}{" "}
-                      {orderData?.tax_amount.toFixed(2)}
-                    </h3>
-                  </div>
-                  <div className="flex w-full items-center justify-between">
-                    <h3 className=" text-default-900 font-medium text-lg">
-                      Total
-                    </h3>
-                    <h3>
-                      {siteConfig?.currencySymbol}{" "}
-                      {orderData?.grand_amount.toFixed(2)}
-                    </h3>
-                  </div>
+              <ModalFooter>
+                <div className="w-full flex justify-between items-center">
+                  <h3 className="text-default-700 font-medium text-medium">
+                    Total Amount
+                  </h3>
+                  <h3 className="text-primary-500 font-medium text-medium">
+                    {siteConfig?.currencySymbol}
+                    {totalAmount}
+                  </h3>
                 </div>
               </ModalFooter>
             </>

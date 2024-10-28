@@ -15,6 +15,21 @@ import Invoice from "./Invoice";
 import { siteConfig } from "@/config/site";
 
 export default function PaymentStatus({ orderData, isClaimed }) {
+  const totalAmount = orderData?.total_amount || 0;
+
+  const subOrdersTotal =
+    orderData?.sub_orders
+      .filter((subOrder) => subOrder.is_delivered === true)
+      .reduce((acc, subOrder) => {
+        return acc + (subOrder?.total_amount || 0);
+      }, 0) || 0;
+
+  const finalTotalAmount = totalAmount + subOrdersTotal;
+
+  const gstPercentage = orderData?.restaurant_id?.gst_percentage || 0;
+  const gstAmount = (finalTotalAmount * gstPercentage) / 100;
+
+  const totalWithGst = finalTotalAmount + gstAmount;
   return (
     <section id="thankyou" className="w-full px-5 mb-3">
       <div className="w-full flex flex-col gap-2">
@@ -28,8 +43,8 @@ export default function PaymentStatus({ orderData, isClaimed }) {
                 Total Bill Amount
               </h3>
               <h2 className="text-primary text-xl font-bold">
-                {siteConfig?.currencySymbol}{" "}
-                {orderData?.grand_amount.toFixed(2)}
+                {siteConfig?.currencySymbol}
+                {totalWithGst.toFixed(2)}
               </h2>
             </div>
             <Chip

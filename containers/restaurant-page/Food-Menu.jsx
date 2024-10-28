@@ -54,7 +54,9 @@ const FoodMenu = ({
                   onCustomizedOpen={onCustomizedOpen}
                   setSelecetedFoodItem={setSelecetedFoodItem}
                 />
-                {index !== menuItems.length - 1 && <Divider />}
+                {index !== menuItems.length - 1 && (
+                  <div className="border border-dashed" />
+                )}
               </div>
             ))
           )}

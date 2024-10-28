@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 
 const CallWaiterButton = ({ orderData }) => {
   const router = useRouter();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isWaiterOpen,
     onOpen: onWaiterOpen,
@@ -31,8 +30,16 @@ const CallWaiterButton = ({ orderData }) => {
   }, [isCalling, countdown]);
 
   const handleCallWaiter = async () => {
-    const message = `A customer at Table No. ${orderData?.tables?.table_no} has requested a waiter.`;
-    const sub_message = "Please attend to the table quickly.";
+    let message = "";
+    let sub_message = "";
+
+    if (orderData?.waiter_id?.id) {
+      message = `Please call the waiter ${orderData?.waiters?.name} for table no: ${orderData?.tables?.table_no}`;
+      sub_message = "Please attend to the table quickly.";
+    } else {
+      message = `A customer at Table No. ${orderData?.tables?.table_no} has requested a waiter.`;
+      sub_message = "Please attend to the table quickly.";
+    }
 
     const { data, error } = await supabase
       .from("messages")
@@ -57,10 +64,6 @@ const CallWaiterButton = ({ orderData }) => {
     }
   };
 
-  const hendleOrderPreview = () => {
-    onOpen();
-  };
-
   const handleMoreOrder = () => {
     localStorage.setItem("is_suborder", true);
     localStorage.removeItem("status");
@@ -71,25 +74,28 @@ const CallWaiterButton = ({ orderData }) => {
 
   return (
     <section id="call_waiter_section">
-      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl flex flex-col gap-2 shadow-small rounded-t-large">
+      <div className="w-full fixed bottom-0 px-5 py-5 backdrop-blur-xl bg-background/50 flex flex-col gap-2 shadow-small rounded-t-large">
         <div className="w-full flex gap-2 flex-shrink items-center">
-          <Button
-            onPress={hendleOrderPreview}
-            fullWidth
-            size="lg"
-            startContent={<ReceiptText size={20} />}
-            color="default"
-            variant="flat"
-          >
-            Order Details
-          </Button>
+          <div className="flex flex-col w-full">
+            <h2 className="text-xs font-medium text-default-500">
+              Assigned Waiter :
+            </h2>
+            <h2 className="text-medium text-default-700 font-medium line-clamp-1">
+              {orderData?.waiters?.name ? (
+                orderData?.waiters?.name
+              ) : (
+                <span className="animate-pulse">pending ...</span>
+              )}
+            </h2>
+          </div>
           <Button
             onClick={handleCallWaiter}
             isDisabled={isCalling}
             startContent={<ConciergeBell size={20} className="mb-1" />}
             size="lg"
             fullWidth
-            color="primary"
+            variant="flat"
+            color="default"
           >
             {isCalling
               ? `${Math.floor(countdown / 60)}:${(countdown % 60)
@@ -103,17 +109,13 @@ const CallWaiterButton = ({ orderData }) => {
           fullWidth
           size="lg"
           startContent={<CirclePlus size={20} />}
-          color="default"
-          variant="flat"
+          color="primary"
+          variant="solid"
         >
           Order More Items
         </Button>
       </div>
-      <OrderPreview
-        orderData={orderData}
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-      />
+
       <CallWaiter isOpen={isWaiterOpen} onOpenChange={onWaiterOpenChange} />
     </section>
   );

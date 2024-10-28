@@ -3,7 +3,7 @@ import { Avatar, Button } from "@nextui-org/react";
 import { AlignLeft, X } from "lucide-react";
 import React, { useState } from "react";
 
-const Hero = ({ restaurantData, tableData, userId }) => {
+const Hero = ({ restaurantData, tableData, userId, isSuborder }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const formatTableNumber = (tableNo) => {
@@ -61,6 +61,7 @@ const Hero = ({ restaurantData, tableData, userId }) => {
         tableId={tableData?.id}
         restaurantId={restaurantData?.id}
         userId={userId}
+        isEndSession={isSuborder ? false : true}
       />
     </>
   );

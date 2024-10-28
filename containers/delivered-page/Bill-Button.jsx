@@ -4,7 +4,22 @@ import React from "react";
 import Invoice from "./Invoice";
 import { siteConfig } from "@/config/site";
 
-const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
+const BillButton = ({ orderData, onOpen }) => {
+  const totalAmount = orderData?.total_amount || 0;
+
+  const subOrdersTotal =
+    orderData?.sub_orders
+      .filter((subOrder) => subOrder.is_delivered === true)
+      .reduce((acc, subOrder) => {
+        return acc + (subOrder?.total_amount || 0);
+      }, 0) || 0;
+
+  const finalTotalAmount = totalAmount + subOrdersTotal;
+
+  const gstPercentage = orderData?.restaurant_id?.gst_percentage || 0;
+  const gstAmount = (finalTotalAmount * gstPercentage) / 100;
+
+  const totalWithGst = finalTotalAmount + gstAmount;
   return (
     <section id="bill_button_section" className="mb-44">
       <div className="w-full py-5 flex flex-col gap-3 fixed bottom-0 px-5 backdrop-blur-xl shadow-small rounded-t-large">
@@ -14,7 +29,8 @@ const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
               Grand Total
             </h4>
             <h4 className="text-xl font-bold text-default-900">
-              {siteConfig?.currencySymbol} {orderData.grand_amount.toFixed(2)}
+              {siteConfig?.currencySymbol}
+              {totalWithGst.toFixed(2)}
             </h4>
           </div>
           <Invoice orderData={orderData} />
@@ -23,14 +39,10 @@ const BillButton = ({ orderData, handleCallWaiter, isLoading }) => {
         <Button
           size="lg"
           spinner={<Loader size={20} className="animate-spin" />}
-          isLoading={isLoading}
-          isDisabled={isLoading}
           fullWidth
           endContent={<ChevronsRight size={20} />}
           color="primary"
-          onClick={() => {
-            handleCallWaiter(true);
-          }}
+          onClick={onOpen}
         >
           Ask For Bill
         </Button>

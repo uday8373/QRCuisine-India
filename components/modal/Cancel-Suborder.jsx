@@ -13,19 +13,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/config/supabase";
-import { clearLocalStorage } from "@/hooks/clearLocalStorage";
-import Cookies from "js-cookie";
+
 import { Loader } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
-const CancelOrder = ({
-  isOpen,
-  onOpenChange,
-  tableId,
-  userId,
-  orderData,
-  statusData,
-}) => {
+const CancelSubOrder = ({ isOpen, onOpenChange, orderData, statusData }) => {
   const router = useRouter();
   const [reason, setReason] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,25 +42,8 @@ const CancelOrder = ({
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const updateTablePromise = supabase
-        .from("tables")
-        .update({
-          is_booked: false,
-          persons: null,
-          order_id: null,
-          user_id: null,
-        })
-        .eq("id", tableId)
-        .select();
-
-      const updateUserPromise = supabase
-        .from("users")
-        .update({ is_active: false, closed_at: new Date().toISOString() })
-        .eq("id", userId)
-        .select();
-
       const updateOrderPromise = supabase
-        .from("orders")
+        .from("sub_orders")
         .update({
           is_cancelled: true,
           cancelled_reason: reason,
@@ -77,27 +52,10 @@ const CancelOrder = ({
         .eq("id", orderData.id)
         .select();
 
-      const [
-        { data: tableData, error: tableError },
-        { data: userData, error: userError },
-        { data: orderUpdateData, error: orderUpdateError },
-      ] = await Promise.all([
-        updateTablePromise,
-        updateUserPromise,
-        updateOrderPromise,
-      ]);
+      const [{ data: orderUpdateData, error: orderUpdateError }] =
+        await Promise.all([updateOrderPromise]);
 
-      if (tableError) throw tableError;
-      if (userError) throw userError;
       if (orderUpdateError) throw orderUpdateError;
-
-      const expires = new Date();
-      expires.setMinutes(expires.getMinutes() + 30);
-      Cookies.set("orderId", orderData.id, { expires });
-      setTimeout(async () => {
-        await clearLocalStorage();
-      }, 3000);
-      router.replace("/cancel");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
@@ -116,7 +74,7 @@ const CancelOrder = ({
               <div className="-mt-4">
                 <div className="mb-4 flex flex-col gap-1">
                   <p className="text-sm text-default-600 font-medium">
-                    Order Id: {orderData?.order_id}{" "}
+                    Order Id: {orderData?.sub_order_id}{" "}
                   </p>
                   <p className="text-sm text-default-600 font-medium">
                     Total Amount: {siteConfig?.currencySymbol}
@@ -192,4 +150,4 @@ const CancelOrder = ({
   );
 };
 
-export default CancelOrder;
+export default CancelSubOrder;

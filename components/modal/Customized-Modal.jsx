@@ -35,6 +35,7 @@ export default function CustomizedModal({
     quantity: false,
     temperature: false,
     sides: false,
+    additionalSides: false,
   });
 
   const fetchData = async () => {
@@ -182,9 +183,12 @@ export default function CustomizedModal({
     const errors = {
       quantity: selecetedFoodItem?.quantity_id ? !selectedQuantity : false,
       temperature: selecetedFoodItem?.is_temperature
-        ? !selectedTemperature
+        ? selectedTemperature.value === 0
         : false,
       sides: selecetedFoodItem?.side_id ? !selectedSides : false,
+      additionalSides: selecetedFoodItem?.additional_side_id
+        ? !selectedAdditionalSides
+        : false,
     };
 
     setErrors(errors);
@@ -202,6 +206,7 @@ export default function CustomizedModal({
       quantity: false,
       temperature: false,
       sides: false,
+      additionalSides: false,
     });
   };
 
@@ -276,6 +281,7 @@ export default function CustomizedModal({
       quantity: false,
       temperature: false,
       sides: false,
+      additionalSides: false,
     });
     onOpenChange(false);
   };
@@ -287,11 +293,15 @@ export default function CustomizedModal({
         backdrop="blur"
         isOpen={isOpen}
         onOpenChange={modalClose}
+        classNames={{
+          header: "border-b-2 border-dotted",
+          footer: "border-t-2 border-dotted",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex gap-2 border-b-2 border-dotted">
+              <ModalHeader className="flex gap-2 ">
                 <SquareDot
                   size={24}
                   className={`${
@@ -306,15 +316,12 @@ export default function CustomizedModal({
                   </h4>
                   <h5 className="text-primary text-medium leading-none">
                     {siteConfig?.currencySymbol}
-                    {selecetedFoodItem?.price.toFixed(2)}/-{" "}
-                    <span className="text-default-500 font-normal">
-                      ({selecetedFoodItem?.quantity})
-                    </span>
+                    {selecetedFoodItem?.price.toFixed(2)}/-
                   </h5>
                 </div>
               </ModalHeader>
               <ModalBody>
-                <div className="w-full grid grid-cols-2 mt-2 gap-x-5 gap-y-0.5">
+                <div className="w-full flex flex-col mt-2 gap-x-5 gap-y-0.5">
                   {data?.food_quantity && (
                     <div className="w-full col-span-1 flex flex-col gap-2">
                       <h3 className="text-small font-medium text-default-700">
@@ -329,7 +336,15 @@ export default function CustomizedModal({
                             key={index}
                             value={quantity?.id}
                           >
-                            {quantity?.title}
+                            {quantity?.title}{" "}
+                            <span className={`${quantity?.price && "pl-1"}`}>
+                              {!quantity.price ? null : (
+                                <>
+                                  ({siteConfig.currencySymbol}
+                                  {quantity.price?.toFixed(1)})
+                                </>
+                              )}
+                            </span>
                           </Checkbox>
                         ))}
                       </div>
@@ -359,7 +374,15 @@ export default function CustomizedModal({
                             key={index}
                             value={instraction?.id}
                           >
-                            {instraction?.title}
+                            {instraction?.title}{" "}
+                            <span className={`${instraction.price && "pl-1"}`}>
+                              {!instraction.price ? null : (
+                                <>
+                                  ({siteConfig.currencySymbol}
+                                  {instraction.price?.toFixed(1)})
+                                </>
+                              )}
+                            </span>
                           </Checkbox>
                         ))}
                       </div>
@@ -402,7 +425,7 @@ export default function CustomizedModal({
                             );
                             setSelectedTemperature(selectedTemp);
                           }}
-                          className="max-w-md"
+                          className="w-full"
                         />
                       </div>
                       <div className="min-h-4">
@@ -421,19 +444,54 @@ export default function CustomizedModal({
                         <span className="text-danger font-semibold">*</span>
                       </h3>
                       <Select
+                        classNames={{
+                          trigger: ` !border`,
+                        }}
                         aria-label="sides"
                         variant="faded"
-                        size="sm"
+                        size="md"
+                        radius="sm"
                         placeholder="Choose favorite side"
-                        className="w-full mb-2"
+                        className="w-full mb-2 "
                         selectionMode="single"
                         onSelectionChange={(value) =>
                           handleSidesChange(value.currentKey)
                         }
                         selectedKeys={[selectedSides?.id]}
+                        renderValue={(items) => {
+                          return items.map((item) => (
+                            <div
+                              key={item.key}
+                              className="flex items-center gap-2"
+                            >
+                              <div className="flex">
+                                <span>{selectedSides.title}</span>
+                                <span className="pl-2">
+                                  {selectedSides?.price
+                                    ? `(${
+                                        siteConfig?.currencySymbol
+                                      }${selectedSides?.price.toFixed(1)})`
+                                    : null}
+                                </span>
+                              </div>
+                            </div>
+                          ));
+                        }}
                       >
                         {data?.food_sides.map((side, index) => (
-                          <SelectItem key={side?.id} value={side?.id}>
+                          <SelectItem
+                            key={side?.id}
+                            value={side?.id}
+                            endContent={
+                              <span>
+                                {side?.price
+                                  ? `${
+                                      siteConfig?.currencySymbol
+                                    }${side?.price.toFixed(1)}`
+                                  : null}
+                              </span>
+                            }
+                          >
                             {side?.title}
                           </SelectItem>
                         ))}
@@ -447,6 +505,14 @@ export default function CustomizedModal({
                             value={side?.id}
                           >
                             {side?.title}
+                            <span className={`${side.price && "pl-1"}`}>
+                              {!side.price ? null : (
+                                <>
+                                  ({siteConfig.currencySymbol}
+                                  {side.price?.toFixed(1)})
+                                </>
+                              )}
+                            </span>
                           </Checkbox>
                         ))}
                       </div>
@@ -462,12 +528,17 @@ export default function CustomizedModal({
                   {data?.additional_sides && (
                     <div className="w-full col-span-1 flex flex-col gap-2">
                       <h3 className="text-small font-medium text-default-700">
-                        Additional Sides
+                        Additional Sides{" "}
+                        <span className="text-danger font-semibold">*</span>
                       </h3>
                       <Select
+                        classNames={{
+                          trigger: ` !border`,
+                        }}
+                        radius="sm"
                         aria-label="additional"
                         variant="faded"
-                        size="sm"
+                        size="md"
                         placeholder="Choose additional side"
                         className="w-full mb-2"
                         selectionMode="single"
@@ -475,9 +546,42 @@ export default function CustomizedModal({
                           handleAdditionalSidesChange(value.currentKey)
                         }
                         selectedKeys={[selectedAdditionalSides?.id]}
+                        renderValue={(items) => {
+                          return items.map((item) => (
+                            <div
+                              key={item.key}
+                              className="flex items-center gap-2"
+                            >
+                              <div className="flex">
+                                <span>{selectedAdditionalSides.title}</span>
+                                <span className="pl-2">
+                                  {selectedAdditionalSides?.price
+                                    ? `(${
+                                        siteConfig?.currencySymbol
+                                      }${selectedAdditionalSides?.price.toFixed(
+                                        1
+                                      )})`
+                                    : null}
+                                </span>
+                              </div>
+                            </div>
+                          ));
+                        }}
                       >
                         {data?.additional_sides.map((side, index) => (
-                          <SelectItem key={side?.id} value={side?.id}>
+                          <SelectItem
+                            endContent={
+                              <span>
+                                {side?.price
+                                  ? `${
+                                      siteConfig?.currencySymbol
+                                    }${side?.price.toFixed(1)}`
+                                  : null}
+                              </span>
+                            }
+                            key={side?.id}
+                            value={side?.id}
+                          >
                             {side?.title}
                           </SelectItem>
                         ))}
@@ -497,10 +601,24 @@ export default function CustomizedModal({
                               value={side?.id}
                             >
                               {side?.title}
+                              <span className={`${side.price && "pl-1"}`}>
+                                {!side.price ? null : (
+                                  <>
+                                    ({siteConfig.currencySymbol}
+                                    {side.price?.toFixed(1)})
+                                  </>
+                                )}
+                              </span>
                             </Checkbox>
                           ))}
                       </div>
-                      <div className="min-h-4" />
+                      <div className="min-h-4">
+                        {errors.additionalSides && (
+                          <p className="text-danger text-xs">
+                            Please select an additional side.
+                          </p>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

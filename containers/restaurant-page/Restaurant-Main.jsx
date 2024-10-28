@@ -76,6 +76,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
 
+  const isSuborder =
+    typeof window !== "undefined" ? localStorage.getItem("is_suborder") : false;
+
   const checkUserSessions = async () => {
     if (tableId !== localTableId || !userId) {
       return;
@@ -363,6 +366,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           tableData={tableData}
           restaurantData={restaurantData}
           userId={userId}
+          isSuborder={isSuborder}
         />
         <SpecialMenu
           specialMenuData={specialMenuData}

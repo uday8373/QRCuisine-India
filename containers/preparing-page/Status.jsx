@@ -1,16 +1,23 @@
 import CancelOrder from "@/components/modal/Cancel-Order";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { Check, CircleX, ConciergeBell } from "lucide-react";
+import { Check, CircleX, ConciergeBell, ReceiptText } from "lucide-react";
 import React from "react";
 
-const Status = ({ orderData, statusData }) => {
+const Status = ({ orderData, statusData, notifications, onDetailsOpen }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const activeId = orderData?.status_id?.sorting;
 
   return (
     <section id="status">
-      <div className="w-full flex flex-col gap-3 py-5 px-5">
-        {/* <div className="w-full flex flex-col gap-2 bg-default-100 rounded-large p-3 border">
+      <div
+        className={`w-full flex flex-col gap-1 px-5 mb-56 ${
+          notifications.length < 1 && "pt-3"
+        }`}
+      >
+        <h2 className="text-default-700 font-medium text-medium">
+          Order Status
+        </h2>
+        <div className="w-full flex flex-col gap-2 bg-default-100 rounded-large p-3 border">
           {statusData
             .filter((status) => status.sorting < 5)
             .map((status) => (
@@ -48,19 +55,33 @@ const Status = ({ orderData, statusData }) => {
                         {status.description}
                       </h3>
                     )}
-                    {status?.sorting === 1 &&
-                      orderData?.status_id?.sorting === 1 && (
+                    <div className="w-full flex gap-2">
+                      {status?.sorting === 1 &&
+                        orderData?.status_id?.sorting === 1 && (
+                          <Button
+                            size="sm"
+                            variant="flat"
+                            color="danger"
+                            className="mt-2 font-medium px-2 gap-1"
+                            // startContent={<CircleX size={16} />}
+                            onClick={onOpen}
+                          >
+                            Cancel Order
+                          </Button>
+                        )}
+                      {status?.sorting === activeId && (
                         <Button
                           size="sm"
-                          variant="flat"
-                          color="danger"
+                          variant="solid"
+                          color="primary"
                           className="mt-2 font-medium px-2 gap-1"
-                          // startContent={<CircleX size={16} />}
-                          onClick={onOpen}
+                          startContent={<ReceiptText size={16} />}
+                          onClick={onDetailsOpen}
                         >
-                          Cancel Order
+                          View Details
                         </Button>
                       )}
+                    </div>
                   </div>
                   <div className="flex col-span-1 justify-end">
                     {status?.sorting <= activeId && (
@@ -79,26 +100,6 @@ const Status = ({ orderData, statusData }) => {
                 )}
               </React.Fragment>
             ))}
-        </div> */}
-
-        <div className="w-full flex py-4 bg-default-100 rounded-large gap-4 px-3 border">
-          <div className="col-span-1 flex items-center justify-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex justify-center items-center">
-              <ConciergeBell size={24} className="text-primary mb-1" />
-            </div>
-          </div>
-          <div className="col-span-5 flex gap-0.5 flex-col">
-            <h2 className="text-medium font-medium text-default-700">
-              Assigned Waiter :
-            </h2>
-            <h2 className="text-small text-default-600">
-              {orderData?.waiters?.name ? (
-                orderData?.waiters?.name
-              ) : (
-                <span className="animate-pulse">pending ...</span>
-              )}
-            </h2>
-          </div>
         </div>
       </div>
       <CancelOrder

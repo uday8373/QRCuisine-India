@@ -40,22 +40,24 @@ const AddDetails = ({
                 isRequired
                 type="text"
                 label="Name"
+                name="name"
                 placeholder="Enter your name"
                 value={personalDetails.name}
                 onChange={handleNameChange}
                 errorMessage={nameError}
-                validationState={nameError ? "invalid" : ""}
+                isInvalid={nameError && true}
                 maxLength={50}
               />
               <Input
                 isRequired
                 type="tel"
                 label="Mobile Number"
+                name="mobile"
                 placeholder="Enter your mobile number"
                 value={personalDetails.mobile}
                 onChange={handleMobileChange}
                 errorMessage={mobileError}
-                validationState={mobileError ? "invalid" : ""}
+                isInvalid={mobileError && true}
                 maxLength={10}
               />
             </ModalBody>

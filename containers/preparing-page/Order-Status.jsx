@@ -31,10 +31,6 @@ const OrderStatus = ({ orderData }) => {
     }
   };
 
-  const getRestaurantName = (name) => {
-    return name && name.length > 15 ? `${name.slice(0, 15)}...` : name;
-  };
-
   let bgColorClass = "";
   let textColorClass = "";
 
@@ -68,23 +64,20 @@ const OrderStatus = ({ orderData }) => {
       const timeLeft = targetTime - now;
 
       if (timeLeft <= 0) {
-        setRemainingTime("00:00");
+        setRemainingTime("Over");
       } else {
         const minutes = Math.floor(timeLeft / 60000);
-        const seconds = Math.floor((timeLeft % 60000) / 1000);
-        setRemainingTime(
-          `${minutes < 10 ? "0" : ""}${minutes}:${
-            seconds < 10 ? "0" : ""
-          }${seconds}`
-        );
+        setRemainingTime(`${minutes} mins`);
       }
     };
 
-    const intervalId = setInterval(updateRemainingTime, 800);
-
     updateRemainingTime();
 
-    return () => clearInterval(intervalId);
+    const timeoutId = setTimeout(() => {
+      updateRemainingTime();
+    }, 60000);
+
+    return () => clearTimeout(timeoutId);
   }, [orderData]);
   return (
     <section id="order_status">
@@ -108,7 +101,6 @@ const OrderStatus = ({ orderData }) => {
             <span className={`${textColorClass} text-small font-bold px-2`}>
               {remainingTime || "Calculating..."}
             </span>
-            {remainingTime && "Minutes"}
           </h3>
         </div>
       </div>

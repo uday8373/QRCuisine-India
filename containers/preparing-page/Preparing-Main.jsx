@@ -25,9 +25,14 @@ import Cookies from "js-cookie";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import { toast } from "react-toastify";
 import SubOrders from "./Sub-Orders";
+import MainOrder from "./Main-Order";
+import { useDisclosure } from "@nextui-org/react";
+import OrderPreview from "@/components/modal/Order-Preview";
 
 const PreparingMain = () => {
   const router = useRouter();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const navigateBasedOnStatus = useStatusNavigate();
   const [notifications, setNotifications] = useState([]);
   const isSmallScreen = useSmallScreen();
@@ -106,8 +111,26 @@ const PreparingMain = () => {
       )
       .subscribe();
 
+    const subOrderSubscription = supabase
+      .channel("sub_orders")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "sub_orders",
+          filter: `order_id=eq.${orderId}`,
+        },
+        async (payload) => {
+          const myData = await fetchOrderData(orderId);
+          setOrderData(myData);
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(orderSubscription);
+      supabase.removeChannel(subOrderSubscription);
     };
   }, [orderId, userId]);
 
@@ -143,9 +166,25 @@ const PreparingMain = () => {
     };
   }, [orderId, userId]);
 
-  if (orderData?.status_id?.sorting === 4) {
-    localStorage.setItem("status", "delivered");
-    router.replace("/delivered");
+  // if (orderData?.status_id?.sorting === 4) {
+  //   localStorage.setItem("status", "delivered");
+  //   router.replace("/delivered");
+  // }
+
+  if (orderData?.sub_orders.length > 0) {
+    const allSubOrdersDelivered = orderData.sub_orders.every((subOrder) =>
+      [4, 5, 6].includes(subOrder?.status_id?.sorting)
+    );
+
+    if (allSubOrdersDelivered && orderData?.status_id?.sorting === 4) {
+      localStorage.setItem("status", "delivered");
+      router.replace("/delivered");
+    }
+  } else {
+    if (orderData?.status_id?.sorting === 4) {
+      localStorage.setItem("status", "delivered");
+      router.replace("/delivered");
+    }
   }
 
   if (orderData?.status_id?.sorting === 5) {
@@ -190,17 +229,41 @@ const PreparingMain = () => {
   }
   return (
     <div>
-      <Header orderData={orderData} statusData={statusData} />
-      <OrderStatus orderData={orderData} />
+      <Header orderData={orderData} statusData={statusData} userId={userId} />
+      {orderData?.sub_orders.length < 1 && (
+        <OrderStatus orderData={orderData} />
+      )}
       {notifications.length > 0 && (
         <NotificationList
           notifications={notifications}
           handleUpdate={handleUpdate}
         />
       )}
-      <Status orderData={orderData} statusData={statusData} />
-      <SubOrders orderData={orderData} statusData={statusData} />
+      {orderData?.sub_orders.length < 1 && (
+        <Status
+          orderData={orderData}
+          statusData={statusData}
+          notifications={notifications}
+          onDetailsOpen={onOpen}
+        />
+      )}
+      {orderData?.sub_orders.length > 0 && (
+        <>
+          <MainOrder
+            orderData={orderData}
+            statusData={statusData}
+            notifications={notifications}
+          />
+          <SubOrders orderData={orderData} statusData={statusData} />
+        </>
+      )}
       <CallWaiterButton orderData={orderData} />
+      <OrderPreview
+        foodData={orderData?.fooditem_ids}
+        totalAmount={orderData?.total_amount}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 };

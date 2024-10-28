@@ -1,43 +1,69 @@
-import { Button, Progress } from "@nextui-org/react";
-import { ChevronDown, ChevronUp, CircleX, ReceiptText } from "lucide-react";
+import CancelSubOrder from "@/components/modal/Cancel-Suborder";
+import OrderPreview from "@/components/modal/Order-Preview";
+import { Button, Progress, useDisclosure } from "@nextui-org/react";
+import { CircleX, ReceiptText } from "lucide-react";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const SubOrders = ({ orderData, statusData }) => {
-  const [showOrder, setShowOrder] = useState(true);
+  const [remainingTimes, setRemainingTimes] = useState({});
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isCancelOpen,
+    onOpen: onCancelOpen,
+    onOpenChange: onCancelOpenChange,
+  } = useDisclosure();
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  useEffect(() => {
+    if (!orderData?.sub_orders) return;
+
+    const updateTimes = () => {
+      const updatedTimes = {};
+
+      orderData.sub_orders.forEach((order) => {
+        const targetTime =
+          new Date(order?.created_at).getTime() +
+          order.preparation_time * 60000;
+
+        const now = new Date().getTime();
+        const timeLeft = targetTime - now;
+
+        if (timeLeft <= 0) {
+          updatedTimes[order.sub_order_id] = "Over";
+        } else {
+          const minutes = Math.ceil(timeLeft / 60000);
+          updatedTimes[order.sub_order_id] = `${minutes} mins`;
+        }
+      });
+
+      setRemainingTimes(updatedTimes);
+    };
+
+    updateTimes();
+
+    const timeoutId = setTimeout(() => {
+      updateTimes();
+    }, 60000);
+
+    return () => clearTimeout(timeoutId);
+  }, [orderData]);
+
   return (
     <section id="suborder">
-      <div className="w-full flex flex-col gap-3 px-5 mb-56">
-        <div
-          onClick={() => {
-            setShowOrder(!showOrder);
-          }}
-          className="w-full flex gap-2 bg-default-100 rounded-large p-3 border justify-between items-center "
-        >
-          <h3 className="text-default-700 font-medium text-medium text-center">
-            {showOrder ? "Hide" : "Show"} Sub Orders (
-            {orderData?.sub_orders.length} )
-          </h3>
-          <div>
-            {showOrder ? (
-              <ChevronUp className="ml-2 " />
-            ) : (
-              <ChevronDown className="ml-2 " />
-            )}
-          </div>
-        </div>
-
-        {showOrder && (
-          <div className="w-full flex flex-col gap-3">
-            {orderData?.sub_orders &&
-              orderData.sub_orders.map((order, index) => (
+      <div className="w-full flex flex-col gap-1 px-5 mb-56 mt-3 ">
+        <div className="w-full flex flex-col gap-3">
+          {orderData?.sub_orders &&
+            orderData.sub_orders
+              .sort((a, b) => a.status_id.sorting - b.status_id.sorting)
+              .map((order, index) => (
                 <div
                   key={index}
                   className="w-full flex flex-col bg-default-100 rounded-large px-3 py-4 border justify-between items-center gap-5"
                 >
                   <div className="w-full flex justify-between items-center">
                     <h3 className="text-default-500 font-medium text-small">
-                      Suborder ID : {order?.sub_order_id}
+                      Order ID : {order?.sub_order_id}
                     </h3>
                     <h3 className="text-default-500 font-medium text-small">
                       {moment(order?.created_at).fromNow()}
@@ -62,7 +88,8 @@ const SubOrders = ({ orderData, statusData }) => {
                       Order {order?.status_id?.title}
                     </h2>
                     <h3 className="text-default-500  text-small">
-                      Waiting Time: 07:11 Minutes
+                      Waiting Time:{" "}
+                      {remainingTimes[order?.sub_order_id] || "Loading..."}
                     </h3>
 
                     <div className="w-full mt-2">
@@ -95,7 +122,6 @@ const SubOrders = ({ orderData, statusData }) => {
                         className="w-full"
                       />
                       <div className="flex justify-between text-xs text-default-600 w-full mt-2">
-                        {/* <span>Status</span> */}
                         {statusData &&
                           statusData
                             .filter((status, index) => {
@@ -113,29 +139,50 @@ const SubOrders = ({ orderData, statusData }) => {
                     </div>
                   </div>
                   <div className="w-full flex justify-between items-center gap-2">
-                    <Button
-                      fullWidth
-                      size="md"
-                      color="danger"
-                      variant="flat"
-                      startContent={<CircleX size={18} />}
-                    >
-                      Cancel Sub Order
-                    </Button>
+                    {order?.status_id?.sorting === 1 && (
+                      <Button
+                        fullWidth
+                        size="md"
+                        color="danger"
+                        variant="flat"
+                        startContent={<CircleX size={18} />}
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          onCancelOpenChange(true);
+                        }}
+                      >
+                        Cancel Order
+                      </Button>
+                    )}
                     <Button
                       size="md"
                       fullWidth
                       color="primary"
                       startContent={<ReceiptText size={18} />}
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        onOpenChange(true);
+                      }}
                     >
-                      View Sub Order
+                      View Order
                     </Button>
                   </div>
                 </div>
               ))}
-          </div>
-        )}
+        </div>
       </div>
+      <OrderPreview
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        foodData={selectedOrder?.fooditem_ids}
+        totalAmount={selectedOrder?.total_amount}
+      />
+      <CancelSubOrder
+        orderData={selectedOrder}
+        isOpen={isCancelOpen}
+        onOpenChange={onCancelOpenChange}
+        statusData={statusData}
+      />
     </section>
   );
 };

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { AlignLeft, X } from "lucide-react";
 import ProfileSidebar from "@/components/drawer/Profile-Sidebar";
 
-const Header = ({ restaurantData, tableData, userId }) => {
+const Header = ({ restaurantData, tableData, userId, isSuborder }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const formatTableNumber = (tableNo) => {
     return tableNo && tableNo < 10 ? `0${tableNo}` : tableNo;
@@ -62,6 +62,7 @@ const Header = ({ restaurantData, tableData, userId }) => {
         tableId={tableData?.id}
         restaurantId={restaurantData?.id}
         userId={userId}
+        isEndSession={isSuborder ? false : true}
       />
     </>
   );
