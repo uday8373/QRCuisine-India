@@ -19,7 +19,7 @@ const FoodMenu = ({
   return (
     <section
       id="food_menu_section"
-      className="flex items-center justify-center w-full"
+      className="flex items-center justify-center w-full overflow-hidden"
     >
       <div className="w-full h-full flex-col max-w-screen-xl relative">
         <div className="flex flex-wrap gap-4 w-full mb-32 relative">
@@ -35,7 +35,15 @@ const FoodMenu = ({
             >
               {categoryData && <Tab key="all" title="All" />}
               {categoryData.map((category) => (
-                <Tab key={category.id} title={category.category_name} />
+                <Tab
+                  className="whitespace-nowrap"
+                  key={category.id}
+                  title={
+                    category.category_name.length > 20
+                      ? `${category.category_name.substring(0, 20)}...`
+                      : category.category_name
+                  }
+                />
               ))}
             </Tabs>
           </div>

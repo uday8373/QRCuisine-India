@@ -125,7 +125,7 @@ const LoginMain = () => {
       <div className="w-full flex">
         <Button
           onClick={() => {
-            router.back();
+            router.push("/");
           }}
           isIconOnly
           variant="faded"
@@ -205,9 +205,9 @@ const LoginMain = () => {
             />
           </div>
 
-          <h3 className="text-medium text-primary underline w-full text-right">
+          {/* <h3 className="text-medium text-primary underline w-full text-right">
             Forget Password?
-          </h3>
+          </h3> */}
 
           <Button
             type="submit"
@@ -291,14 +291,14 @@ const LoginMain = () => {
               }
             />
           </div>
-          <Checkbox isSelected size="lg">
+          {/* <Checkbox isSelected size="lg">
             <h3 className="text-medium">
               Agree with{" "}
               <span className="text-medium text-primary underline">
                 Terms & Condition
               </span>
             </h3>
-          </Checkbox>
+          </Checkbox> */}
           <Button
             type="submit"
             size="lg"

@@ -1,14 +1,18 @@
 import React from "react";
-import { Button } from "@nextui-org/react";
-import { ChevronsRight, Loader } from "lucide-react";
+import { Button, useDisclosure } from "@nextui-org/react";
+import { ChevronsRight, Loader, ShoppingBag } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import ViewCart from "../modal/View-Cart";
 
 const CartPopup = ({
   totalPrice,
   totalQuantity,
   handleCheckout,
   isLoading,
+  cartItems,
+  onCartChange,
 }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <section className="w-full relative overflow-hidden ">
       <div className="fixed bottom-0 backdrop-blur-xl bg-background/50 z-20 w-full left-0 pt-3 pb-5 rounded-t-3xl shadow-container">
@@ -32,21 +36,43 @@ const CartPopup = ({
                   </div>
                 </div>
               </div>
-              <Button
-                spinner={<Loader size={20} className="animate-spin" />}
-                isLoading={isLoading}
-                onClick={handleCheckout}
-                size="lg"
-                color="primary"
-                className="font-semibold"
-                endContent={<ChevronsRight />}
-              >
-                View Cart
-              </Button>
+              <div className="w-full flex gap-2">
+                <Button
+                  fullWidth
+                  onClick={onOpen}
+                  size="lg"
+                  color="default"
+                  variant="flat"
+                  className="font-semibold"
+                  startContent={<ShoppingBag size={18} className="mb-0.5" />}
+                >
+                  View Cart
+                </Button>
+                <Button
+                  fullWidth
+                  spinner={<Loader size={20} className="animate-spin" />}
+                  isLoading={isLoading}
+                  onClick={handleCheckout}
+                  size="lg"
+                  color="primary"
+                  className="font-semibold"
+                  endContent={<ChevronsRight />}
+                >
+                  Checkout
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <ViewCart
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        foodData={cartItems}
+        onCartChange={onCartChange}
+        isLoading={isLoading}
+        handleCheckout={handleCheckout}
+      />
     </section>
   );
 };

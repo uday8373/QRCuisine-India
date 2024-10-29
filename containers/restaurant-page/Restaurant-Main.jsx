@@ -405,6 +405,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             totalQuantity={totalQuantity}
             handleCheckout={handleCheckout}
             isLoading={isCheckoutLoading}
+            cartItems={cartItems}
+            onCartChange={handleCartChange}
           />
         )}
         <CustomizedModal

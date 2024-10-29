@@ -21,15 +21,15 @@ const Notification = ({
         <div className="flex size-10 items-center justify-center rounded-2xl bg-primary">
           <span className="text-lg">💬</span>
         </div>
-        <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-col overflow-hidden justify-center ">
           <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white ">
-            <span className="text-sm sm:text-lg">{message}</span>
+            <span className="text-[13px] line-clamp-1">{message}</span>
             <span className="mx-1">·</span>
-            <span className="text-xs text-gray-500">
-              {moment(created_at).fromNow()}
+            <span className="text-xs text-gray-500 line-clamp-1">
+              {moment(created_at).fromNow(true)}
             </span>
           </figcaption>
-          <p className="text-sm font-normal dark:text-white/60">
+          <p className="text-xs font-medium text-default-600 mb-1 line-clamp-1">
             {sub_message}
           </p>
         </div>

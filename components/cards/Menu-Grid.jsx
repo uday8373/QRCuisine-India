@@ -91,7 +91,7 @@ const MenuGrid = ({
   }, [menuItem.image]);
 
   return (
-    <Card radius="md" className="border-none w-full relative">
+    <Card radius="md" className="border w-full relative shadow-none">
       <Image
         alt={menuItem.food_name}
         title={menuItem.food_name}
@@ -119,15 +119,17 @@ const MenuGrid = ({
       )}
       <CardFooter className="backdrop-blur-xl overflow-hidden py-1 absolute rounded-xl bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
         <div className="w-full flex flex-col gap-1 py-1">
-          <div className="w-full flex justify-between items-center">
+          <div className="w-full flex">
             <p className={`text-small font-semibold line-clamp-1 ${textColor}`}>
-              {menuItem.food_name}
+              {menuItem.food_name.length > 16
+                ? `${menuItem.food_name.substring(0, 16)}...`
+                : menuItem.food_name}
             </p>
           </div>
           <div className="w-full flex justify-between items-center">
             <p className={`text-tiny font-medium line-clamp-1 ${subTextColor}`}>
               {siteConfig?.currencySymbol}
-              {menuItem?.price.toFixed(2)} /-
+              {menuItem?.price.toFixed(2)}
             </p>
             <SquareDot
               size={18}

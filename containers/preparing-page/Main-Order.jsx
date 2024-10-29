@@ -142,7 +142,7 @@ const MainOrder = ({ orderData, statusData, notifications }) => {
                 startContent={<ReceiptText size={18} />}
                 onClick={onOpen}
               >
-                Order Details
+                View Details
               </Button>
             </div>
           </div>

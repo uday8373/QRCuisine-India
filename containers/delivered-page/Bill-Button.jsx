@@ -33,7 +33,7 @@ const BillButton = ({ orderData, onOpen }) => {
               {totalWithGst.toFixed(2)}
             </h4>
           </div>
-          <Invoice orderData={orderData} />
+          {/* <Invoice orderData={orderData} /> */}
         </div>
         <div className="border-[0.5px] w-full border-dashed border-default-300" />
         <Button

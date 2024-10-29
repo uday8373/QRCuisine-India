@@ -52,7 +52,12 @@ export default function OrderPreview({
                           key={index}
                           aria-label="Accordion 1"
                           startContent={
-                            <Avatar src={item?.image} radius="sm" />
+                            <Avatar
+                              src={
+                                item?.image || "/assets/image_placeholder.webp"
+                              }
+                              radius="sm"
+                            />
                           }
                           title={item?.food_name}
                           subtitle={<span>x{item?.quantity}</span>}
@@ -136,7 +141,7 @@ export default function OrderPreview({
                   </h3>
                   <h3 className="text-primary-500 font-medium text-medium">
                     {siteConfig?.currencySymbol}
-                    {totalAmount}
+                    {totalAmount.toFixed(2)}
                   </h3>
                 </div>
               </ModalFooter>
