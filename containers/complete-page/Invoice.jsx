@@ -20,7 +20,7 @@ const Invoice = ({ orderData, isComplete = true }) => {
       const imgData = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = imgData;
-      link.download = `invoice_${orderData.order_id}.png`;
+      link.download = `invoice_${orderData?.order_id}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -33,8 +33,8 @@ const Invoice = ({ orderData, isComplete = true }) => {
   const combinedFoodItems = [
     ...(orderData.fooditem_ids || []), // Main order food items
     ...(orderData.sub_orders
-      ?.filter((subOrder) => subOrder.is_delivered)
-      ?.flatMap((subOrder) => subOrder.fooditem_ids) || []), // Sub-order food items
+      ?.filter((subOrder) => subOrder?.is_delivered)
+      ?.flatMap((subOrder) => subOrder?.fooditem_ids) || []), // Sub-order food items
   ];
 
   console.log("object", orderData);
@@ -76,37 +76,37 @@ const Invoice = ({ orderData, isComplete = true }) => {
         <div className="w-full flex justify-center items-center py-8 flex-col">
           <div className=" text-center">
             <h2 className="font-Rethink font-medium text-black">
-              {orderData.restaurant_id.restaurant_name}
+              {orderData?.restaurant_id?.restaurant_name}
             </h2>
             <h3 className="font-Rethink font-medium text-black">
-              {orderData.restaurant_id.restaurant_address}
+              {orderData?.restaurant_id?.restaurant_address}
             </h3>
             {/* Customer and Order Information */}
             <div className="flex flex-col items-center text-black ">
               <h3 className="font-Rethink font-medium text-black">
-                Ph - {orderData.users.mobile}
+                Ph - {orderData?.users?.mobile}
               </h3>
               <h3 className="font-Rethink font-medium">
-                {orderData.users.name}
+                {orderData?.users?.name ? orderData?.users?.name : "Anonymous"}
               </h3>
               <p>
                 Thank you for visiting. We welcome all feedback regarding your
                 visit.
               </p>
-              <p>Email us at - {orderData.restaurant_id.restaurant_email}</p>
+              <p>Email us at - {orderData?.restaurant_id?.restaurant_email}</p>
               <p>
-                Table No: {orderData.tables.table_no} -{" "}
+                Table No: {orderData?.tables?.table_no} -{" "}
                 {orderData.tables.max_capacity} Guest
               </p>
-              <p>Your Server was {orderData.waiters.name}</p>
+              <p>Your Server was {orderData?.waiters?.name}</p>
               <p>
-                {new Date(orderData.created_at).toLocaleDateString("en-us", {
+                {new Date(orderData?.created_at).toLocaleDateString("en-us", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
                 })}{" "}
                 |{" "}
-                {new Date(orderData.created_at).toLocaleTimeString("en-us", {
+                {new Date(orderData?.created_at).toLocaleTimeString("en-us", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
@@ -133,20 +133,20 @@ const Invoice = ({ orderData, isComplete = true }) => {
                 {combinedFoodItems.map((item, index) => (
                   <>
                     <tr
-                      key={`${item.id}-${index}`}
+                      key={`${item?.id}-${index}`}
                       className="border-b border-dashed  text-black"
                     >
                       <td className="py-4 text-start">
-                        {item.food_name || "N/A"}
+                        {item?.food_name || "N/A"}
                       </td>
                       <td className="py-4">
                         {siteConfig.currencySymbol}
-                        {item.price ? item.price.toFixed(2) : "0.00"}
+                        {item?.price ? item.price.toFixed(2) : "0.00"}
                       </td>
-                      <td className="py-4">{item.quantity || 0}</td>
+                      <td className="py-4">{item?.quantity || 0}</td>
                       <td className="py-4 flex justify-end">
                         {siteConfig.currencySymbol}
-                        {(item.price * item.quantity || 0).toFixed(2)}
+                        {(item?.price * item?.quantity || 0).toFixed(2)}
                       </td>
                     </tr>
                   </>
@@ -212,7 +212,7 @@ const Invoice = ({ orderData, isComplete = true }) => {
                           orderData?.sub_orders
                         )
                       )) *
-                      (Number(orderData.restaurant_id.gst_percentage) / 100)
+                      (Number(orderData?.restaurant_id?.gst_percentage) / 100)
                   ).toFixed(2)}
                 </p>
               </div>
@@ -235,7 +235,7 @@ const Invoice = ({ orderData, isComplete = true }) => {
                         orderData?.sub_orders
                       )
                     )) *
-                    (Number(orderData.restaurant_id.gst_percentage) / 100)
+                    (Number(orderData?.restaurant_id?.gst_percentage) / 100)
                 ).toFixed(2);
 
                 const tipAmount = (Number(grandTotal) * (tip / 100)).toFixed(2);
