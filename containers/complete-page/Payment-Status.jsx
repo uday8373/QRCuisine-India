@@ -40,11 +40,15 @@ export default function PaymentStatus({ orderData, isClaimed }) {
           <div className="w-full flex justify-between items-center">
             <div>
               <h3 className="text-default-500 flex items-center gap-1 font-medium text-small">
-                Total Bill Amount
+                Total Bill Amount{" "}
               </h3>
+
               <h2 className="text-primary text-xl font-bold">
                 {siteConfig?.currencySymbol}
-                {(totalWithGst + Number(orderData.tip_amount)).toFixed(2)}
+                {(totalWithGst + Number(orderData.tip_amount)).toFixed(2)}{" "}
+                <span className="text-danger-500 font-medium text-tiny">
+                  ({`Tips & ${siteConfig.taxTitle} inc*`})
+                </span>
               </h2>
             </div>
             <Chip
@@ -64,11 +68,11 @@ export default function PaymentStatus({ orderData, isClaimed }) {
               {orderData?.is_paid ? "paid" : "Unpaid"}
             </Chip>
           </div>
-          {/* {!orderData?.restaurant_id?.payment_qr && (
+          {!orderData?.restaurant_id?.payment_qr && (
             <div className="w-full flex mt-3">
               <Invoice orderData={orderData} />
             </div>
-          )} */}
+          )}
         </div>
         {orderData?.restaurant_id?.payment_qr && (
           <>
@@ -95,7 +99,7 @@ export default function PaymentStatus({ orderData, isClaimed }) {
                 Scan this QR code with your mobile payment app to complete the
                 transaction
               </h5>
-              {/* <Invoice orderData={orderData} /> */}
+              <Invoice orderData={orderData} />
             </div>
           </>
         )}

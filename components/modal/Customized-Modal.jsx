@@ -341,7 +341,7 @@ export default function CustomizedModal({
                               {!quantity.price ? null : (
                                 <>
                                   ({siteConfig.currencySymbol}
-                                  {quantity.price?.toFixed(1)})
+                                  {quantity.price?.toFixed(2)})
                                 </>
                               )}
                             </span>
@@ -379,7 +379,7 @@ export default function CustomizedModal({
                               {!instraction.price ? null : (
                                 <>
                                   ({siteConfig.currencySymbol}
-                                  {instraction.price?.toFixed(1)})
+                                  {instraction.price?.toFixed(2)})
                                 </>
                               )}
                             </span>
@@ -470,7 +470,7 @@ export default function CustomizedModal({
                                   {selectedSides?.price
                                     ? `(${
                                         siteConfig?.currencySymbol
-                                      }${selectedSides?.price.toFixed(1)})`
+                                      }${selectedSides?.price.toFixed(2)})`
                                     : null}
                                 </span>
                               </div>
@@ -487,7 +487,7 @@ export default function CustomizedModal({
                                 {side?.price
                                   ? `${
                                       siteConfig?.currencySymbol
-                                    }${side?.price.toFixed(1)}`
+                                    }${side?.price.toFixed(2)}`
                                   : null}
                               </span>
                             }
@@ -509,7 +509,7 @@ export default function CustomizedModal({
                               {!side.price ? null : (
                                 <>
                                   ({siteConfig.currencySymbol}
-                                  {side.price?.toFixed(1)})
+                                  {side.price?.toFixed(2)})
                                 </>
                               )}
                             </span>
@@ -575,7 +575,7 @@ export default function CustomizedModal({
                                 {side?.price
                                   ? `${
                                       siteConfig?.currencySymbol
-                                    }${side?.price.toFixed(1)}`
+                                    }${side?.price.toFixed(2)}`
                                   : null}
                               </span>
                             }
@@ -605,7 +605,7 @@ export default function CustomizedModal({
                                 {!side.price ? null : (
                                   <>
                                     ({siteConfig.currencySymbol}
-                                    {side.price?.toFixed(1)})
+                                    {side.price?.toFixed(2)})
                                   </>
                                 )}
                               </span>

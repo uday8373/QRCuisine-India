@@ -1,17 +1,17 @@
 import { Button } from "@nextui-org/react";
 import { ChevronsRight, Loader } from "lucide-react";
 import React from "react";
-import Invoice from "./Invoice";
 import { siteConfig } from "@/config/site";
+import Invoice from "../complete-page/Invoice";
 
 const BillButton = ({ orderData, onOpen }) => {
-  const totalAmount = orderData?.total_amount || 0;
+  const totalAmount = Number(orderData?.total_amount) || 0;
 
   const subOrdersTotal =
     orderData?.sub_orders
       .filter((subOrder) => subOrder.is_delivered === true)
       .reduce((acc, subOrder) => {
-        return acc + (subOrder?.total_amount || 0);
+        return acc + (Number(subOrder?.total_amount) || 0);
       }, 0) || 0;
 
   const finalTotalAmount = totalAmount + subOrdersTotal;
@@ -26,14 +26,17 @@ const BillButton = ({ orderData, onOpen }) => {
         <div className="flex w-full justify-between items-center">
           <div className="flex flex-col gap-1">
             <h4 className="text-tiny font-medium text-default-700">
-              Grand Total
+              Grand Total{" "}
+              <span className="text-tiny font-medium text-danger-500">
+                ({siteConfig?.taxTitle} inc*)
+              </span>
             </h4>
             <h4 className="text-xl font-bold text-default-900">
               {siteConfig?.currencySymbol}
-              {totalWithGst.toFixed(2)}
+              {totalWithGst.toFixed(2)}{" "}
             </h4>
           </div>
-          {/* <Invoice orderData={orderData} /> */}
+          <Invoice orderData={orderData} isComplete={false} />
         </div>
         <div className="border-[0.5px] w-full border-dashed border-default-300" />
         <Button

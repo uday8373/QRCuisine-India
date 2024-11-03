@@ -50,7 +50,7 @@ export const fetchCategoriesData = async (restaurantId) => {
   try {
     const { data, error } = await supabase
       .from("menu_category")
-      .select("id, category_name")
+      .select("id, category_name, icon")
       .eq("restaurant_id", restaurantId)
       .eq("status", true);
 
@@ -84,6 +84,28 @@ export const fetchSpecialMenuData = async (restaurantId, pageSize) => {
   } catch (error) {
     console.error("Error fetching restaurant menu data:", error);
     return { data: [], count: 0 };
+  }
+};
+export const fetchSubCategoryData = async (restaurantId, categoryId) => {
+  if (categoryId === "all") {
+    return null;
+  }
+  try {
+    const { data, error } = await supabase
+      .from("sub_category")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq("category_id", categoryId)
+      .eq("status", true);
+
+    if (error) {
+      throw error;
+    }
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching restaurant menu data:", error);
   }
 };
 
@@ -168,13 +190,14 @@ export const fetchRestaurantMenuData = async (
   restaurantId,
   page,
   selectedCategory,
-  pageSize
+  pageSize,
+  selecetedSubCategory
 ) => {
   try {
     let query = supabase
       .from("food_menus")
       .select(
-        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at, is_customized, quantity_id, quick_instruction_id, side_id, additional_side_id, is_temperature",
+        "id, image, food_name, price, sub_category, quantity, category, is_veg, isSpecial, is_available, created_at, is_customized, quantity_id, quick_instruction_id, side_id, additional_side_id, is_temperature",
         { count: "exact" }
       )
       .eq("restaurant_id", restaurantId)
@@ -185,6 +208,9 @@ export const fetchRestaurantMenuData = async (
     if (selectedCategory !== "all") {
       query = query.eq("category", selectedCategory);
     }
+    if (selecetedSubCategory !== "all") {
+      query = query.eq("sub_category", selecetedSubCategory);
+    }
 
     const { data, count, error } = await query;
     if (error) throw error;
@@ -192,6 +218,29 @@ export const fetchRestaurantMenuData = async (
   } catch (error) {
     console.error("Error fetching restaurant menu data:", error);
     return { data: [], count: 0 };
+  }
+};
+
+export const fetchSearchMenuData = async (restaurantId, searchQuery) => {
+  if (searchQuery === "") {
+    return null;
+  }
+  try {
+    const { data, count, error } = await supabase
+      .from("food_menus")
+      .select(
+        "id, image, food_name, price, quantity, category, is_veg, isSpecial, is_available, created_at, is_customized, quantity_id, quick_instruction_id, side_id, additional_side_id, is_temperature",
+        { count: "exact" }
+      )
+      .eq("restaurant_id", restaurantId)
+      .order("is_available", { ascending: false })
+      .ilike("food_name", `%${searchQuery}%`)
+      .limit(3);
+
+    if (error) throw error;
+    return { data, count };
+  } catch (error) {
+    console.error("Error fetching restaurant menu data:", error);
   }
 };
 

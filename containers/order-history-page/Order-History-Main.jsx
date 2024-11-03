@@ -34,7 +34,6 @@ const OrderHistoryMain = () => {
     try {
       const result = await fetchOrderHisory(activeTab);
       if (result) {
-        console.log(result);
         setOrderData(result.data);
       }
     } catch (error) {

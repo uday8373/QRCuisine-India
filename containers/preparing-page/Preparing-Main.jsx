@@ -72,7 +72,7 @@ const PreparingMain = () => {
         if (!orderResponse || !statusResponse) {
           console.error("Error fetching order or status data");
         }
-        console.log("Order", orderResponse);
+
         setOrderData(orderResponse);
         setStatusData(statusResponse);
         const reversedNotifications = [...notificationResponse].reverse();

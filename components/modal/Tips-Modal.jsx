@@ -49,9 +49,11 @@ export default function TipsModal({
 
   const totalAmount = orderData?.total_amount || 0;
   const subOrdersTotal =
-    orderData?.sub_orders?.reduce((acc, subOrder) => {
-      return acc + (subOrder?.total_amount || 0);
-    }, 0) || 0;
+    orderData?.sub_orders
+      ?.filter((subOrder) => subOrder.is_delivered === true)
+      ?.reduce((acc, subOrder) => {
+        return acc + (subOrder?.total_amount || 0);
+      }, 0) || 0;
 
   const finalTotalAmount = totalAmount + subOrdersTotal;
   const gstPercentage = orderData?.restaurant_id?.gst_percentage || 0;
@@ -149,12 +151,23 @@ export default function TipsModal({
                         {totalWithGst.toFixed(2)}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tip amount:</span>
+                    <div className="flex justify-between ">
+                      <span>{siteConfig?.taxTitle}:</span>
                       <span>
                         {siteConfig.currencySymbol}
-                        {tip.toFixed(2)}
+                        {gstAmount.toFixed(2)}
                       </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tip amount:</span>
+                      {tip === 0 ? (
+                        "N/A"
+                      ) : (
+                        <span>
+                          {siteConfig.currencySymbol}
+                          {tip.toFixed(2)}
+                        </span>
+                      )}
                     </div>
                     <div className="flex justify-between font-semibold">
                       <span>Total:</span>

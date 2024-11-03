@@ -3,7 +3,7 @@ import {
   fetchCategoriesData,
   fetchRestaurantData,
   fetchRestaurantMenuData,
-  fetchSpecialMenuData,
+  fetchSubCategoryData,
   fetchTableData,
   getSession,
   updateVisitorCheckout,
@@ -17,7 +17,6 @@ import Hero from "./Hero";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
-import SpecialMenu from "./Special-Menu";
 import CartPopup from "@/components/elements/Cart-Popup";
 import FoodMenu from "./Food-Menu";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
@@ -28,6 +27,8 @@ import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import LottieAnimation from "@/components/lottie/LottieAnimation";
 import QRLoader from "@/components/lottie/QR_loop.json";
 import CustomizedModal from "@/components/modal/Customized-Modal";
+import SearchBar from "./Search-Bar";
+import Categories from "./Categories";
 
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
@@ -43,7 +44,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [restaurantData, setRestaurantData] = useState(null);
   const [notFoundError, setNotFoundError] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
-  const [specialMenuData, setSpecialMenuData] = useState([]);
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [menuItems, setMenuItems] = useState([]);
   const [maxItems, setMaxItems] = useState(0);
@@ -58,6 +58,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const initialIsBooked = storeIsBooked ? true : false;
   const [isBooked, setIsBooked] = useState(initialIsBooked);
   const [selecetedFoodItem, setSelecetedFoodItem] = useState(null);
+  const [selecetedSubCategory, setSelecetedSubCategory] = useState("all");
+  const [subCategoryData, setSubCategoryData] = useState([]);
 
   const {
     isOpen: isCustomizedOpen,
@@ -142,20 +144,21 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           return;
         }
 
-        const [categoryResponse, specialMenuResponse, menuResponse] =
+        const [categoryResponse, menuResponse, subCategoryResponse] =
           await Promise.all([
             fetchCategoriesData(restaurantResponse.id),
-            fetchSpecialMenuData(restaurantResponse.id, pageSize),
             fetchRestaurantMenuData(
               restaurantResponse.id,
               currentPage,
               selectedCategory,
-              pageSize
+              pageSize,
+              selecetedSubCategory
             ),
+            fetchSubCategoryData(restaurantResponse.id, selectedCategory),
           ]);
+        setSubCategoryData(subCategoryResponse);
 
         setCategoryData(categoryResponse);
-        setSpecialMenuData(specialMenuResponse.data);
         setMenuItems((prevItems) =>
           currentPage === 1
             ? menuResponse.data
@@ -180,6 +183,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     currentPage,
     selectedCategory,
     pageSize,
+    selecetedSubCategory,
   ]);
 
   const handleCartChange = (menuItem, quantity, customizations) => {
@@ -300,6 +304,11 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     }
   };
 
+  const handleSubCategoryChange = (id) => {
+    setCurrentPage(1);
+    setSelecetedSubCategory(id);
+  };
+
   // Custimizables Functions
 
   if (!isSmallScreen) {
@@ -368,12 +377,17 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           userId={userId}
           isSuborder={isSuborder}
         />
-        <SpecialMenu
-          specialMenuData={specialMenuData}
+        <SearchBar
+          restaurantId={restaurantData.id}
           onCartChange={handleCartChange}
           cartItems={cartItems}
           onCustomizedOpen={onCustomizedOpen}
           setSelecetedFoodItem={setSelecetedFoodItem}
+        />
+        <Categories
+          categoryData={categoryData}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
         />
         <FoodMenu
           categoryData={categoryData}
@@ -387,6 +401,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           dataLoading={dataLoading}
           onCustomizedOpen={onCustomizedOpen}
           setSelecetedFoodItem={setSelecetedFoodItem}
+          subCategoryData={subCategoryData}
+          handleSubCategoryChange={handleSubCategoryChange}
+          selecetedSubCategory={selecetedSubCategory}
         />
         {!isBooked && (
           <BookTable

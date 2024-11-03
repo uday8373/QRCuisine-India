@@ -1,15 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@nextui-org/react";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Image from "next/image";
-import { Download } from "lucide-react";
+import { Download, Eye } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
-const Invoice = ({ orderData }) => {
+const Invoice = ({ orderData, isComplete = true }) => {
   const invoiceRef = useRef(null);
+  const [previewMode, setPreviewMode] = useState(false);
 
-  const downloadInvoiceAsPDF = () => {
+  const downloadInvoiceAsImage = async () => {
     const element = invoiceRef.current;
 
     if (!element) {
@@ -17,202 +16,295 @@ const Invoice = ({ orderData }) => {
       return;
     }
 
-    // Use html2canvas to capture the HTML content
-    html2canvas(element, { scale: 2 }).then((canvas) => {
+    await html2canvas(element, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
-
-      // Calculate the width and height based on the A4 size
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      // Add the image to the PDF
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-      // Save the PDF
-      pdf.save(`invoice_${orderData.order_id}.pdf`);
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `invoice_${orderData.order_id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
   };
 
+  const togglePreview = () => {
+    setPreviewMode(!previewMode);
+  };
+  const combinedFoodItems = [
+    ...(orderData.fooditem_ids || []), // Main order food items
+    ...(orderData.sub_orders
+      ?.filter((subOrder) => subOrder.is_delivered)
+      ?.flatMap((subOrder) => subOrder.fooditem_ids) || []), // Sub-order food items
+  ];
+
+  console.log("object", orderData);
+
+  function calculateTotalAmount(orderId, sub_orders) {
+    console.log("orderId, sub_orders", orderId, sub_orders);
+    if (sub_orders.length < 1) {
+      return 0;
+    }
+
+    const totalAmount =
+      sub_orders
+        .filter((subOrder) => subOrder.is_delivered === true)
+        .reduce(
+          (sum, subOrder) => sum + (Number(subOrder.total_amount) || 0),
+          0
+        ) || 0;
+
+    return totalAmount.toFixed(2);
+  }
+
   return (
     <>
-      {/* Hidden Invoice HTML Structure */}
+      {/* Invoice Content (Hidden by Default) */}
       <div
         ref={invoiceRef}
         style={{
-          position: "absolute",
-          top: "-1000px",
-          left: "-1000px",
-          width: "210mm", // Set the width to A4 size
+          position: previewMode ? "relative" : "absolute",
+          top: previewMode ? "0" : "-1000px",
+          left: previewMode ? "0" : "-1000px",
+          width: "210mm",
           padding: "20px",
           backgroundColor: "#fff",
-          // backgroundImage: "/assets/Invoice_page-0001.jpg",
+          zIndex: previewMode ? 10 : -1,
+          overflow: "hidden",
         }}
       >
-        <div className="p-20">
-          {/* <div className="w-full flex items-center justify-center pb-5">
-            <div className="w-20 h-20 bg-primary-400 rounded-full">
-              <Image
-                src={orderData.restaurant_id.logo}
-                alt="Restaurant Logo"
-                width={500}
-                height={500}
-                className="w-full h-full aspect-auto object-cover"
-              />
-            </div>
-          </div> */}
-          <div className="w-full flex justify-between items-center">
-            <div>
-              <h2 className="font-Rethink font-medium text-black">Bill To :</h2>
+        {/* Invoice Details */}
+        <div className="w-full flex justify-center items-center py-8 flex-col">
+          <div className=" text-center">
+            <h2 className="font-Rethink font-medium text-black">
+              {orderData.restaurant_id.restaurant_name}
+            </h2>
+            <h3 className="font-Rethink font-medium text-black">
+              {orderData.restaurant_id.restaurant_address}
+            </h3>
+            {/* Customer and Order Information */}
+            <div className="flex flex-col items-center text-black ">
               <h3 className="font-Rethink font-medium text-black">
+                Ph - {orderData.users.mobile}
+              </h3>
+              <h3 className="font-Rethink font-medium">
                 {orderData.users.name}
               </h3>
-              <h2 className="font-Rethink font-medium text-black">
-                {orderData.restaurant_id.restaurant_name}
-              </h2>
+              <p>
+                Thank you for visiting. We welcome all feedback regarding your
+                visit.
+              </p>
+              <p>Email us at - {orderData.restaurant_id.restaurant_email}</p>
+              <p>
+                Table No: {orderData.tables.table_no} -{" "}
+                {orderData.tables.max_capacity} Guest
+              </p>
+              <p>Your Server was {orderData.waiters.name}</p>
+              <p>
+                {new Date(orderData.created_at).toLocaleDateString("en-us", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}{" "}
+                |{" "}
+                {new Date(orderData.created_at).toLocaleTimeString("en-us", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </p>
             </div>
 
-            <div className="flex justify-end flex-col items-end">
-              <h2 className="font-Rethink font-medium text-black">
-                Invoice To :
-              </h2>
-              <h3 className="font-Rethink font-medium text-black">
-                {orderData.order_id}
-              </h3>
-              <h3 className="font-Rethink font-medium text-black">
-                Table No : {orderData.tables.table_no}
-              </h3>
-              <h3 className="font-Rethink font-medium text-black">
-                {new Date(orderData.created_at)
-                  .toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })
-                  .replace(/-/g, " ")}
-              </h3>
-            </div>
-          </div>
+            {/* Order Items Table */}
+            <table
+              className="w-full
+            text-center text-sm font-light mt-5"
+            >
+              <thead className="border-b border-dashed border-gray-600 text-black font-medium">
+                <tr>
+                  <th className="w-full flex justify-start py-4 text-start">
+                    ITEM
+                  </th>
+                  <th className="px-6 py-4">UNIT/PRICE</th>
+                  <th className="px-6 py-4">QTY</th>
+                  <th className=" py-4 flex justify-end w-full">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                {combinedFoodItems.map((item, index) => (
+                  <>
+                    <tr
+                      key={`${item.id}-${index}`}
+                      className="border-b border-dashed  text-black"
+                    >
+                      <td className="py-4 text-start">
+                        {item.food_name || "N/A"}
+                      </td>
+                      <td className="py-4">
+                        {siteConfig.currencySymbol}
+                        {item.price ? item.price.toFixed(2) : "0.00"}
+                      </td>
+                      <td className="py-4">{item.quantity || 0}</td>
+                      <td className="py-4 flex justify-end">
+                        {siteConfig.currencySymbol}
+                        {(item.price * item.quantity || 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="min-w-full pt-5">
-            <div className="flex flex-col">
-              <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                  <div className="overflow-hidden">
-                    <table className="min-w-full text-center text-sm font-light text-surface ">
-                      <thead className="border-b border-t  whitespace-nowrap border-gray-600  text-black font-medium ">
-                        <tr>
-                          <th scope="col" className=" px-6 py-4">
-                            #
-                          </th>
-                          <th scope="col" className=" px-6 py-4">
-                            DESCRIPTION
-                          </th>
-                          <th scope="col" className=" px-6 py-4">
-                            UNIT PRICE
-                          </th>
-                          <th scope="col" className=" px-6 py-4">
-                            QTY
-                          </th>
-                          <th scope="col" className=" px-6 py-4">
-                            TOTAL
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orderData.fooditem_ids.map((item, index) => (
-                          <tr
-                            className="border-b border-neutral-200  text-black"
-                            key={item.id}
-                          >
-                            <td className=" whitespace-nowrap  px-6 py-4">
-                              {index + 1}
-                            </td>
-                            <td className=" whitespace-nowrap  px-6 py-4">
-                              {item.food_name}
-                            </td>
-                            <td className="whitespace-nowrap  px-6 py-4">
-                              {siteConfig?.currencySymbol}{" "}
-                              {item.price.toFixed(2)}
-                            </td>
-                            <td className="whitespace-nowrap  px-6 py-4">
-                              {item.quantity}
-                            </td>
-                            <td className="whitespace-nowrap  px-6 py-4">
-                              {siteConfig?.currencySymbol}{" "}
-                              {(item.price * item.quantity).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+            {/* Summary Section */}
+            <div className="flex flex-col items-end gap-2 pt-3 border-t border-dashed border-gray-600 mt-2">
+              {/* Subtotal */}
+              <div className="flex gap-2 items-center">
+                <strong>Subtotal :</strong>
+                <p>
+                  {siteConfig.currencySymbol}
 
-                    <div className=" border-b border-t border-gray-600  text-black  w-full  py-3 flex justify-between px-7   font-medium  ">
-                      <h2>TOTAL</h2>
-                      <h3>
-                        {" "}
-                        {siteConfig?.currencySymbol}{" "}
-                        {orderData.total_amount.toFixed(2)}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
+                  {(
+                    Number(orderData.total_amount) +
+                    Number(
+                      calculateTotalAmount(
+                        orderData?.order_id,
+                        orderData?.sub_orders
+                      )
+                    )
+                  ).toFixed(2)}
+                </p>
+              </div>
+
+              {/* Total Taxes */}
+              <div className="flex gap-2 items-center">
+                <strong>Total Taxes :</strong>
+                <p>
+                  {siteConfig.currencySymbol}
+                  {(
+                    (Number(orderData.total_amount) +
+                      Number(
+                        calculateTotalAmount(
+                          orderData?.order_id,
+                          orderData?.sub_orders
+                        )
+                      )) *
+                    (Number(orderData.restaurant_id.gst_percentage) / 100)
+                  ).toFixed(2)}
+                </p>
+              </div>
+
+              {/* Grand Total */}
+              <div className="flex gap-2 items-center mt-2  border-dashed border-gray-600 border-t font-bold text-2xl">
+                <strong>Grand Total :</strong>
+                <p>
+                  {siteConfig.currencySymbol}
+                  {(
+                    Number(orderData.total_amount) +
+                    Number(
+                      calculateTotalAmount(
+                        orderData?.order_id,
+                        orderData?.sub_orders
+                      )
+                    ) +
+                    (Number(orderData.total_amount) +
+                      Number(
+                        calculateTotalAmount(
+                          orderData?.order_id,
+                          orderData?.sub_orders
+                        )
+                      )) *
+                      (Number(orderData.restaurant_id.gst_percentage) / 100)
+                  ).toFixed(2)}
+                </p>
               </div>
             </div>
-          </div>
+            {/* Tip Section */}
+            <div className="w-full grid grid-cols-4  py-2 my-2">
+              {[17, 20, 25, 30].map((tip) => {
+                const grandTotal = (
+                  Number(orderData.total_amount) +
+                  Number(
+                    calculateTotalAmount(
+                      orderData?.order_id,
+                      orderData?.sub_orders
+                    )
+                  ) +
+                  (Number(orderData.total_amount) +
+                    Number(
+                      calculateTotalAmount(
+                        orderData?.order_id,
+                        orderData?.sub_orders
+                      )
+                    )) *
+                    (Number(orderData.restaurant_id.gst_percentage) / 100)
+                ).toFixed(2);
 
-          <div className="invoice-summary  whitespace-nowrap w-full flex-col gap-2 flex justify-end items-end px-7  ">
-            <div className="flex gap-2 items-center">
-              <strong className="text-black font-medium">Total Amount :</strong>{" "}
-              <p className="text-gray-700 font-normal">
-                {siteConfig?.currencySymbol} {orderData.total_amount.toFixed(2)}
+                const tipAmount = (Number(grandTotal) * (tip / 100)).toFixed(2);
+                const totalWithTip = (
+                  Number(grandTotal) + Number(tipAmount)
+                ).toFixed(2);
+
+                return (
+                  <div
+                    key={tip}
+                    className="flex  items-center flex-col text-black"
+                  >
+                    <p>{tip}% </p>
+                    <p>
+                      {siteConfig.currencySymbol}
+                      {tipAmount}
+                    </p>
+                    {/* <strong>Total:</strong> */}
+                    {/* <p>
+                      {siteConfig.currencySymbol}
+                      {totalWithTip}
+                    </p> */}
+                  </div>
+                );
+              })}
+            </div>
+            <div className=" flex border-t flex-col  justify-between   border-dashed border-gray-600  items-center w-full">
+              <div className="h-1"></div>
+              <p className="text-center text-black">Tip is not included</p>
+              <p className="text-center text-black ">
+                Thank you -{" "}
+                <span className="font-Rethink  text-black">
+                  powered by https://www.qrcuisine.com
+                </span>
               </p>
             </div>
-            <div className="flex gap-2 items-center">
-              <strong className="text-black font-medium">Tax Amount :</strong>{" "}
-              {siteConfig?.currencySymbol}{" "}
-              <p className="text-gray-700 font-normal">
-                {" "}
-                {orderData.tax_amount.toFixed(2)}
-              </p>
-            </div>
-            <div className="flex gap-2 items-center">
-              <strong className="text-black font-bold font-Rethink text-xl">
-                Grand Total :
-              </strong>{" "}
-              <p className="text-gray-700  text-xl font-normal">
-                {siteConfig?.currencySymbol} {orderData.grand_amount.toFixed(2)}
-              </p>
-            </div>
-          </div>
-          <div className="pt-10 flex justify-center  items-center w-full">
-            <p className="text-center text-black">
-              This is a auto generated bill need to signature.
-              <br />
-              <span className="text-primary-500 text-2xl font-bold font-Rethink">
-                QRCuisine
-              </span>{" "}
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Download Invoice as PDF button */}
-      <div className="download-buttons w-full">
+      {/* Download and Preview Buttons */}
+      {/* <div className="download-buttons w-full  mb-5"> */}
+      {/* <Button
+        startContent={<Eye size={18} className="mb-0.5" />}
+        fullWidth
+        size="lg"
+        variant="faded"
+        onClick={togglePreview}
+      >
+        {previewMode ? "Close Preview" : "Preview Invoice"}
+      </Button> */}
+      {isComplete ? (
         <Button
           startContent={<Download size={18} className="mb-0.5" />}
           fullWidth
           size="lg"
           variant="faded"
-          onClick={downloadInvoiceAsPDF}
+          onClick={downloadInvoiceAsImage}
+          className="mt-2"
         >
           Download Invoice
         </Button>
-      </div>
+      ) : (
+        <Button variant="flat" color="success" onClick={downloadInvoiceAsImage}>
+          Download Invoice
+        </Button>
+      )}
+
+      {/* </div> */}
     </>
   );
 };
