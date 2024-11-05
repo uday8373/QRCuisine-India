@@ -60,6 +60,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [selecetedFoodItem, setSelecetedFoodItem] = useState(null);
   const [selecetedSubCategory, setSelecetedSubCategory] = useState("all");
   const [subCategoryData, setSubCategoryData] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState("All");
 
   const {
     isOpen: isCustomizedOpen,
@@ -237,9 +238,11 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     setIsCheckoutLoading(false);
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
+  const handleCategoryChange = (category, title) => {
     setCurrentPage(1);
+    setSelecetedSubCategory("all");
+    setSelectedCategory(category);
+    setSelectedTitle(title);
   };
 
   const handleLoadMore = () => {
@@ -404,6 +407,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           subCategoryData={subCategoryData}
           handleSubCategoryChange={handleSubCategoryChange}
           selecetedSubCategory={selecetedSubCategory}
+          selectedTitle={selectedTitle}
         />
         {!isBooked && (
           <BookTable
