@@ -4,9 +4,10 @@ import LottieAnimation from "@/components/lottie/LottieAnimation";
 import Received from "@/components/lottie/received.json";
 import Confirm from "@/components/lottie/confirm.json";
 import Preparing from "@/components/lottie/preparing.json";
-
+import { RotateCw } from "lucide-react";
 const OrderStatus = ({ orderData }) => {
   const [remainingTime, setRemainingTime] = useState(null);
+  const [isRotating, setIsRotating] = useState(false);
   const { restaurant_id, table_id, status_id } = orderData || {};
   const { logo, restaurant_name } = restaurant_id || {};
   const { table_no } = table_id || {};
@@ -79,11 +80,28 @@ const OrderStatus = ({ orderData }) => {
 
     return () => clearTimeout(timeoutId);
   }, [orderData]);
+
+  const handleReload = () => {
+    setIsRotating(true);
+    setTimeout(() => {
+      window.location.reload(); // Refreshes the entire page
+      setIsRotating(false);
+    }, 500); // Adjust delay to match the animation duration
+  };
+
   return (
     <section id="order_status">
       <div
-        className={`w-full flex flex-col rounded-b-large ${bgColorClass} px-5 bg-opacity-10`}
+        className={`w-full flex flex-col rounded-b-large ${bgColorClass} px-5 bg-opacity-10 relative`}
       >
+        <div className="absolute top-2 right-5">
+          <button
+            onClick={handleReload}
+            className="w-10 h-10 !flex !items-center !justify-center rounded-md !bg-white"
+          >
+            <RotateCw className={isRotating ? "rotate-animation" : ""} />
+          </button>
+        </div>
         <div className="w-full flex flex-col justify-center items-center gap-1 py-5">
           <div className="w-full flex justify-center flex-col items-center gap-1">
             <h2 className="text-default-600 font-semibold text-xs">

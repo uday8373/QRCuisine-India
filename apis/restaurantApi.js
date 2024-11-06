@@ -52,7 +52,8 @@ export const fetchCategoriesData = async (restaurantId) => {
       .from("menu_category")
       .select("id, category_name, icon")
       .eq("restaurant_id", restaurantId)
-      .eq("status", true);
+      .eq("status", true)
+      .order("priority", { ascending: true });
 
     if (error) throw error;
     return data ? data : null;
