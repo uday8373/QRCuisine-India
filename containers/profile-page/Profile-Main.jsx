@@ -30,9 +30,12 @@ import {
 import LottieAnimation from "@/components/lottie/LottieAnimation";
 import QRLoader from "@/components/lottie/QR_loop.json";
 import EditProfileModal from "@/components/modal/Edit-Profile";
+import useSmallScreen from "@/hooks/useSmallScreen";
+import ScreenError from "@/components/pages/Screen-Error";
 
 const ProfileMain = () => {
   const router = useRouter();
+  const isSmallScreen = useSmallScreen();
   const [availablePoints, setAvailablePoints] = useState(0);
   const [rankBadge, setRankBadge] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -128,6 +131,11 @@ const ProfileMain = () => {
     localStorage.removeItem("userToken");
     router.push("/login");
   };
+
+  if (!isSmallScreen) {
+    return <ScreenError />;
+  }
+
   return (
     <section id="profile" className="flex flex-col w-full ">
       <div className="bg-gradient-to-bl from-primary-500/50 to-secondary-500/25 backdrop-blur-xl p-6 rounded-b-3xl text-black z-50">
