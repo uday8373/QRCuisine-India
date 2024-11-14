@@ -296,7 +296,11 @@ const Invoice = ({ orderData, isComplete = true }) => {
           Download Invoice
         </Button>
       ) : (
-        <Button variant="flat" color="success" onClick={downloadInvoiceAsImage}>
+        <Button
+          variant="solid"
+          color="primary"
+          onClick={downloadInvoiceAsImage}
+        >
           Download Invoice
         </Button>
       )}

@@ -17,9 +17,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import QRLoader from "@/components/lottie/QR_loop.json";
 import moment from "moment";
+import ScreenError from "@/components/pages/Screen-Error";
+import useSmallScreen from "@/hooks/useSmallScreen";
 
 const OrderHistoryMain = () => {
   const router = useRouter();
+  const isSmallScreen = useSmallScreen();
   const [orderData, setOrderData] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +56,10 @@ const OrderHistoryMain = () => {
         <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
+  }
+
+  if (!isSmallScreen) {
+    return <ScreenError />;
   }
   return (
     <section id="booking-main" className="flex flex-col w-full ">

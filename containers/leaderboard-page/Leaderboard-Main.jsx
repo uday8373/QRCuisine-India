@@ -11,9 +11,12 @@ import Crown from "@/components/lottie/crown.json";
 import { fetchRankBadgeData } from "@/apis/restaurantApi";
 import QRLoader from "@/components/lottie/QR_loop.json";
 import { notFound, useRouter } from "next/navigation";
+import ScreenError from "@/components/pages/Screen-Error";
+import useSmallScreen from "@/hooks/useSmallScreen";
 
 const LeaderboardMain = () => {
   const router = useRouter();
+  const isSmallScreen = useSmallScreen();
   const [selectedTab, setSelectedTab] = useState("week");
   const [pointData, setPointData] = useState([]);
   const [topUsers, setTopUsers] = useState([]);
@@ -115,6 +118,10 @@ const LeaderboardMain = () => {
         <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
+  }
+
+  if (!isSmallScreen) {
+    return <ScreenError />;
   }
 
   return (

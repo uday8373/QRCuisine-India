@@ -3,7 +3,7 @@ import { Laptop, Laptop1, Laptop2 } from "@/public/assets/svg/Home-Page/Index";
 import Image from "next/image";
 import React from "react";
 
-export default function ControlOrders() {
+export default function Orders() {
   return (
     <>
       <section
@@ -15,24 +15,24 @@ export default function ControlOrders() {
             size={500}
             className="stroke-primary absolute top-24 xl:right-24 right-10 -z-10 md:flex hidden"
           />
-          <div className="max-w-xl space-y-5 ">
+          <div className="max-w-xl space-y-5">
             <h3 className="text-secondary font-bold md:leading-tight text-2xl md:text-[36px]">
-              Control Orders, Manage Tables <br /> – All in One Solution
+              Seamlessly Place Orders <br /> – Directly at Your Table Instantly
             </h3>
             <p className="text-default-600 font-medium">
-              Easily manage orders and tables from a single platform, ensuring
-              smooth service, better organization, and a seamless dining
-              experience for both staff and customers.
+              Open tabs, split bills, and pay directly from an intuitive
+              mobile-optimized interface. QR codes linked to table numbers for
+              order tracking and food drop-off
             </p>
           </div>
 
-          <div className="flex w-full z-20 py-5 overflow-hidden">
+          <div className="flex w-full z-20  overflow-hidden ">
             <Image
               width={2080}
               height={2080}
               alt="Laptop"
-              src="/mockup/order-mockup.png"
-              className="w-full h-full"
+              src="/mockup/mockup6.png"
+              className="w-full h-full lg:-my-20"
             />
           </div>
         </div>

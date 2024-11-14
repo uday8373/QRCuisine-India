@@ -17,18 +17,22 @@ export const siteConfig = {
       label: "Home",
       href: "/",
     },
+    // {
+    //   href: "Pricing",
+    //   label: "Pricing",
+    // },
     {
-      href: "Pricing",
-      label: "Pricing",
+      href: "/login",
+      label: "Login",
     },
   ],
   isProduction: false,
-  productionVersion: "1.0.P",
-  developementVersion: "1.1.D",
+  productionVersion: "1.1.P",
+  developementVersion: "1.1.S",
   cryptoSecret:
     "e5d06c75557de003f0ad781a05117c76804f2cd528fbdc86e65f1f414a9d7b9e",
 
-  currencySymbol: "$",
+  currencySymbol: "₹",
   timeZone: "Asia/Kolkata",
-  taxTitle: "Sales Tax",
+  taxTitle: "GST",
 };

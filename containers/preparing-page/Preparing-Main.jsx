@@ -26,13 +26,14 @@ import { clearLocalStorage } from "@/hooks/clearLocalStorage";
 import { toast } from "react-toastify";
 import SubOrders from "./Sub-Orders";
 import MainOrder from "./Main-Order";
-import { useDisclosure } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import OrderPreview from "@/components/modal/Order-Preview";
+import { RotateCw } from "lucide-react";
 
 const PreparingMain = () => {
   const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [isRotating, setIsRotating] = useState(false);
   const navigateBasedOnStatus = useStatusNavigate();
   const [notifications, setNotifications] = useState([]);
   const isSmallScreen = useSmallScreen();
@@ -216,6 +217,24 @@ const PreparingMain = () => {
     }
   };
 
+  const handleReload = async () => {
+    setIsRotating(true);
+    try {
+      const [updatedOrderData, updatedNotifications] = await Promise.all([
+        fetchOrderData(orderId),
+        getNotifications(orderId, userId),
+      ]);
+
+      setOrderData(updatedOrderData);
+
+      setNotifications(updatedNotifications.reverse());
+    } catch (error) {
+      console.error("Failed to reload data:", error);
+    } finally {
+      setIsRotating(false);
+    }
+  };
+
   if (!isSmallScreen) {
     return <ScreenError />;
   }
@@ -230,8 +249,13 @@ const PreparingMain = () => {
   return (
     <div>
       <Header orderData={orderData} statusData={statusData} userId={userId} />
+
       {orderData?.sub_orders.length < 1 && (
-        <OrderStatus orderData={orderData} />
+        <OrderStatus
+          orderData={orderData}
+          handleReload={handleReload}
+          isRotating={isRotating}
+        />
       )}
       {notifications.length > 0 && (
         <NotificationList
@@ -248,14 +272,16 @@ const PreparingMain = () => {
         />
       )}
       {orderData?.sub_orders.length > 0 && (
-        <>
+        <div className="relative py-1">
           <MainOrder
             orderData={orderData}
             statusData={statusData}
             notifications={notifications}
+            handleReload={handleReload}
+            isRotating={isRotating}
           />
           <SubOrders orderData={orderData} statusData={statusData} />
-        </>
+        </div>
       )}
       <CallWaiterButton orderData={orderData} />
       <OrderPreview

@@ -10,9 +10,12 @@ import { siteConfig } from "@/config/site";
 import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import useSmallScreen from "@/hooks/useSmallScreen";
+import ScreenError from "@/components/pages/Screen-Error";
 
 const LoginMain = () => {
   const router = useRouter();
+  const isSmallScreen = useSmallScreen();
   const [isLogin, setIsLogin] = useState(false);
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -116,6 +119,10 @@ const LoginMain = () => {
     formikSignUp.resetForm();
     formikSignIn.resetForm();
   };
+
+  if (!isSmallScreen) {
+    return <ScreenError />;
+  }
 
   return (
     <section
