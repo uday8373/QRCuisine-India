@@ -35,4 +35,6 @@ export const siteConfig = {
   currencySymbol: "₹",
   timeZone: "Asia/Kolkata",
   taxTitle: "GST",
+  FAST2SMS_API_KEY:
+    "lawj0gV6sAuYqfzFmTGbPSX5Opdi92QHvc3x8W7JeZnLIRrUo1qD01vJT7euEsk6lYKWVQiBX85UjAaZ",
 };
