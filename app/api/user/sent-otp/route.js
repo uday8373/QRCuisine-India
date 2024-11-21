@@ -1,6 +1,7 @@
 import supabase from "@/config/supabase";
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/config/site";
+import moment from "moment-timezone";
 
 const generateOtp = () => Math.floor(1000 + Math.random() * 9000);
 
@@ -43,11 +44,12 @@ export async function POST(request) {
     }
 
     const otp = generateOtp();
-    const sentAt = moment.tz(siteConfig.timeZone);
+    const sentAt = moment().tz(siteConfig?.timeZone);
 
     const { error: saveError } = await supabase
       .from("verified_users")
-      .insert({ otp: otp, sent_at: sentAt });
+      .update({ otp: otp, sent_at: sentAt })
+      .eq("mobile", mobile);
 
     if (saveError) {
       return NextResponse.json(
@@ -55,6 +57,10 @@ export async function POST(request) {
         { status: 500, headers }
       );
     }
+
+    const sanitizedMobile = mobile.startsWith("+91 ")
+      ? mobile.slice(4)
+      : mobile;
 
     const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
       method: "POST",
@@ -64,7 +70,7 @@ export async function POST(request) {
       },
       body: JSON.stringify({
         route: "q",
-        numbers: mobile,
+        numbers: Number(sanitizedMobile),
         message: `Hello,
 
 Your OTP for password recovery is: ${otp}. 

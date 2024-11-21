@@ -56,8 +56,8 @@ export async function POST(request) {
     }
 
     // Parse `sent_at` in IST timezone
-    const sentAtIST = moment.tz(sent_at, siteConfig.timeZone);
-    const currentIST = moment.tz(siteConfig.timeZone);
+    const sentAtIST = moment().tz(sent_at, siteConfig.timeZone);
+    const currentIST = moment().tz(siteConfig.timeZone);
 
     // Check OTP expiration (15 minutes)
     if (currentIST.diff(sentAtIST, "minutes") > OTP_EXPIRATION_TIME) {
