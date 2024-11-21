@@ -69,16 +69,9 @@ export async function POST(request) {
         Authorization: siteConfig.FAST2SMS_API_KEY,
       },
       body: JSON.stringify({
-        route: "q",
+        route: "otp",
         numbers: Number(sanitizedMobile),
-        message: `Hello,
-
-Your OTP for password recovery is: ${otp}. 
-
-Please use this code within 15 minutes to proceed with your recovery. Do not share this code with anyone.
-
-Thank you,
-QRCuisine Team`,
+        variables_values: otp,
       }),
     });
 
