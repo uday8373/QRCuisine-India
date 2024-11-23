@@ -2,7 +2,6 @@ import { siteConfig } from "@/config/site";
 import supabase from "@/config/supabase";
 import moment from "moment-timezone";
 import UAParser from "ua-parser-js";
-import moment from "moment-timezone";
 
 export const fetchTableData = async (tableNo) => {
   try {
