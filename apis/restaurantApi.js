@@ -1,6 +1,6 @@
 import { siteConfig } from "@/config/site";
 import supabase from "@/config/supabase";
-import CryptoJS from "crypto-js";
+import moment from "moment-timezone";
 import UAParser from "ua-parser-js";
 import moment from "moment-timezone";
 
@@ -248,11 +248,11 @@ export const fetchSearchMenuData = async (restaurantId, searchQuery) => {
 export const updateVisitors = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");
@@ -296,11 +296,11 @@ export const updateVisitors = async (restaurantId) => {
 export const updateVisitorBooked = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");
@@ -436,11 +436,11 @@ export const insertMessage = async (tableId, restaurantId, userId, tableNo) => {
 export const updateVisitorCheckout = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");
@@ -499,11 +499,11 @@ export const getNotification = async () => {
 export const getSession = async (userId) => {
   try {
     const currentTime = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .add(5, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
     const minutesAgo = moment()
-      .tz(siteConfig?.timeZone)
+      .tz("Asia/Kolkata")
       .subtract(30, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
 
