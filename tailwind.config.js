@@ -45,7 +45,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      Rethink: ["var(--font-rethink)"],
+      Rethink: ["var(--font-rethink)", "sans-serif"],
     },
   },
   darkMode: "class",

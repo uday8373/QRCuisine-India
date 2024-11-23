@@ -4,10 +4,16 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const SpecialMenu = ({ specialMenuData, onCartChange, cartItems }) => {
+const SpecialMenu = ({
+  specialMenuData,
+  onCartChange,
+  cartItems,
+  onCustomizedOpen,
+  setSelecetedFoodItem,
+}) => {
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 2,
@@ -59,6 +65,8 @@ const SpecialMenu = ({ specialMenuData, onCartChange, cartItems }) => {
                   menuItem={menuItem}
                   onCartChange={onCartChange}
                   cartItems={cartItems}
+                  onCustomizedOpen={onCustomizedOpen}
+                  setSelecetedFoodItem={setSelecetedFoodItem}
                 />
               ))}
           </Slider>

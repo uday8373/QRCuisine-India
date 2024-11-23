@@ -1,6 +1,5 @@
 "use client";
 import { fetchOrderData } from "@/apis/preparingApi";
-import { Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ScreenError from "@/components/pages/Screen-Error";
@@ -13,6 +12,11 @@ import BillButton from "./Bill-Button";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import QRLoader from "@/components/lottie/QR_loop.json";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import Cookies from "js-cookie";
+import { useDisclosure } from "@nextui-org/react";
+import TipsModal from "@/components/modal/Tips-Modal";
 
 const DeliveredMain = () => {
   const router = useRouter();
@@ -21,11 +25,15 @@ const DeliveredMain = () => {
   const [orderData, setOrderData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const orderId =
     typeof window !== "undefined" ? localStorage.getItem("orderId") : null;
 
   const customerStatus =
     typeof window !== "undefined" ? localStorage.getItem("status") : null;
+
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   if (customerStatus !== "delivered") {
     navigateBasedOnStatus();
@@ -107,20 +115,42 @@ const DeliveredMain = () => {
     }
     if (data) return data;
   };
+  const updateOrder = async (tip, finalAmount) => {
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ ask_bill: true, tip_amount: tip, final_amount: finalAmount })
+      .eq("id", orderData?.id)
+      .select("id");
+    if (error) {
+      throw new error();
+    }
+    if (data) return data;
+  };
 
-  const handleCallWaiter = async () => {
+  const handleCallWaiter = async (tip, finalAmount) => {
     setButtonLoading(true);
     try {
-      const [tableResponse, waiterResponse, userResponse] = await Promise.all([
-        updateTable(),
-        insertWaiterMessage(),
-        updateUser(),
-      ]);
+      const [tableResponse, waiterResponse, userResponse, orderResponse] =
+        await Promise.all([
+          updateTable(),
+          insertWaiterMessage(),
+          updateUser(),
+          updateOrder(tip, finalAmount),
+        ]);
 
-      if (!tableResponse || !waiterResponse || !userResponse) {
+      if (
+        !tableResponse ||
+        !waiterResponse ||
+        !userResponse ||
+        !orderResponse
+      ) {
         console.error("Error updating table, waiter message, or user");
         return;
       } else {
+        onOpenChange(false);
+        const expires = new Date();
+        expires.setMinutes(expires.getMinutes() + 30);
+        Cookies.set("orderId", orderData.id, { expires });
         setTimeout(async () => {
           await clearLocalStorage();
         }, 3000);
@@ -139,15 +169,15 @@ const DeliveredMain = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   }
 
   return (
     <div>
-      <Header orderData={orderData} />
+      <Header orderData={orderData} userId={userId} />
       <DeliveredStatus orderData={orderData} />
       <WaiterStatus orderData={orderData} />
       <CustomRating
@@ -156,7 +186,10 @@ const DeliveredMain = () => {
         table_id={orderData?.tables?.id}
         user_id={orderData?.user_id}
       />
-      <BillButton
+      <BillButton orderData={orderData} onOpen={onOpen} />
+      <TipsModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
         orderData={orderData}
         handleCallWaiter={handleCallWaiter}
         isLoading={buttonLoading}

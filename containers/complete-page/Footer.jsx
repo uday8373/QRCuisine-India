@@ -1,30 +1,34 @@
-import { Button } from "@nextui-org/react";
-import { ArrowLeftFromLine, Download, UserPen } from "lucide-react";
+import { Button, Link } from "@nextui-org/react";
+import { ArrowLeftFromLine, Download, Star, UserPen } from "lucide-react";
 import React from "react";
 
-export default function Footer({ handleclearLocalStorage }) {
+export default function Footer({ orderData, handleHome }) {
   return (
     <section
       id="checkout_bottom"
-      className="fixed bottom-0 backdrop-blur-xl shadow-small flex justify-center mx-auto w-full px-5 rounded-t-large"
+      className="fixed bottom-0 bg-background shadow-small flex justify-center mx-auto w-full px-5 rounded-t-large"
     >
-      <div className="py-5 gap-2 w-full grid grid-cols-2">
+      <div className="py-5 gap-2 w-full grid grid-cols-5">
         <Button
-          onClick={() => handleclearLocalStorage()}
-          variant="solid"
+          onClick={() => handleHome()}
+          variant="flat"
           color="default"
-          className="text-small  font-medium rounded-large"
-          startContent={<ArrowLeftFromLine size={20} />}
+          size="lg"
+          className="font-medium col-span-2"
+          startContent={<ArrowLeftFromLine size={18} />}
         >
-          Back to Home
+          Home
         </Button>
         <Button
+          as={Link}
+          href={orderData?.restaurant_id?.google_review_url}
           color="success"
           variant="solid"
-          className="text-small text-white font-medium rounded-large"
-          startContent={<Download size={18} />}
+          size="lg"
+          className="text-white font-medium col-span-3"
+          startContent={<Star size={18} />}
         >
-          Download Invoice
+          Google Review
         </Button>
       </div>
     </section>

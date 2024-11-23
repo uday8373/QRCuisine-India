@@ -1,9 +1,10 @@
 import ItemButton from "@/components/button/Item-Button";
+import { siteConfig } from "@/config/site";
 import { Button } from "@nextui-org/react";
 import { SquareDot } from "lucide-react";
 import React, { useState } from "react";
 
-const ItemList = ({ menuItems, handleCartChange }) => {
+const ItemList = ({ menuItems, handleCartChange, tableId, restaurantId }) => {
   const [showAll, setShowAll] = useState(false);
 
   const itemsToShow = showAll ? menuItems : menuItems.slice(0, 5);
@@ -38,7 +39,8 @@ const ItemList = ({ menuItems, handleCartChange }) => {
                       </h2>
                       <div className="flex gap-1 items-center text-default-500">
                         <h2 className="text-small font-medium line-clamp-1 text-[14px]">
-                          ₹{menuItem?.price} /- ({menuItem?.quantity} Plate)
+                          {siteConfig?.currencySymbol}
+                          {menuItem?.price.toFixed(2)} /-
                         </h2>
                       </div>
                     </div>
@@ -49,11 +51,16 @@ const ItemList = ({ menuItems, handleCartChange }) => {
                   onCartChange={handleCartChange}
                   menuItem={menuItem}
                   cartItems={menuItems}
+                  tableId={tableId}
+                  restaurantId={restaurantId}
                 />
               </div>
 
               {index !== menuItems.length - 1 && (
-                <div className="border w-full border-dashed border-default-300" />
+                <div
+                  key={index}
+                  className="border w-full border-dashed border-default-300"
+                />
               )}
             </>
           ))}

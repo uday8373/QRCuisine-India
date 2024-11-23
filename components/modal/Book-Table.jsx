@@ -14,28 +14,25 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { Loader } from "lucide-react";
+import { ChevronsRight, Loader, UsersRound } from "lucide-react";
 import React, { useState } from "react";
 
 const BookTable = ({
-  isOpen,
+  isModalOpen,
   onOpenChange,
   tableId,
   setIsBooked,
   restaurantId,
   tableNo,
+  maxCapacity,
 }) => {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const persons = [
-    { key: 1, label: "01" },
-    { key: 2, label: "02" },
-    { key: 3, label: "03" },
-    { key: 4, label: "04" },
-    { key: 5, label: "05" },
-    { key: 6, label: "06" },
-  ];
+  const persons = Array.from({ length: maxCapacity }, (_, index) => ({
+    key: index + 1,
+    label: String(index + 1).padStart(2, "0"),
+  }));
 
   const handleBookTable = async () => {
     setIsLoading(true);
@@ -83,7 +80,7 @@ const BookTable = ({
         backdrop="blur"
         size="xs"
         placement="center"
-        isOpen={isOpen}
+        isOpen={isModalOpen}
         onOpenChange={onOpenChange}
       >
         <ModalContent>
@@ -98,19 +95,28 @@ const BookTable = ({
                     </p>
                   </div>
                 </div>
-                {/* <p>Booked this table</p> */}
               </ModalHeader>
               <ModalBody className="pt-0 ">
-                <Select
-                  onSelectionChange={(key) => {
-                    setSelectedPerson(key.currentKey);
-                  }}
-                  label="Select number of persons"
-                >
-                  {persons.map((person) => (
-                    <SelectItem key={person.key}>{person.label}</SelectItem>
-                  ))}
-                </Select>
+                <div>
+                  <Select
+                    onSelectionChange={(key) => {
+                      setSelectedPerson(key.currentKey);
+                    }}
+                    fullWidth
+                    placeholder="Number of persons"
+                    size="lg"
+                    startContent={<UsersRound size={20} className="mr-1" />}
+                    classNames={{
+                      trigger: "!h-14",
+                    }}
+                    aria-label="person"
+                    aria-labelledby="person"
+                  >
+                    {persons.map((person) => (
+                      <SelectItem key={person.key}>{person.label}</SelectItem>
+                    ))}
+                  </Select>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -122,6 +128,8 @@ const BookTable = ({
                   fullWidth
                   color="primary"
                   onPress={onClose}
+                  endContent={<ChevronsRight size={22} />}
+                  className="font-medium"
                 >
                   Book Now
                 </Button>

@@ -1,6 +1,6 @@
 "use client";
 import { Button, ButtonGroup } from "@nextui-org/react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 const CartButton = ({
@@ -8,6 +8,8 @@ const CartButton = ({
   onCartChange,
   quantity: initialQuantity,
   fullWidth = false,
+  onCustomizedOpen,
+  setSelecetedFoodItem,
 }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
 
@@ -39,6 +41,11 @@ const CartButton = ({
     }
   };
 
+  const handleOpenCustomized = () => {
+    setSelecetedFoodItem(menuItem);
+    onCustomizedOpen(true);
+  };
+
   return (
     <div className={`${fullWidth && "w-full"}`}>
       {quantity === 0 ? (
@@ -50,7 +57,9 @@ const CartButton = ({
           className={`text-small font-semibold shadow-sm ${
             fullWidth ? "w-full" : "w-24"
           }`}
-          onClick={handleAddClick}
+          onClick={
+            menuItem?.is_customized ? handleOpenCustomized : handleAddClick
+          }
         >
           Add
         </Button>
@@ -70,7 +79,11 @@ const CartButton = ({
             size="sm"
             onClick={handleDecrement}
           >
-            <Minus className="w-4 h-4 fill-white" />
+            {quantity === 1 ? (
+              <Trash2 className="w-4 h-4 text-white" />
+            ) : (
+              <Minus className="w-4 h-4 fill-white" />
+            )}
           </Button>
           <h3
             className={`${

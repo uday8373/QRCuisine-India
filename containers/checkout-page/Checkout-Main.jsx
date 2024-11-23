@@ -13,7 +13,9 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import ScreenError from "@/components/pages/Screen-Error";
 import supabase from "@/config/supabase";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
-import moment from "moment";
+import moment from "moment-timezone";
+import { siteConfig } from "@/config/site";
+import CryptoJS from "crypto-js";
 
 const CheckoutMain = () => {
   const router = useRouter();
@@ -56,6 +58,14 @@ const CheckoutMain = () => {
   const [mobileError, setMobileError] = useState("");
   const [loading, setLoading] = useState(false);
   const isSmallScreen = useSmallScreen();
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const orderId =
+    typeof window !== "undefined" ? localStorage.getItem("orderId") : null;
+
+  const isSuborder =
+    typeof window !== "undefined" ? localStorage.getItem("is_suborder") : false;
 
   if (!restaurantData || !tableData || !cartItems) {
     return notFound();
@@ -101,32 +111,53 @@ const CheckoutMain = () => {
 
   const handleNameChange = (e) => {
     const value = e.target.value;
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    setPersonalDetails((prevDetails) => ({
+      ...prevDetails,
+      name: value,
+    }));
+
     if (/\s{2,}/.test(value)) {
       setNameError("Double spaces are not allowed");
+    } else if (!nameRegex.test(value)) {
+      setNameError("Name should contain only letters and spaces");
+    } else if (value.length < 3) {
+      setNameError("Name should be at least 3 characters long");
+    } else if (value.length > 50) {
+      setNameError("Name should not exceed 50 characters");
     } else {
       setNameError("");
-      setPersonalDetails((prevDetails) => ({
-        ...prevDetails,
-        name: value,
-      }));
     }
   };
 
   const handleMobileChange = (e) => {
     const value = e.target.value;
+    const mobileRegex = /^[0-9]{10}$/;
+    setPersonalDetails((prevDetails) => ({
+      ...prevDetails,
+      mobile: value,
+    }));
+
     if (/\s{2,}/.test(value)) {
       setMobileError("Double spaces are not allowed");
+    } else if (!mobileRegex.test(value)) {
+      setMobileError("Mobile number must be a 10-digit number");
     } else {
       setMobileError("");
-      setPersonalDetails((prevDetails) => ({
-        ...prevDetails,
-        mobile: value,
-      }));
     }
   };
   const insertOrder = async () => {
     try {
       const userId = localStorage.getItem("userId");
+      let verifiedUserId = null;
+      const userToken = localStorage.getItem("userToken");
+      if (userToken) {
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          userToken,
+          siteConfig.cryptoSecret
+        );
+        verifiedUserId = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      }
       const { data: maxOrderData, error: maxOrderError } = await supabase
         .from("orders")
         .select("order_id")
@@ -149,10 +180,11 @@ const CheckoutMain = () => {
             user_id: userId,
             fooditem_ids: cartItems,
             instructions: mainInstructions,
-            total_amount: totalPrice,
-            tax_amount: gstAmount,
-            grand_amount: grandTotal,
+            total_amount: totalPrice.toFixed(2),
+            tax_amount: gstAmount.toFixed(2),
+            grand_amount: grandTotal.toFixed(2),
             order_id: newOrderId,
+            verified_user_id: verifiedUserId,
           },
         ])
         .select("id");
@@ -166,16 +198,6 @@ const CheckoutMain = () => {
   };
 
   const updateUser = async () => {
-    if (!personalDetails.name) {
-      setNameError("Name is required");
-      return;
-    }
-    if (!personalDetails.mobile) {
-      setMobileError("Mobile number is required");
-      return;
-    }
-    if (nameError || mobileError) return;
-
     try {
       const userId = localStorage.getItem("userId");
       const { data, error } = await supabase
@@ -200,8 +222,12 @@ const CheckoutMain = () => {
 
   const updateVisitor = async () => {
     try {
-      const startDate = moment().startOf("day").format("YYYY-MM-DD");
+      const startDate = moment()
+        .tz(siteConfig?.timeZone)
+        .startOf("day")
+        .format("YYYY-MM-DD");
       const endDate = moment()
+        .tz(siteConfig?.timeZone)
         .add(1, "day")
         .startOf("day")
         .format("YYYY-MM-DD");
@@ -242,7 +268,7 @@ const CheckoutMain = () => {
     }
   };
 
-  const insertMessage = async () => {
+  const insertMessage = async (orderId) => {
     const message = `A new order has been placed at Table No. ${tableData?.table_no}`;
     const sub_message = "For more details, please visit the order list page.";
     const userId = localStorage.getItem("userId");
@@ -253,7 +279,7 @@ const CheckoutMain = () => {
         table_id: tableData?.id,
         restaurant_id: restaurantData?.id,
         user_id: userId,
-        order_id: null,
+        order_id: orderId,
         waiter_id: null,
         message: message,
         sub_message: sub_message,
@@ -291,38 +317,150 @@ const CheckoutMain = () => {
   };
 
   const handleSubmit = async () => {
+    let hasError = false;
+
+    if (!personalDetails.name) {
+      setNameError("Name is required");
+      hasError = true;
+    }
+    if (!personalDetails.mobile) {
+      setMobileError("Mobile number is required");
+      hasError = true;
+    }
+    if (nameError || mobileError || hasError) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
-      const [userResponse, orderResponse, visitorsResponse, messageResponse] =
-        await Promise.all([
-          updateUser(),
-          insertOrder(),
-          updateVisitor(),
-          insertMessage(),
-        ]);
+      const [userResponse, orderResponse, visitorsResponse] = await Promise.all(
+        [updateUser(), insertOrder(), updateVisitor()]
+      );
 
-      if (
-        !userResponse ||
-        !orderResponse ||
-        !visitorsResponse ||
-        !messageResponse
-      ) {
+      if (!userResponse || !orderResponse || !visitorsResponse) {
         throw new Error("Failed to create order");
       } else {
-        const result = await updateTable(orderResponse[0].id);
-        if (result) {
+        const [updateTableResult, messageResponse] = await Promise.all([
+          updateTable(orderResponse[0].id),
+          insertMessage(orderResponse[0].id),
+        ]);
+
+        if (updateTableResult && messageResponse) {
           localStorage.setItem("orderId", orderResponse[0].id);
           localStorage.setItem("status", "preparing");
           router.replace("/preparing");
           localStorage.removeItem("cartItems");
           localStorage.removeItem("restaurantData");
           localStorage.removeItem("instructions");
+          onDetailsOpenChange(false);
+        } else {
+          throw new Error("Failed to update table or send message");
         }
       }
     } catch (error) {
       console.error("Error updating:", error);
     } finally {
-      onDetailsOpenChange(false);
+      setLoading(false);
+    }
+  };
+
+  const insertSubOrder = async () => {
+    try {
+      const { data: maxOrderData, error: maxOrderError } = await supabase
+        .from("orders")
+        .select(`order_id, id, sub_orders(id)`)
+        .eq("id", orderId)
+        .single();
+      if (maxOrderError) throw maxOrderError;
+
+      const totalSubOrder = maxOrderData?.sub_orders.length + 1;
+
+      let newOrderId = `${maxOrderData?.order_id}-01`;
+
+      if (maxOrderData.sub_orders.length > 0) {
+        newOrderId = `${maxOrderData?.order_id}-${String(
+          totalSubOrder
+        ).padStart(2, "0")}`;
+      }
+
+      const { data, error } = await supabase
+        .from("sub_orders")
+        .insert([
+          {
+            sub_order_id: newOrderId,
+            fooditem_ids: cartItems,
+            instructions: mainInstructions,
+            total_amount: totalPrice.toFixed(2),
+            order_id: orderId,
+            restaurant_id: restaurantData.id,
+          },
+        ])
+        .select("id");
+      if (error) throw error;
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
+
+  const insertSubOrderMessage = async (subOrderId) => {
+    const message = `A new sub order has been placed at Table No. ${tableData?.table_no}`;
+    const sub_message = "For more details, please visit the order list page.";
+    const userId = localStorage.getItem("userId");
+
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        table_id: tableData?.id,
+        restaurant_id: restaurantData?.id,
+        user_id: userId,
+        order_id: orderId,
+        waiter_id: null,
+        message: message,
+        sub_message: sub_message,
+        is_read: false,
+        user_read: true,
+        sub_order_id: subOrderId,
+      })
+      .select("id");
+    if (error) {
+      return console.error(error);
+    }
+    if (data) {
+      return data;
+    }
+  };
+
+  const handleSubOrderSubmit = async () => {
+    setLoading(true);
+    try {
+      const [orderResponse, visitorsResponse] = await Promise.all([
+        insertSubOrder(),
+        updateVisitor(),
+      ]);
+
+      if (!orderResponse || !visitorsResponse) {
+        throw new Error("Failed to create order");
+      } else {
+        const [messageResponse] = await Promise.all([
+          insertSubOrderMessage(orderResponse[0].id),
+        ]);
+
+        if (messageResponse) {
+          localStorage.setItem("status", "preparing");
+          router.replace("/preparing");
+          localStorage.removeItem("cartItems");
+          localStorage.removeItem("restaurantData");
+          localStorage.removeItem("instructions");
+        } else {
+          throw new Error("Failed to update table or send message");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -333,8 +471,18 @@ const CheckoutMain = () => {
 
   return (
     <>
-      <Header restaurantData={restaurantData} tableData={tableData} />
-      <ItemList menuItems={cartItems} handleCartChange={handleCartChange} />
+      <Header
+        restaurantData={restaurantData}
+        tableData={tableData}
+        userId={userId}
+        isSuborder={isSuborder}
+      />
+      <ItemList
+        menuItems={cartItems}
+        handleCartChange={handleCartChange}
+        tableId={tableData?.id}
+        restaurantId={restaurantData?.unique_name}
+      />
       <Preferences
         mainInstructions={mainInstructions}
         onOpen={onOpen}
@@ -351,6 +499,8 @@ const CheckoutMain = () => {
         restaurantData={restaurantData}
         tableData={tableData}
         loading={loading}
+        isSuborder={isSuborder}
+        handleSubOrderSubmit={handleSubOrderSubmit}
       />
       <Instructions
         isOpen={isOpen}

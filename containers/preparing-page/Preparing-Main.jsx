@@ -9,7 +9,6 @@ import {
   updateVisitorPreparing,
 } from "@/apis/preparingApi";
 import supabase from "@/config/supabase";
-import { Spinner } from "@nextui-org/react";
 import { notFound, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
@@ -20,9 +19,21 @@ import ScreenError from "@/components/pages/Screen-Error";
 import useSmallScreen from "@/hooks/useSmallScreen";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
 import { NotificationList } from "./Notification";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import QRLoader from "@/components/lottie/QR_loop.json";
+import Cookies from "js-cookie";
+import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import { toast } from "react-toastify";
+import SubOrders from "./Sub-Orders";
+import MainOrder from "./Main-Order";
+import { Button, useDisclosure } from "@nextui-org/react";
+import OrderPreview from "@/components/modal/Order-Preview";
+import { RotateCw } from "lucide-react";
 
 const PreparingMain = () => {
   const router = useRouter();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isRotating, setIsRotating] = useState(false);
   const navigateBasedOnStatus = useStatusNavigate();
   const [notifications, setNotifications] = useState([]);
   const isSmallScreen = useSmallScreen();
@@ -62,6 +73,7 @@ const PreparingMain = () => {
         if (!orderResponse || !statusResponse) {
           console.error("Error fetching order or status data");
         }
+
         setOrderData(orderResponse);
         setStatusData(statusResponse);
         const reversedNotifications = [...notificationResponse].reverse();
@@ -100,8 +112,26 @@ const PreparingMain = () => {
       )
       .subscribe();
 
+    const subOrderSubscription = supabase
+      .channel("sub_orders")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "sub_orders",
+          filter: `order_id=eq.${orderId}`,
+        },
+        async (payload) => {
+          const myData = await fetchOrderData(orderId);
+          setOrderData(myData);
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(orderSubscription);
+      supabase.removeChannel(subOrderSubscription);
     };
   }, [orderId, userId]);
 
@@ -137,9 +167,45 @@ const PreparingMain = () => {
     };
   }, [orderId, userId]);
 
-  if (orderData?.status_id?.sorting === 4) {
-    localStorage.setItem("status", "delivered");
-    router.replace("/delivered");
+  // if (orderData?.status_id?.sorting === 4) {
+  //   localStorage.setItem("status", "delivered");
+  //   router.replace("/delivered");
+  // }
+
+  if (orderData?.sub_orders.length > 0) {
+    const allSubOrdersDelivered = orderData.sub_orders.every((subOrder) =>
+      [4, 5, 6].includes(subOrder?.status_id?.sorting)
+    );
+
+    if (allSubOrdersDelivered && orderData?.status_id?.sorting === 4) {
+      localStorage.setItem("status", "delivered");
+      router.replace("/delivered");
+    }
+  } else {
+    if (orderData?.status_id?.sorting === 4) {
+      localStorage.setItem("status", "delivered");
+      router.replace("/delivered");
+    }
+  }
+
+  if (orderData?.status_id?.sorting === 5) {
+    const expires = new Date();
+    expires.setMinutes(expires.getMinutes() + 30);
+    Cookies.set("orderId", orderData.id, { expires });
+    setTimeout(async () => {
+      await clearLocalStorage();
+    }, 3000);
+    router.replace("/cancel");
+  }
+
+  if (orderData?.status_id?.sorting === 6) {
+    toast.info("Your Order has been abandoned! Please create a new order.", {
+      icon: <span>🥺</span>,
+    });
+    setTimeout(async () => {
+      await clearLocalStorage();
+    }, 3000);
+    router.replace("/");
   }
 
   const handleUpdate = async (id) => {
@@ -151,29 +217,105 @@ const PreparingMain = () => {
     }
   };
 
+  const handleReload = async () => {
+    setIsRotating(true);
+    try {
+      const [updatedOrderData, updatedNotifications] = await Promise.all([
+        fetchOrderData(orderId),
+        getNotifications(orderId, userId),
+      ]);
+
+      setOrderData(updatedOrderData);
+
+      setNotifications(updatedNotifications.reverse());
+    } catch (error) {
+      console.error("Failed to reload data:", error);
+    } finally {
+      setIsRotating(false);
+    }
+  };
+
   if (!isSmallScreen) {
     return <ScreenError />;
   }
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   }
   return (
     <div>
-      <Header orderData={orderData} />
-      <OrderStatus orderData={orderData} />
+      <Header orderData={orderData} statusData={statusData} userId={userId} />
+
+      {orderData?.sub_orders.length < 1 && (
+        <div className="relative">
+          <div className="absolute top-2 z-10 right-5">
+            <Button
+              color="default"
+              aria-label="Increase"
+              size="sm"
+              variant="faded"
+              onClick={handleReload}
+            >
+              Refresh{" "}
+              <RotateCw
+                size={20}
+                className={isRotating ? "rotate-animation" : ""}
+              />
+            </Button>
+          </div>
+          <OrderStatus orderData={orderData} />
+        </div>
+      )}
       {notifications.length > 0 && (
         <NotificationList
           notifications={notifications}
           handleUpdate={handleUpdate}
         />
       )}
-      <Status orderData={orderData} statusData={statusData} />
+      {orderData?.sub_orders.length < 1 && (
+        <Status
+          orderData={orderData}
+          statusData={statusData}
+          notifications={notifications}
+          onDetailsOpen={onOpen}
+        />
+      )}
+      {orderData?.sub_orders.length > 0 && (
+        <div className="relative py-1">
+          <MainOrder
+            orderData={orderData}
+            statusData={statusData}
+            notifications={notifications}
+          />
+          <SubOrders orderData={orderData} statusData={statusData} />
+          <div className="absolute -top-1 right-5 ">
+            <Button
+              color="default"
+              aria-label="Increase"
+              size="sm"
+              variant="ghost"
+              onClick={handleReload}
+            >
+              Refresh{" "}
+              <RotateCw
+                size={20}
+                className={isRotating ? "rotate-animation" : ""}
+              />
+            </Button>
+          </div>
+        </div>
+      )}
       <CallWaiterButton orderData={orderData} />
+      <OrderPreview
+        foodData={orderData?.fooditem_ids}
+        totalAmount={orderData?.total_amount}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 };

@@ -1,10 +1,9 @@
 "use client";
 import {
   fetchCategoriesData,
-  fetchIsBooked,
   fetchRestaurantData,
   fetchRestaurantMenuData,
-  fetchSpecialMenuData,
+  fetchSubCategoryData,
   fetchTableData,
   getSession,
   updateVisitorCheckout,
@@ -15,10 +14,9 @@ import useSmallScreen from "@/hooks/useSmallScreen";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
-import { Button, Spinner, table, useDisclosure } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import BookTable from "@/components/modal/Book-Table";
-import SpecialMenu from "./Special-Menu";
 import CartPopup from "@/components/elements/Cart-Popup";
 import FoodMenu from "./Food-Menu";
 import useStatusNavigate from "@/hooks/useStatusRedirect";
@@ -26,6 +24,11 @@ import SadIcon from "@/components/icons/sad";
 import { ArrowLeftFromLine } from "lucide-react";
 import supabase from "@/config/supabase";
 import { clearLocalStorage } from "@/hooks/clearLocalStorage";
+import LottieAnimation from "@/components/lottie/LottieAnimation";
+import QRLoader from "@/components/lottie/QR_loop.json";
+import CustomizedModal from "@/components/modal/Customized-Modal";
+import SearchBar from "./Search-Bar";
+import Categories from "./Categories";
 
 const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const router = useRouter();
@@ -41,7 +44,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   const [restaurantData, setRestaurantData] = useState(null);
   const [notFoundError, setNotFoundError] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
-  const [specialMenuData, setSpecialMenuData] = useState([]);
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [menuItems, setMenuItems] = useState([]);
   const [maxItems, setMaxItems] = useState(0);
@@ -55,6 +57,15 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     typeof window !== "undefined" ? localStorage.getItem("isBooked") : null;
   const initialIsBooked = storeIsBooked ? true : false;
   const [isBooked, setIsBooked] = useState(initialIsBooked);
+  const [selecetedFoodItem, setSelecetedFoodItem] = useState(null);
+  const [selecetedSubCategory, setSelecetedSubCategory] = useState("all");
+  const [subCategoryData, setSubCategoryData] = useState([]);
+
+  const {
+    isOpen: isCustomizedOpen,
+    onOpen: onCustomizedOpen,
+    onOpenChange: onCustomizedChange,
+  } = useDisclosure();
 
   const pageSize = 10;
 
@@ -66,6 +77,9 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
   const localTableId =
     typeof window !== "undefined" ? localStorage.getItem("tableId") : null;
+
+  const isSuborder =
+    typeof window !== "undefined" ? localStorage.getItem("is_suborder") : false;
 
   const checkUserSessions = async () => {
     if (tableId !== localTableId || !userId) {
@@ -97,7 +111,6 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           setNotFoundError(true);
           return;
         }
-
         setTableData(tableResponse);
         setRestaurantData(restaurantResponse);
 
@@ -131,20 +144,21 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           return;
         }
 
-        const [categoryResponse, specialMenuResponse, menuResponse] =
+        const [categoryResponse, menuResponse, subCategoryResponse] =
           await Promise.all([
             fetchCategoriesData(restaurantResponse.id),
-            fetchSpecialMenuData(restaurantResponse.id, pageSize),
             fetchRestaurantMenuData(
               restaurantResponse.id,
               currentPage,
               selectedCategory,
-              pageSize
+              pageSize,
+              selecetedSubCategory
             ),
+            fetchSubCategoryData(restaurantResponse.id, selectedCategory),
           ]);
+        setSubCategoryData(subCategoryResponse);
 
         setCategoryData(categoryResponse);
-        setSpecialMenuData(specialMenuResponse.data);
         setMenuItems((prevItems) =>
           currentPage === 1
             ? menuResponse.data
@@ -169,9 +183,10 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
     currentPage,
     selectedCategory,
     pageSize,
+    selecetedSubCategory,
   ]);
 
-  const handleCartChange = (menuItem, quantity) => {
+  const handleCartChange = (menuItem, quantity, customizations) => {
     setCartItems((prevCartItems) => {
       const itemIndex = prevCartItems.findIndex(
         (item) => item.id === menuItem.id
@@ -180,10 +195,18 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
       if (itemIndex !== -1) {
         updatedCartItems = [...prevCartItems];
-        updatedCartItems[itemIndex].quantity = quantity;
+        updatedCartItems[itemIndex] = {
+          ...updatedCartItems[itemIndex],
+          quantity,
+          orderQuantity: quantity,
+          ...customizations,
+        };
         updatedCartItems = updatedCartItems.filter((item) => item.quantity > 0);
       } else {
-        updatedCartItems = [...prevCartItems, { ...menuItem, quantity }];
+        updatedCartItems = [
+          ...prevCartItems,
+          { ...menuItem, quantity, orderQuantity: quantity, ...customizations },
+        ];
       }
 
       localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
@@ -224,6 +247,7 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
   };
 
   const handleLogout = async (isReload = true) => {
+    const orderId = localStorage.getItem("orderId");
     try {
       const updateTablePromise = await supabase
         .from("tables")
@@ -242,15 +266,35 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
         .eq("id", userId)
         .select();
 
+      let updateOrderPromise = null;
+      if (orderId) {
+        updateOrderPromise = supabase
+          .from("orders")
+          .update({
+            is_abandoned: true,
+            status_id: "bb59ee8e-f74c-4d0a-a422-655a2bb1053e",
+          })
+          .eq("id", orderId)
+          .select();
+      }
+
       const [
         { data: tableData, error: tableError },
         { data: userData, error: userError },
-      ] = await Promise.all([updateTablePromise, updateUserPromise]);
+
+        orderResult = {},
+      ] = await Promise.all([
+        updateTablePromise,
+        updateUserPromise,
+        ...(orderId ? [updateOrderPromise] : []),
+      ]);
 
       if (tableError) throw tableError;
       if (userError) throw userError;
+      if (orderResult.error) throw orderResult.error;
 
       await clearLocalStorage();
+      setCartItems([]);
       setIsBooked(false);
       if (isReload) {
         window.location.reload();
@@ -259,6 +303,13 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
       console.error("Logout error:", error);
     }
   };
+
+  const handleSubCategoryChange = (id) => {
+    setCurrentPage(1);
+    setSelecetedSubCategory(id);
+  };
+
+  // Custimizables Functions
 
   if (!isSmallScreen) {
     return <ScreenError />;
@@ -313,8 +364,8 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-svh flex justify-center items-center">
-        <Spinner />
+      <div className="w-full h-svh flex justify-center items-center -mt-8">
+        <LottieAnimation width={400} height={400} animationData={QRLoader} />
       </div>
     );
   } else {
@@ -324,11 +375,19 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           tableData={tableData}
           restaurantData={restaurantData}
           userId={userId}
+          isSuborder={isSuborder}
         />
-        <SpecialMenu
-          specialMenuData={specialMenuData}
+        <SearchBar
+          restaurantId={restaurantData.id}
           onCartChange={handleCartChange}
           cartItems={cartItems}
+          onCustomizedOpen={onCustomizedOpen}
+          setSelecetedFoodItem={setSelecetedFoodItem}
+        />
+        <Categories
+          categoryData={categoryData}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
         />
         <FoodMenu
           categoryData={categoryData}
@@ -340,15 +399,21 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
           maxItems={maxItems}
           onLoadMore={handleLoadMore}
           dataLoading={dataLoading}
+          onCustomizedOpen={onCustomizedOpen}
+          setSelecetedFoodItem={setSelecetedFoodItem}
+          subCategoryData={subCategoryData}
+          handleSubCategoryChange={handleSubCategoryChange}
+          selecetedSubCategory={selecetedSubCategory}
         />
         {!isBooked && (
           <BookTable
-            isOpen={!isBooked}
+            isModalOpen={!isBooked}
             onOpenChange={onOpenChange}
             setIsBooked={setIsBooked}
             tableId={tableId}
             restaurantId={restaurantData.id}
             tableNo={tableData.table_no}
+            maxCapacity={tableData?.max_capacity}
           />
         )}
         {cartItems.length !== 0 && (
@@ -357,8 +422,17 @@ const RestuarantMainPage = ({ restaurantId, tableId }) => {
             totalQuantity={totalQuantity}
             handleCheckout={handleCheckout}
             isLoading={isCheckoutLoading}
+            cartItems={cartItems}
+            onCartChange={handleCartChange}
           />
         )}
+        <CustomizedModal
+          isOpen={isCustomizedOpen}
+          onOpenChange={onCustomizedChange}
+          selecetedFoodItem={selecetedFoodItem}
+          onCartChange={handleCartChange}
+          cartItems={cartItems}
+        />
       </>
     );
   }

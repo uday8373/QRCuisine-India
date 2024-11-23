@@ -1,17 +1,39 @@
 import withPWA from "next-pwa";
 
-const pwaConfig = withPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  reloadOnOnline: true,
-});
-
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["res.cloudinary.com", "dummyimage.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "dummyimage.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
-export default pwaConfig(nextConfig);
+const nextConfigFunction = async (phase) => {
+  if (phase !== "phase-development-server") {
+    const pwaConfig = withPWA({
+      dest: "public",
+      register: true,
+      skipWaiting: true,
+      reloadOnOnline: true,
+    });
+    return pwaConfig(nextConfig);
+  }
+  return nextConfig;
+};
+
+export default nextConfigFunction;
