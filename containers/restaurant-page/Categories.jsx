@@ -38,7 +38,7 @@ const Categories = ({ categoryData, selectedCategory, onCategoryChange }) => {
           className="w-full flex items-center gap-2 flex-wrap overflow-hidden"
         >
           <Button
-            onClick={() => onCategoryChange("all")}
+            onClick={() => onCategoryChange("all", "All")}
             className={`font-medium flex-grow ${
               selectedCategory !== "all" && "text-default-600 !border"
             }`}
@@ -55,7 +55,7 @@ const Categories = ({ categoryData, selectedCategory, onCategoryChange }) => {
           {categoryData &&
             categoryData.map((item, index) => (
               <Button
-                onClick={() => onCategoryChange(item?.id)}
+                onClick={() => onCategoryChange(item?.id, item?.category_name)}
                 key={index}
                 className={`font-medium flex-grow ${
                   selectedCategory !== item?.id && "text-default-600 !border"

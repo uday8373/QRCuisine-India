@@ -37,11 +37,11 @@ export const fetchStatusData = async () => {
 export const updateVisitorConfirm = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");
@@ -86,11 +86,11 @@ export const updateVisitorConfirm = async (restaurantId) => {
 export const updateVisitorPreparing = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");
@@ -135,11 +135,11 @@ export const updateVisitorPreparing = async (restaurantId) => {
 export const updateVisitorDelivered = async (restaurantId) => {
   try {
     const startDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .startOf("day")
       .format("YYYY-MM-DD");
     const endDate = moment()
-      .tz("Asia/Kolkata")
+      .tz(siteConfig.timeZone)
       .add(1, "day")
       .startOf("day")
       .format("YYYY-MM-DD");

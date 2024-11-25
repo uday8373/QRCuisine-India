@@ -37,10 +37,7 @@ const Invoice = ({ orderData, isComplete = true }) => {
       ?.flatMap((subOrder) => subOrder?.fooditem_ids) || []), // Sub-order food items
   ];
 
-  console.log("object", orderData);
-
   function calculateTotalAmount(orderId, sub_orders) {
-    console.log("orderId, sub_orders", orderId, sub_orders);
     if (sub_orders.length < 1) {
       return 0;
     }

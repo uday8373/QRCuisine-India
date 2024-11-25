@@ -17,18 +17,24 @@ export const siteConfig = {
       label: "Home",
       href: "/",
     },
+    // {
+    //   href: "Pricing",
+    //   label: "Pricing",
+    // },
     {
-      href: "Pricing",
-      label: "Pricing",
+      href: "/login",
+      label: "Login",
     },
   ],
   isProduction: false,
-  productionVersion: "1.0.P",
-  developementVersion: "1.1.D",
+  productionVersion: "2.0 (Stable)",
+  developementVersion: "2.0 (Development)",
   cryptoSecret:
     "e5d06c75557de003f0ad781a05117c76804f2cd528fbdc86e65f1f414a9d7b9e",
 
-  currencySymbol: "$",
+  currencySymbol: "₹",
   timeZone: "Asia/Kolkata",
-  taxTitle: "Sales Tax",
+  taxTitle: "GST",
+  FAST2SMS_API_KEY:
+    "lawj0gV6sAuYqfzFmTGbPSX5Opdi92QHvc3x8W7JeZnLIRrUo1qD01vJT7euEsk6lYKWVQiBX85UjAaZ",
 };
