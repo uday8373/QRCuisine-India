@@ -20,7 +20,10 @@ export default function Footer() {
                 Dining, Simplified and Rewarded.
               </p>
               <p className="text-medium  text-default-600 mt-0.5">
-                Version 1.0.P
+                Version{" "}
+                {siteConfig.isProduction
+                  ? siteConfig.productionVersion
+                  : siteConfig.developementVersion}
               </p>
             </div>
             <div className="w-full flex flex-col col-span-1 md:order-3 lg:order-2 order-2">
