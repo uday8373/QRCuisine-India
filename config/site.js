@@ -26,7 +26,7 @@ export const siteConfig = {
       label: "Login",
     },
   ],
-  isProduction: false,
+  isProduction: true,
   productionVersion: "2.0 (Stable)",
   developementVersion: "2.0 (Development)",
   cryptoSecret:
