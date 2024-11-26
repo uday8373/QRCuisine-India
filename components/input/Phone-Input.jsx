@@ -21,9 +21,9 @@ const PhoneInput = ({
 }) => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState({
-    name: "USA",
-    code: "+1",
-    flag: "https://flagcdn.com/us.svg",
+    name: "India",
+    code: "+91",
+    flag: "https://flagcdn.com/in.svg",
   });
   const [phoneNumber, setPhoneNumber] = useState(value || "");
 

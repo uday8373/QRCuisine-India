@@ -27,8 +27,8 @@ export const siteConfig = {
     },
   ],
   isProduction: true,
-  productionVersion: "2.0 (Stable)",
-  developementVersion: "2.0 (Development)",
+  productionVersion: "2.0 (India)",
+  developementVersion: "2.0 (India)",
   cryptoSecret:
     "e5d06c75557de003f0ad781a05117c76804f2cd528fbdc86e65f1f414a9d7b9e",
 
